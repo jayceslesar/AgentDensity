@@ -22,8 +22,8 @@ class Agent:
         self.exposed = False
 
         # counter variables for run specific desicions
-        self.days_exposed = 0  # for stat tracking
-        self.days_infected = 0
+        self.steps_exposed = 0  # for stat tracking
+        self.steps_infected = 0
 
         # stats for network
         self.num_infected = 0  # for stat tracking
