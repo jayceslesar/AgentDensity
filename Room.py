@@ -58,9 +58,3 @@ class Room:
                 out += str(cell) + " "
             out += "\n"
         return out
-
-
-room = Room(3, 3)
-
-print(room)
-
