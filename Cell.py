@@ -13,7 +13,7 @@ class Cell:
         self.color = None
         self.concentration_capacity = 0
         self.diffusion_rate = None
-        self.gradient_map = {0.2: (249, 189, 138), 0.4: (246, 135, 86), 0.6: (248, 110, 49), 0.8: (243, 95, 30), 1.0: (251, 69, 3)}
+        self.gradient_map = {0.0: (255, 255, 255 ), 0.2: (249, 189, 138), 0.4: (246, 135, 86), 0.6: (248, 110, 49), 0.8: (243, 95, 30), 1.0: (251, 69, 3)}
 
     def get_color(self):
         if self.Agent is not None:
@@ -22,6 +22,8 @@ class Cell:
             return self._color()
 
     def _color(self):
+        if self.concentration_capacity == 0.0:
+            return self.gradient_map[0.0]
         if self.concentration_capacity < 0.2:
             return self.gradient_map[0.2]
         if self.concentration_capacity >= 0.2 and self.concentration_capacity < 0.4:
