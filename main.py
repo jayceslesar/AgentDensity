@@ -25,22 +25,24 @@ def viz(room):
     CLOCK = pygame.time.Clock()
     SCREEN.fill(BLACK)
 
-    draw(room.grid)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+    while room.steps_taken < room.iterations:
+        room._step_()
+        draw(room.grid)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-    pygame.display.update()
-    time.sleep(2)
-    pygame.quit()
+        pygame.display.update()
+        time.sleep(2)
+        pygame.quit()
 
 
 BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
 
-room = Room.Room(3, 3)
+room = Room.Room(5, 5, 10, 42)
 
 height_per_block = WINDOW_HEIGHT // len(room.grid)
 width_per_block = WINDOW_WIDTH // len(room.grid[0])

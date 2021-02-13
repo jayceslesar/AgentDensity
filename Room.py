@@ -17,7 +17,9 @@ import Cell
 
 
 class Room:
-    def __init__(self, num_rows_people: int, num_cols_people: int, num_steps: int):
+    def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int):
+        rd.seed(seed)
+        np.random.seed(seed)
         """Initialize the instance of this Room
 
         Args:
@@ -60,7 +62,7 @@ class Room:
                 out += str(cell) + " "
             out += "\n"
         return out
-    
+
     def _step_(self):
         # to be changed or randomized
         INFECTED_CUTOFF = 0.6
@@ -89,13 +91,8 @@ class Room:
                 # update infected
                 if self.grid[i][j].agent.total_exposure > INFECTED_CUTOFF:
                     self.grid[i][j].agent.infected = True
-                
 
                 if self.grid[i][j].agent.infected:
                     # update steps infected
                     self.grid[i][j].agent.steps_infected += 1
-
-                    
-                
-room = Room(3,3,2)
-room._step_()
+        self.steps_taken += 1
