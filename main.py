@@ -3,16 +3,8 @@ import pygame, sys
 from pygame.locals import *
 import time
 
-rows_of_agents = 3
-cols_of_agents = 3
 
-room = Room.Room(3, 3)
 
-BLACK = (0, 0, 0)
-WINDOW_HEIGHT = 800
-WINDOW_WIDTH = 800
-height_per_block = WINDOW_HEIGHT // len(room.grid)
-width_per_block = WINDOW_WIDTH // len(room.grid[0])
 
 global SCREEN, CLOCK
 
@@ -44,6 +36,14 @@ def viz(room):
     pygame.quit()
 
 
+BLACK = (0, 0, 0)
+WINDOW_HEIGHT = 800
+WINDOW_WIDTH = 800
+
+room = Room.Room(3, 3)
+
+height_per_block = WINDOW_HEIGHT // len(room.grid)
+width_per_block = WINDOW_WIDTH // len(room.grid[0])
+
 if __name__ == '__main__':
-    room = Room.Room(3, 3)
     viz(room)
