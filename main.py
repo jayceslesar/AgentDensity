@@ -26,7 +26,7 @@ def draw(grid):
 
 
 
-def viz():
+def viz(room):
     pygame.init()
     global SCREEN, CLOCK
     SCREEN = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
@@ -45,4 +45,5 @@ def viz():
 
 
 if __name__ == '__main__':
-    viz()
+    room = Room.Room(3, 3)
+    viz(room)

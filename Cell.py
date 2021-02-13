@@ -16,8 +16,8 @@ class Cell:
         self.gradient_map = {0.0: (255, 255, 255 ), 0.2: (249, 189, 138), 0.4: (246, 135, 86), 0.6: (248, 110, 49), 0.8: (243, 95, 30), 1.0: (251, 69, 3)}
 
     def get_color(self):
-        if self.Agent is not None:
-            return agent.get_color()
+        if self.agent is not None:
+            return self.agent.get_color()
         else:
             return self._color()
 
