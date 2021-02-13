@@ -12,6 +12,7 @@ Date:
 import Agent
 import numpy as np
 import random as rd
+import Cell
 
 
 class Room:
@@ -26,30 +27,25 @@ class Room:
         self.num_rows_people = num_rows_people
         self.num_cols_people = num_cols_people
 
-        self.INCUBATION_PERIOD_DISTRIBUTION = list(np.absolute(np.around(np.random.normal(loc=3, scale=1.5, size=(num_rows_people*num_cols_people))).astype(int)))
-        self.INFECTIVE_LENGTH_DISTRUBUTION = list(np.around(np.random.normal(loc=10.5, scale=3.5, size=(num_rows_people*num_cols_people))).astype(int))
-
         self.grid = []
 
         n = 0
 
         # border row for top and bottom rows
-        blank_row = ['E' for i in range(num_cols_people*2 + 1)]
+        blank_row = [Cell.Cell(0,i) for i in range(num_cols_people*2 + 1)]
         self.grid.append(blank_row)
         for i in range(self.num_rows_people):
             row = []
             # add an empty space
-            row.append('E')
+            row.append(Cell.Cell(i, 0))
             for j in range(self.num_cols_people):
                 a = Agent.Agent(n, i, j)
-                a.INCUBATION_PERIOD = self.INCUBATION_PERIOD_DISTRIBUTION.pop(rd.randint(0, len(self.INCUBATION_PERIOD_DISTRIBUTION) - 1))
-                a.INFECTIVE_LENGTH = self.INFECTIVE_LENGTH_DISTRUBUTION.pop(rd.randint(0, len(self.INFECTIVE_LENGTH_DISTRUBUTION) - 1))
                 if n == self.initial_infected:
                     a.infected = True
                     self.initial_agent = a
-                row.append(a)
+                row.append(Cell.Cell(i,j, a))
                 # add an empty space
-                row.append('E')
+                row.append(Cell.Cell(i,j))
                 n += 1
             self.grid.append(row)
             self.grid.append(blank_row)
@@ -57,8 +53,8 @@ class Room:
     def __str__(self):
         out = ""
         for row in self.grid:
-            for agent in row:
-                out += str(agent) + " "
+            for cell in row:
+                out += str(cell) + " "
             out += "\n"
         return out
 

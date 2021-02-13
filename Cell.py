@@ -36,8 +36,8 @@ class Cell:
             return self.gradient_map[1.0]
 
     def __str__(self):
-        if self.Agent is not None:
-            return str(agent)
+        if self.agent is not None:
+            return str(self.agent)
         else:
             return 'E'
 
