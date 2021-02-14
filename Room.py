@@ -12,13 +12,11 @@ Date:
 
 import Agent
 import numpy as np
-import random as rd
 import Cell
 
 
 class Room:
     def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int):
-        rd.seed(seed)
         np.random.seed(seed)
         """Initialize the instance of this Room
 
@@ -26,11 +24,13 @@ class Room:
             num_rows_people (int): number of actual rows
             num_cols_people (int): number of actual cols
             num_steps (int): number of steps in simulation
+            seed (int): the seed to use
         """
-        self.initial_infected = rd.randint(0,num_rows_people*num_cols_people)
+        self.initial_infected = np.random.randint(0,num_rows_people*num_cols_people)
         self.num_rows_people = num_rows_people
         self.num_cols_people = num_cols_people
         self.iterations = num_steps
+        self.seed = seed
         self.steps_taken = 0
         self.grid = []
 
@@ -44,7 +44,7 @@ class Room:
             # add an empty space
             row.append(Cell.Cell(i, 0))
             for j in range(self.num_cols_people):
-                a = Agent.Agent(n, i, j)
+                a = Agent.Agent(n, i, j, self.seed)
                 if n == self.initial_infected:
                     a.infected = True
                     self.initial_agent = a
@@ -63,7 +63,7 @@ class Room:
             out += "\n"
         return out
 
-    def _step_(self):
+    def _step(self):
         # to be changed or randomized
         INFECTED_CUTOFF = 0.6
         # Here is where I will call spread
@@ -95,4 +95,5 @@ class Room:
                 if self.grid[i][j].agent.infected:
                     # update steps infected
                     self.grid[i][j].agent.steps_infected += 1
+
         self.steps_taken += 1

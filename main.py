@@ -26,7 +26,7 @@ def viz(room):
     SCREEN.fill(BLACK)
 
     while room.steps_taken < room.iterations:
-        room._step_()
+        room._step()
         draw(room.grid)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

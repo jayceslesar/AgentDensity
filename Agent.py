@@ -1,8 +1,9 @@
-import random
+import numpy as np
 
 
 class Agent:
-    def __init__(self, number: int, row: int, col: int):
+    def __init__(self, number: int, row: int, col: int, seed: int):
+        np.random.seed(seed)
         """
         Agent constructor
 
@@ -10,6 +11,7 @@ class Agent:
             number (int): the ID of the agent
             row (int): row index
             col (int): col index
+            seed (int): the seed to use
         """
         self.number = number
         self.row = row
@@ -31,10 +33,10 @@ class Agent:
 
         # random attributes:
         # the age of an agent
-        self.age = random.randint(1, 70)
+        self.age = np.random.randint(1, 70)
 
         #  how big of a radius can they infect others in
-        self.neighborhood_size = random.uniform(0.5, 3)
+        self.neighborhood_size = np.random.uniform(0.5, 3)
 
         # All of these are initialized here but set in Space.py for speed
         # the number of steps the agent remains infective for
@@ -44,8 +46,8 @@ class Agent:
         self.INCUBATION_PERIOD = None  # TODO:: guassian 0 to 3 days with tail to 7
 
         # pre-existing condition float
-        if random.randint(0, 1):
-            self.pre_existing_float = random.uniform(0, 1)
+        if np.random.randint(0, 1):
+            self.pre_existing_float = np.random.uniform(0, 1)
         else:
             self.pre_existing_float = 0
 
