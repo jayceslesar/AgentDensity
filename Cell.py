@@ -7,11 +7,15 @@ class Cell:
         # not all cells have Agents
         if Agent is not None:
             self.agent = Agent
+            self.production_rate = self.agent.production_rate
         else:
             self.agent = None
+            self.production_rate = 0
 
         self.color = None
         self.concentration_capacity = 0
+        self.width = 2
+        self.height = 10
         self.diffusion_rate = None
         self.gradient_map = {0.0: (255, 255, 255 ), 0.2: (249, 189, 138), 0.4: (246, 135, 86), 0.6: (248, 110, 49), 0.8: (243, 95, 30), 1.0: (251, 69, 3)}
 

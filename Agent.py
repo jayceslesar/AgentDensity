@@ -17,6 +17,9 @@ class Agent:
         self.row = row
         self.col = col
 
+        # for how much concentration of virus agent is producing at a given time
+        self.production_rate = 0
+
         # tracking variables for run specific decisions
         self.untouched = True
         self.infected = False
