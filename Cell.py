@@ -12,7 +12,7 @@ class Cell:
             self.agent = None
             self.production_rate = 0
 
-        self.color = None
+        self.color = (255, 255, 255)
         self.concentration = 0
         self.width = 2
         self.height = 10

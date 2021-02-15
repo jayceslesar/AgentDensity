@@ -18,7 +18,7 @@ class Agent:
         self.col = col
 
         # for how much concentration of virus agent is producing at a given time
-        self.production_rate = 0
+        self.production_rate = 9
 
         # tracking variables for run specific decisions
         self.untouched = True

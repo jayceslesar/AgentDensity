@@ -103,6 +103,7 @@ class Room:
                     self.grid[i][j].agent.steps_infected += 1
 
         self.steps_taken += 1
+        print(self.steps_taken)
 
     def simple_spread(self):
         # NOTE: This implementation uses a rudimentary approach that involves Fick's Law
