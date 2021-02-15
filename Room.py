@@ -145,7 +145,7 @@ class Room:
                         surrounding.append(record)
 
                 # upper right check (i-1,j+1)
-                if (i - 1) >= 0 and (j + 1) <= len(self.grid):
+                if (i - 1) >= 0 and (j + 1) < len(self.grid):
                     # check concentrations. If greater, than do calculation
                     if self.grid[i][j].concentration > self.grid[i - 1][j + 1].concentration:
                         diffusivity = self.grid[i][j].diffusivity
@@ -177,7 +177,7 @@ class Room:
                         surrounding.append(record)
 
                 # middle right check (i,j+1)
-                if (j + 1) <= len(self.grid):
+                if (j + 1) < len(self.grid):
                     # check concentrations. If greater, than do calculation
                     if self.grid[i][j].concentration > self.grid[i][j + 1].concentration:
                         diffusivity = self.grid[i][j].diffusivity
@@ -193,7 +193,7 @@ class Room:
                         surrounding.append(record)
 
                 # bottom left check (i+1,j-1)
-                if (i + 1) <= len(self.grid[0]) and (j - 1) >= 0:
+                if (i + 1) < len(self.grid[0]) and (j - 1) >= 0:
                     # check concentrations. If greater, than do calculation
                     if self.grid[i][j].concentration > self.grid[i+1][j-1].concentration:
                         diffusivity = self.grid[i][j].diffusivity
@@ -209,7 +209,7 @@ class Room:
                         surrounding.append(record)
 
                 # bottom middle check (i+1,j)
-                if (i + 1) <= len(self.grid[0]):
+                if (i + 1) < len(self.grid[0]):
                     # check concentrations. If greater, than do calculation
                     if self.grid[i][j].concentration > self.grid[i+1][j].concentration:
                         diffusivity = self.grid[i][j].diffusivity
@@ -225,7 +225,7 @@ class Room:
                         surrounding.append(record)
 
                 # bottom right check (i+1,j+1)
-                if (i + 1) <= len(self.grid[0]) and (j + 1) <= len(self.grid):
+                if (i + 1) < len(self.grid[0]) and (j + 1) < len(self.grid):
                     # check concentrations. If greater, than do calculation
                     if self.grid[i][j].concentration > self.grid[i+1][j+1].concentration:
                         diffusivity = self.grid[i][j].diffusivity
