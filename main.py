@@ -34,7 +34,7 @@ def viz(room):
                 sys.exit()
 
         pygame.display.update()
-        time.sleep(2)
+        time.sleep(1)
         # pygame.quit()
 
 
@@ -42,7 +42,7 @@ BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
 
-room = Room.Room(5, 5, 5, 42)
+room = Room.Room(5, 5, 50, 42)
 
 height_per_block = WINDOW_HEIGHT // len(room.grid)
 width_per_block = WINDOW_WIDTH // len(room.grid[0])
