@@ -13,10 +13,10 @@ class Cell:
             self.production_rate = 0
 
         self.color = None
-        self.concentration_capacity = 0
+        self.concentration = 0
         self.width = 2
         self.height = 10
-        self.diffusion_rate = None
+        self.diffusivity = None
         self.gradient_map = {0.0: (255, 255, 255 ), 0.2: (249, 189, 138), 0.4: (246, 135, 86), 0.6: (248, 110, 49), 0.8: (243, 95, 30), 1.0: (251, 69, 3)}
 
     def get_color(self):
@@ -26,17 +26,17 @@ class Cell:
             return self._color()
 
     def _color(self):
-        if self.concentration_capacity == 0.0:
+        if self.concentration == 0.0:
             return self.gradient_map[0.0]
-        if self.concentration_capacity < 0.2:
+        if self.concentration < 0.2:
             return self.gradient_map[0.2]
-        if self.concentration_capacity >= 0.2 and self.concentration_capacity < 0.4:
+        if self.concentration >= 0.2 and self.concentration < 0.4:
             return self.gradient_map[0.4]
-        if self.concentration_capacity >= 0.4 and self.concentration_capacity < 0.6:
+        if self.concentration >= 0.4 and self.concentration < 0.6:
             return self.gradient_map[0.6]
-        if self.concentration_capacity >= 0.6 and self.concentration_capacity < 0.8:
+        if self.concentration >= 0.6 and self.concentration < 0.8:
             return self.gradient_map[0.8]
-        if self.concentration_capacity >= 0.8:
+        if self.concentration >= 0.8:
             return self.gradient_map[1.0]
 
     def __str__(self):

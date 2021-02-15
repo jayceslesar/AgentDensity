@@ -15,6 +15,11 @@ import numpy as np
 import Cell
 
 
+def ficks_law(diffusivity, concentration1, concentration2, area, length):
+    numerator = float((concentration1 - concentration2) * area * diffusivity)
+    return (float(numerator))/(float(length))
+
+
 class Room:
     def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int):
         np.random.seed(seed)
@@ -32,6 +37,7 @@ class Room:
         self.iterations = num_steps
         self.seed = seed
         self.steps_taken = 0
+        self.time_length = 1
         self.grid = []
 
         n = 0
@@ -77,10 +83,10 @@ class Room:
                     continue
 
                 # update total exposure, += concentration
-                self.grid[i][j].agent.total_exposure += self.grid[i][j].concentration_capacity
+                self.grid[i][j].agent.total_exposure += self.grid[i][j].concentration
 
                 # update untouched, exposed
-                if self.grid[i][j].concentration_capacity > 0:
+                if self.grid[i][j].concentration > 0:
                     self.grid[i][j].agent.untouched = False
                     self.grid[i][j].agent.exposed = True
 
@@ -97,3 +103,143 @@ class Room:
                     self.grid[i][j].agent.steps_infected += 1
 
         self.steps_taken += 1
+
+    def simple_spread(self):
+        # NOTE: This implementation uses a rudimentary approach that involves Fick's Law
+        for i in range(len(self.grid[0])):
+            for j in range(len(self.grid)):
+
+                # make an array to store surrounding cells rates
+                surrounding = []
+                # check to see if surrounding cells exist
+                # upper left check (i-1,j-1)
+                if (i - 1) > 0 and (j - 1) > 0:
+                    # check concentrations. If greater, than do calculation
+                    if self.grid[i][j].concentration > self.grid[i - 1][j - 1].concentration:
+                        diffusivity = self.grid[i][j].diffusivity
+                        concentration1 = self.grid[i][j].concentration
+                        concentration2 = self.grid[i-1][j-1].concentration
+                        area = np.math.sqrt(2) * self.grid[i - 1][j - 1].width * self.grid[i - 1][j - 1].height
+                        length = np.math.sqrt(2) * self.grid[i - 1][j - 1].width
+                        rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        record = (i - 1, j - 1, rate)
+                        surrounding.append(record)
+                    else:
+                        record = (i - 1, j - 1, None)
+                        surrounding.append(record)
+
+                # upper middle check (i-1,j)
+                if (i - 1) >= 0:
+                    # check concentrations. If greater, than do calculation
+                    if self.grid[i][j].concentration > self.grid[i - 1][j].concentration:
+                        diffusivity = self.grid[i][j].diffusivity
+                        concentration1 = self.grid[i][j].concentration
+                        concentration2 = self.grid[i-1][j].concentration
+                        area = self.grid[i - 1][j].width * self.grid[i - 1][j].height
+                        length = self.grid[i - 1][j].width
+                        rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        record = (i - 1, j, rate)
+                        surrounding.append(record)
+                    else:
+                        record = (i - 1, j, None)
+                        surrounding.append(record)
+
+                # upper right check (i-1,j+1)
+                if (i - 1) >= 0 and (j + 1) <= len(self.grid):
+                    # check concentrations. If greater, than do calculation
+                    if self.grid[i][j].concentration > self.grid[i - 1][j + 1].concentration:
+                        diffusivity = self.grid[i][j].diffusivity
+                        concentration1 = self.grid[i][j].concentration
+                        concentration2 = self.grid[i-1][j+1].concentration
+                        area = self.grid[i - 1][j + 1].width * self.grid[i - 1][j + 1].height
+                        length = self.grid[i - 1][j + 1].width
+                        rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        record = (i - 1, j + 1, rate)
+                        surrounding.append(record)
+                    else:
+                        record = (i - 1, j + 1, None)
+                        surrounding.append(record)
+
+                # middle left check (i,j-1)
+                if (j - 1) >= 0:
+                    # check concentrations. If greater, than do calculation
+                    if self.grid[i][j].concentration > self.grid[i][j - 1].concentration:
+                        diffusivity = self.grid[i][j].diffusivity
+                        concentration1 = self.grid[i][j].concentration
+                        concentration2 = self.grid[i][j-1].concentration
+                        area = self.grid[i][j - 1].width * self.grid[i][j - 1].height
+                        length = self.grid[i][j - 1].width
+                        rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        record = (i, j - 1, rate)
+                        surrounding.append(record)
+                    else:
+                        record = (i, j - 1, None)
+                        surrounding.append(record)
+
+                # middle right check (i,j+1)
+                if (j + 1) <= len(self.grid):
+                    # check concentrations. If greater, than do calculation
+                    if self.grid[i][j].concentration > self.grid[i][j + 1].concentration:
+                        diffusivity = self.grid[i][j].diffusivity
+                        concentration1 = self.grid[i][j].concentration
+                        concentration2 = self.grid[i][j+1].concentration
+                        area = self.grid[i][j+1].width * self.grid[i][j+1].height
+                        length = self.grid[i][j+1].width
+                        rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        record = (i, j + 1, rate)
+                        surrounding.append(record)
+                    else:
+                        record = (i, j + 1, None)
+                        surrounding.append(record)
+
+                # bottom left check (i+1,j-1)
+                if (i + 1) <= len(self.grid[0]) and (j - 1) >= 0:
+                    # check concentrations. If greater, than do calculation
+                    if self.grid[i][j].concentration > self.grid[i+1][j-1].concentration:
+                        diffusivity = self.grid[i][j].diffusivity
+                        concentration1 = self.grid[i][j].concentration
+                        concentration2 = self.grid[i+1][j-1].concentration
+                        area = self.grid[i+1][j-1].width * self.grid[i+1][j-1].height
+                        length = self.grid[i+1][j-1].width
+                        rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        record = (i + 1, j - 1, rate)
+                        surrounding.append(record)
+                    else:
+                        record = (i + 1, j - 1, None)
+                        surrounding.append(record)
+
+                # bottom middle check (i+1,j)
+                if (i + 1) <= len(self.grid[0]):
+                    # check concentrations. If greater, than do calculation
+                    if self.grid[i][j].concentration > self.grid[i+1][j].concentration:
+                        diffusivity = self.grid[i][j].diffusivity
+                        concentration1 = self.grid[i][j].concentration
+                        concentration2 = self.grid[i+1][j].concentration
+                        area = self.grid[i+1][j].width * self.grid[i+1][j].height
+                        length = self.grid[i+1][j].width
+                        rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        record = (i + 1, j, rate)
+                        surrounding.append(record)
+                    else:
+                        record = (i + 1, j, None)
+                        surrounding.append(record)
+
+                # bottom right check (i+1,j+1)
+                if (i + 1) <= len(self.grid[0]) and (j + 1) <= len(self.grid):
+                    # check concentrations. If greater, than do calculation
+                    if self.grid[i][j].concentration > self.grid[i+1][j+1].concentration:
+                        diffusivity = self.grid[i][j].diffusivity
+                        concentration1 = self.grid[i][j].concentration
+                        concentration2 = self.grid[i+1][j+1].concentration
+                        area = self.grid[i+1][j+1].width * self.grid[i+1][j+1].height
+                        length = self.grid[i+1][j+1].width
+                        rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        record = (i + 1, j + 1, rate)
+                        surrounding.append(record)
+                    else:
+                        record = (i + 1, j + 1, None)
+                        surrounding.append(record)
+
+
+
+
