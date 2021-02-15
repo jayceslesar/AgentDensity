@@ -73,7 +73,7 @@ class Room:
         # to be changed or randomized
         INFECTED_CUTOFF = 0.6
         # Here is where I will call spread
-
+        self.simple_spread()
         # iterate through rows and columns of cells
         for i in range(len(self.grid[0])):
             for j in range(len(self.grid)):
@@ -239,6 +239,15 @@ class Room:
                     else:
                         record = (i + 1, j + 1, None)
                         surrounding.append(record)
+
+                # After finding concentrations in surrounding cells, update the concentrations
+                for entry in surrounding:
+                    if entry[2] is not None:
+                        volume = (self.grid[entry[0]][entry[1]].width ** 2) * (self.grid[entry[0]][entry[1]].height)
+                        additional_concentration = (entry[2] * self.time_length)/(volume)
+                        self.grid[entry[0]][entry[1]].concentration += additional_concentration
+
+
 
 
 

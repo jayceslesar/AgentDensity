@@ -16,7 +16,7 @@ class Cell:
         self.concentration = 0
         self.width = 2
         self.height = 10
-        self.diffusivity = None
+        self.diffusivity = 4
         self.gradient_map = {0.0: (255, 255, 255 ), 0.2: (249, 189, 138), 0.4: (246, 135, 86), 0.6: (248, 110, 49), 0.8: (243, 95, 30), 1.0: (251, 69, 3)}
 
     def get_color(self):
