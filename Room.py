@@ -72,8 +72,7 @@ class Room:
     def _step(self):
         # to be changed or randomized
         INFECTED_CUTOFF = 0.6
-        # Here is where I will call spread
-        self.simple_spread()
+
         # iterate through rows and columns of cells
         for i in range(len(self.grid[0])):
             for j in range(len(self.grid)):
@@ -101,6 +100,10 @@ class Room:
                 if self.grid[i][j].agent.infected:
                     # update steps infected
                     self.grid[i][j].agent.steps_infected += 1
+                    # TODO: @Brandon, this is what changes the cell concentration, please update with formula
+                    self.grid[i][j].concentration += self.grid[i][j].production_rate
+        # Here is where I will call spread
+        self.simple_spread()
 
         self.steps_taken += 1
         print(self.steps_taken)
