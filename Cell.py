@@ -20,14 +20,10 @@ class Cell:
         self.gradient_map = {0.0: (255, 255, 255 ), 0.1: (255, 242, 230), 0.2: (255,229,204), 0.3: (255, 217, 179), 0.4: (255, 204, 153), 0.5: (255, 191, 128),
                              0.6: (255, 178, 102), 0.7: (255, 165, 77), 0.8: (255, 153, 51), 0.9: (255, 140, 25), 1.0: (255, 127, 0)}
         self.diffusivity = 0.004
-        self.gradient_map = {0.0: (255, 255, 255 ), 0.2: (249, 189, 138), 0.4: (246, 135, 86), 0.6: (248, 110, 49), 0.8: (243, 95, 30), 1.0: (251, 69, 3)}
         self.color_upper_limit = 12
 
     def get_color(self):
-        if self.agent is not None:
-            return self.agent.get_color()
-        else:
-            return self.scaled_color()
+        return self._color()
 
     def _color(self):
         return self.gradient_map[round(self.concentration, 1)]

@@ -2,7 +2,7 @@ import Room
 import pygame, sys
 from pygame.locals import *
 import time
-
+from pygame.rect import *
 
 
 
@@ -13,8 +13,14 @@ def draw(grid):
         for y, j in enumerate(range(len(room.grid[0]))):
             rect = pygame.Rect(x*height_per_block, y*height_per_block,
                                height_per_block, height_per_block)
+
             global SCREEN
             pygame.draw.rect(SCREEN, grid[i][j].get_color(), rect)
+
+            if grid[i][j].agent is not None:
+                pygame.draw.rect(SCREEN, grid[i][j].agent.get_color(), rect, 4)
+
+
 
 
 
