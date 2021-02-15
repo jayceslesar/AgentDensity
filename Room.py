@@ -76,6 +76,7 @@ class Room:
         # iterate through rows and columns of cells
         for i in range(len(self.grid[0])):
             for j in range(len(self.grid)):
+                print("Cell " + str(i) + str(j) + " has a concentration of " + str(self.grid[i][j].concentration))
 
                 # check if agent is not in cell
                 if self.grid[i][j].agent is None:
@@ -101,7 +102,7 @@ class Room:
                     # update steps infected
                     self.grid[i][j].agent.steps_infected += 1
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
-                    self.grid[i][j].concentration += self.grid[i][j].production_rate
+                    self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
         # Here is where I will call spread
         self.simple_spread()
 
@@ -117,7 +118,7 @@ class Room:
                 surrounding = []
                 # check to see if surrounding cells exist
                 # upper left check (i-1,j-1)
-                if (i - 1) > 0 and (j - 1) > 0:
+                if (i - 1) >= 0 and (j - 1) >= 0:
                     # check concentrations. If greater, than do calculation
                     if self.grid[i][j].concentration > self.grid[i - 1][j - 1].concentration:
                         diffusivity = self.grid[i][j].diffusivity
@@ -155,8 +156,8 @@ class Room:
                         diffusivity = self.grid[i][j].diffusivity
                         concentration1 = self.grid[i][j].concentration
                         concentration2 = self.grid[i-1][j+1].concentration
-                        area = self.grid[i - 1][j + 1].width * self.grid[i - 1][j + 1].height
-                        length = self.grid[i - 1][j + 1].width
+                        area = np.math.sqrt(2) * self.grid[i - 1][j + 1].width * self.grid[i - 1][j + 1].height
+                        length = np.math.sqrt(2) * self.grid[i - 1][j + 1].width
                         rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
                         record = (i - 1, j + 1, rate)
                         surrounding.append(record)
@@ -203,8 +204,8 @@ class Room:
                         diffusivity = self.grid[i][j].diffusivity
                         concentration1 = self.grid[i][j].concentration
                         concentration2 = self.grid[i+1][j-1].concentration
-                        area = self.grid[i+1][j-1].width * self.grid[i+1][j-1].height
-                        length = self.grid[i+1][j-1].width
+                        area = np.math.sqrt(2) * self.grid[i+1][j-1].width * self.grid[i+1][j-1].height
+                        length = np.math.sqrt(2) * self.grid[i+1][j-1].width
                         rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
                         record = (i + 1, j - 1, rate)
                         surrounding.append(record)
@@ -235,8 +236,8 @@ class Room:
                         diffusivity = self.grid[i][j].diffusivity
                         concentration1 = self.grid[i][j].concentration
                         concentration2 = self.grid[i+1][j+1].concentration
-                        area = self.grid[i+1][j+1].width * self.grid[i+1][j+1].height
-                        length = self.grid[i+1][j+1].width
+                        area = np.math.sqrt(2) * self.grid[i+1][j+1].width * self.grid[i+1][j+1].height
+                        length = np.math.sqrt(2) * self.grid[i+1][j+1].width
                         rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
                         record = (i + 1, j + 1, rate)
                         surrounding.append(record)

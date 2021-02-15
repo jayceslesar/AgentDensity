@@ -16,14 +16,15 @@ class Cell:
         self.concentration = 0
         self.width = 2
         self.height = 10
-        self.diffusivity = 4
+        self.diffusivity = 0.004
         self.gradient_map = {0.0: (255, 255, 255 ), 0.2: (249, 189, 138), 0.4: (246, 135, 86), 0.6: (248, 110, 49), 0.8: (243, 95, 30), 1.0: (251, 69, 3)}
+        self.color_upper_limit = 12
 
     def get_color(self):
         if self.agent is not None:
             return self.agent.get_color()
         else:
-            return self._color()
+            return self.scaled_color()
 
     def _color(self):
         if self.concentration == 0.0:
@@ -38,6 +39,24 @@ class Cell:
             return self.gradient_map[0.8]
         if self.concentration >= 0.8:
             return self.gradient_map[1.0]
+
+    def scaled_color(self):
+        if self.concentration < (self.color_upper_limit / 2):
+            red = 255
+            green = 255
+            decrease_factor = 255/(self.color_upper_limit / 2)
+            blue = 255 - decrease_factor * self.concentration
+            color = (red, green, blue)
+        else:
+            red = 255
+            blue = 0
+            decrease_factor = 155/(self.color_upper_limit / 2)
+            green = 255 - decrease_factor * (self.concentration - (self.color_upper_limit / 2))
+            if green >= 100:
+                color = (red, green, blue)
+            else:
+                color = (255, 100, 0)
+        return color
 
     def __str__(self):
         if self.agent is not None:
