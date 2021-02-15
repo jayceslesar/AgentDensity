@@ -26,7 +26,10 @@ class Cell:
         return self._color()
 
     def _color(self):
-        return self.gradient_map[round(self.concentration, 1)]
+        try:
+            return self.gradient_map[round(self.concentration, 1)]
+        except:
+            return self.gradient_map[1.0]
 
     def scaled_color(self):
         if self.concentration < (self.color_upper_limit / 2):
