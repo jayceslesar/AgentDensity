@@ -17,7 +17,7 @@ import Cell
 
 def ficks_law(diffusivity, concentration1, concentration2, area, length):
     numerator = float((concentration1 - concentration2) * area * diffusivity)
-    return (float(numerator))/(float(length))
+    return (float(numerator)) / (float(length))
 
 
 class Room:
@@ -31,7 +31,7 @@ class Room:
             num_steps (int): number of steps in simulation
             seed (int): the seed to use
         """
-        self.initial_infected = np.random.randint(0,num_rows_people*num_cols_people)
+        self.initial_infected = [int(num_rows_people / 2), int(num_cols_people / 2)]
         self.num_rows_people = num_rows_people
         self.num_cols_people = num_cols_people
         self.iterations = num_steps
@@ -51,7 +51,7 @@ class Room:
             row.append(Cell.Cell(i, 0))
             for j in range(self.num_cols_people):
                 a = Agent.Agent(n, i, j, self.seed)
-                if n == self.initial_infected:
+                if i == self.initial_infected[0] and j == self.initial_infected[1]:
                     a.infected = True
                     self.initial_agent = a
                 row.append(Cell.Cell(i,j, a))
@@ -251,9 +251,3 @@ class Room:
                         volume = (self.grid[entry[0]][entry[1]].width ** 2) * (self.grid[entry[0]][entry[1]].height)
                         additional_concentration = (entry[2] * self.time_length)/(volume)
                         self.grid[entry[0]][entry[1]].concentration += additional_concentration
-
-
-
-
-
-
