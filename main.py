@@ -16,6 +16,7 @@ def draw(grid):
 
             global SCREEN
             pygame.draw.rect(SCREEN, grid[i][j].get_color(), rect)
+            # print("The color of cell " + str(i) + str(j) + " is " + str(grid[i][j].get_color()))
 
             if grid[i][j].agent is not None:
                 pygame.draw.rect(SCREEN, grid[i][j].agent.get_color(), rect, 4)
