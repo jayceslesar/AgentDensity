@@ -32,7 +32,7 @@ class Room:
             num_steps (int): number of steps in simulation
             seed (int): the seed to use
         """
-        self.initial_infected = np.random.randint(0,num_rows_people*num_cols_people)
+        self.initial_infected = np.random.randint(0, num_rows_people*num_cols_people)
         self.num_rows = num_rows_people*2 + 1
         self.num_cols = num_cols_people*2 + 1
         self.iterations = num_steps
