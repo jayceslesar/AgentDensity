@@ -52,9 +52,7 @@ class Cell:
         return color
 
     def __str__(self):
-        # if self.agent is not None:
-        #     return str(self.agent)
-        # else:
-        #     return 'E'
-        return str(self.row) + str(self.column)
-
+        if self.agent is not None:
+            return str(self.agent)
+        else:
+            return 'E'

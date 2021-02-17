@@ -22,9 +22,6 @@ def draw(grid):
                 pygame.draw.rect(SCREEN, grid[i][j].agent.get_color(), rect, 4)
 
 
-
-
-
 def viz(room):
     pygame.init()
     global SCREEN, CLOCK
@@ -49,7 +46,7 @@ BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
 
-room = Room.Room(5, 5, 50, 42)
+room = Room.Room(8, 8, 50, 42)
 
 height_per_block = WINDOW_HEIGHT // len(room.grid)
 width_per_block = WINDOW_WIDTH // len(room.grid[0])
