@@ -33,7 +33,7 @@ class Room:
             seed (int): the seed to use
         """
         self.initial_infected = np.random.randint(0,num_rows_people*num_cols_people)
-        self.num_rows_people = num_rows_people
+        self.num_rows = num_rows_people*2 + 1
         self.num_cols_people = num_cols_people
         self.iterations = num_steps
         self.seed = seed
@@ -44,8 +44,6 @@ class Room:
         n = 0
 
         # border row for top and bottom rows
-        blank_row = [Cell.Cell(0,i) for i in range(num_cols_people*2 + 1)]
-        self.grid.append(blank_row)
         for i in range(self.num_rows_people):
             row = []
             # add an empty space
@@ -76,8 +74,8 @@ class Room:
         INFECTED_CUTOFF = 0.6
 
         # iterate through rows and columns of cells
-        for i in range(len(self.grid[0])):
-            for j in range(len(self.grid)):
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[0])):
                 if (i == 0 and j == 0) or (i == 3 and j == 2):
                     print("Cell " + str(i) + str(j) + " has a concentration of " + str(self.grid[i][j].concentration))
 
@@ -107,8 +105,8 @@ class Room:
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
                     self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
         # Here is where I will call spread
-        self.simple_spread()
-
+        # self.simple_spread()
+        print(self.grid.__str__())
         self.steps_taken += 1
         print(str(self.steps_taken) + " steps taken")
 
@@ -119,7 +117,7 @@ class Room:
         sorted_array = []
         for i in range(len(self.grid[0])):
             for j in range(len(self.grid)):
-                current = copy.deepcopy(self.grid[i][j])
+                current = self.grid[i][j]
                 curr_tuple = (i, j, current)
                 sorted_array.append(curr_tuple)
         return sorted_array
@@ -135,8 +133,8 @@ class Room:
         j = current_cell[1]
         concentration = current_cell[2].concentration
         surrounding = []
-        for curr_i in range(len(self.grid[0])):
-            for curr_j in range(len(self.grid)):
+        for curr_i in range(len(self.grid)):
+            for curr_j in range(len(self.grid[0])):
                 if curr_j == j and curr_i == i:
                     continue
                 elif concentration > self.grid[curr_i][curr_j].concentration:
@@ -173,11 +171,11 @@ class Room:
             if entry[2] is not None:
                 i = entry[0]
                 j = entry[1]
-                print(str(entry[0]) + str(entry[1]) + ": Concentration rate " + str(entry[2]))
+                # print(str(entry[0]) + str(entry[1]) + ": Concentration rate " + str(entry[2]))
                 volume = (float(self.width) ** 2) * float(self.grid[entry[0]][entry[1]].height)
                 additional_concentration = (entry[2] * self.time_length) / (volume)
-                print(copy_grid[entry[0]][entry[1]].concentration)
-                copy_grid[i][j].concentration += additional_concentration
+                # print(copy_grid[entry[0]][entry[1]].concentration)
+                copy_grid[1][0].concentration += additional_concentration
 
                 # pair_done = (entry[0],entry[1])
                 # pair_done_stuff.append(pair_done)
@@ -203,10 +201,10 @@ class Room:
         # print(sorted_array)
         # curr_copy_grid = copy.deepcopy(self.grid)
         iterations = len(sorted_array)
-        copy_grid = copy.deepcopy(self.grid)
+        copy_grid = self.grid
         for i in range(0, iterations):
             copy_grid = self.update_surrounding_cells(sorted_array, copy_grid)
-        self.grid = copy.deepcopy(copy_grid)
+        self.grid = copy_grid
 
 
 

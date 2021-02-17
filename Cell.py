@@ -12,6 +12,8 @@ class Cell:
             self.agent = None
             self.production_rate = 0
 
+        self.row = row
+        self.column = column
         self.color = (255, 255, 255)
         self.concentration = 0
         self.width = 2
@@ -50,8 +52,9 @@ class Cell:
         return color
 
     def __str__(self):
-        if self.agent is not None:
-            return str(self.agent)
-        else:
-            return 'E'
+        # if self.agent is not None:
+        #     return str(self.agent)
+        # else:
+        #     return 'E'
+        return str(self.row) + str(self.column)
 
