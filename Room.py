@@ -34,7 +34,7 @@ class Room:
         """
         self.initial_infected = np.random.randint(0,num_rows_people*num_cols_people)
         self.num_rows = num_rows_people*2 + 1
-        self.num_cols_people = num_cols_people
+        self.num_cols = num_cols_people*2 + 1
         self.iterations = num_steps
         self.seed = seed
         self.steps_taken = 0
@@ -44,21 +44,21 @@ class Room:
         n = 0
 
         # border row for top and bottom rows
-        for i in range(self.num_rows_people):
+        for i in range(self.num_rows):
             row = []
-            # add an empty space
-            row.append(Cell.Cell(i, 0))
-            for j in range(self.num_cols_people):
-                a = Agent.Agent(n, i, j, self.seed)
-                if n == self.initial_infected:
-                    a.infected = True
-                    self.initial_agent = a
-                row.append(Cell.Cell(i,j, a))
-                # add an empty space
-                row.append(Cell.Cell(i,j))
-                n += 1
+            for j in range(self.num_cols):
+                if i % 2 == 0:
+                    row.append(Cell.Cell(i, j))
+                elif j % 2 != 0:
+                    a = Agent.Agent(n, i, j, self.seed)
+                    if n == self.initial_infected:
+                        a.infected = True
+                        self.initial_agent = a
+                    row.append(Cell.Cell(i, j, a))
+                    n += 1
+                else:
+                    row.append(Cell.Cell(i, j))
             self.grid.append(row)
-            self.grid.append(blank_row)
         self.width = self.grid[0][0].width
 
     def __str__(self):
@@ -74,10 +74,8 @@ class Room:
         INFECTED_CUTOFF = 0.6
 
         # iterate through rows and columns of cells
-        for i in range(len(self.grid)):
-            for j in range(len(self.grid[0])):
-                if (i == 0 and j == 0) or (i == 3 and j == 2):
-                    print("Cell " + str(i) + str(j) + " has a concentration of " + str(self.grid[i][j].concentration))
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
 
                 # check if agent is not in cell
                 if self.grid[i][j].agent is None:
@@ -104,11 +102,11 @@ class Room:
                     self.grid[i][j].agent.steps_infected += 1
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
                     self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
-        # Here is where I will call spread
-        # self.simple_spread()
-        print(self.grid.__str__())
+
+        self.simple_spread()
+
         self.steps_taken += 1
-        print(str(self.steps_taken) + " steps taken")
+
 
     def take_second(self, element):
         return element[2].concentration
@@ -149,48 +147,14 @@ class Room:
                     rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
                     record = (curr_i, curr_j, rate)
                     surrounding.append(record)
-                    # if curr_i == 3 and curr_j == 2:
-                    #     print("This is cell 32 in copy grid that is being updated by cell " + str(i) + str(j) + ": ")
-                    #     print("Rate: " + str(rate) + ", Concentration 1: " + str(concentration1) + ", Concentration 2: " + str(concentration2) + ", length: " + str(length) + ", area: " + str(area) + ", diffusivity: " + str(diffusivity))
-                    # if curr_i == 0 and curr_j == 0:
-                    #     print("This is cell 00 in copy grid that is being updated by cell " + str(i) + str(j) + ": ")
-                    #     print("Rate: " + str(rate) + ", Concentration 1: " + str(
-                    #         concentration1) + ", Concentration 2: " + str(concentration2) + ", length: " + str(
-                    #         length) + ", area: " + str(area) + ", diffusivity: " + str(diffusivity))
-                    # if curr_i == 0 and curr_j == 0:
-                    #     print("This is cell 00 from the original grid:")
-                    #     print(self.grid[curr_i][curr_j].concentration)
-                # elif curr_i == 3 and curr_j == 2:
-                #     print("Cell 32 has been skipped updating by cell " + str(i) + str(j) + "!")
-                #     print("Cell 32 has a concentration of " + str(self.grid[2][3].concentration) + ", while Cell " + str(i) + str(j) + " has a concentration of " + str(self.grid[i][j].concentration))
 
-
-        # After finding concentrations in surrounding cells, update the concentrations
-        # pair_done_stuff = []
         for entry in surrounding:
             if entry[2] is not None:
                 i = entry[0]
                 j = entry[1]
-                # print(str(entry[0]) + str(entry[1]) + ": Concentration rate " + str(entry[2]))
                 volume = (float(self.width) ** 2) * float(self.grid[entry[0]][entry[1]].height)
                 additional_concentration = (entry[2] * self.time_length) / (volume)
-                # print(copy_grid[entry[0]][entry[1]].concentration)
-                copy_grid[1][0].concentration += additional_concentration
-
-                # pair_done = (entry[0],entry[1])
-                # pair_done_stuff.append(pair_done)
-
-                # print("Cell " + str(0) + str(0) + " in the copy_grid now has a concentration of " + str(
-                #     copy_grid[0][0].concentration))
-
-            # if (entry[0] == 0 and entry[1] == 0) or (entry[0] == 3 and entry[1] == 2):
-            #
-            #     print("Cell " + str(entry[0]) + str(entry[1]) + " has had an addition to its concentration of " + str(additional_concentration))
-            #
-            #     print("Cell " + str(0) + str(0) + " in the copy_grid now has a concentration of " + str(
-            #         copy_grid[0][0].concentration))
-            #     print("Cell " + str(3) + str(2) + " in the copy_grid now has a concentration of " + str(
-            #         copy_grid[3][2].concentration))
+                copy_grid[i][j].concentration += additional_concentration
 
         return copy_grid
 
@@ -198,8 +162,6 @@ class Room:
     def simple_spread(self):
         # NOTE: This implementation uses a rudimentary approach that involves Fick's Law
         sorted_array = self.sort_concentration_array()
-        # print(sorted_array)
-        # curr_copy_grid = copy.deepcopy(self.grid)
         iterations = len(sorted_array)
         copy_grid = self.grid
         for i in range(0, iterations):
