@@ -23,7 +23,7 @@ class Cell:
         self.color_upper_limit = 12
 
     def get_color(self):
-        return self._color()
+        return self.scaled_color()
 
     def _color(self):
         try:
