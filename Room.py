@@ -32,10 +32,14 @@ class Room:
             num_steps (int): number of steps in simulation
             seed (int): the seed to use
         """
-        self.initial_infected_row = np.median([i for i in range(num_rows_people*2 + 1) if not i % 2 == 0])
-        self.initial_infected_col = np.median([i for i in range(num_cols_people*2 + 1) if not i % 2 == 0])
         self.num_rows = num_rows_people*2 + 1
         self.num_cols = num_cols_people*2 + 1
+        # get center of grid to place initial infected agent
+        self.initial_infected_row = [i for i in range(self.num_rows) if int(i) % 2 != 0]
+        self.initial_infected_row = self.initial_infected_row[int((len(self.initial_infected_row) - 1)/2)]
+        self.initial_infected_col = [i for i in range(self.num_cols) if int(i) % 2 != 0]
+        self.initial_infected_col = self.initial_infected_col[int((len(self.initial_infected_col) - 1)/2)]
+        # other initializers
         self.iterations = num_steps
         self.seed = seed
         self.steps_taken = 0
