@@ -35,20 +35,20 @@ class Cell:
 
     def scaled_color(self):
         if self.concentration < (self.color_upper_limit / 2):
-            red = 255
             green = 255
+            blue  = 255
             decrease_factor = 255/(self.color_upper_limit / 2)
-            blue = 255 - decrease_factor * self.concentration
+            red = 255 - decrease_factor * self.concentration
             color = (red, green, blue)
         else:
-            red = 255
-            blue = 0
-            decrease_factor = 155/(self.color_upper_limit / 2)
+            red = 0
+            blue = 255
+            decrease_factor = 255/(self.color_upper_limit / 2)
             green = 255 - decrease_factor * (self.concentration - (self.color_upper_limit / 2))
-            if green >= 100:
+            if green >= 0:
                 color = (red, green, blue)
             else:
-                color = (255, 100, 0)
+                color = (0, 0, 255)
         return color
 
     def __str__(self):
