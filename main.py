@@ -6,7 +6,7 @@ from pygame.rect import *
 
 
 
-global SCREEN, CLOCK
+SCREEN, CLOCK = None, None
 
 def draw(grid):
     for x, i in enumerate(range(len(room.grid))):
@@ -45,8 +45,9 @@ def viz(room):
 BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
-
-room = Room.Room(8, 8, 50, 42)
+rows_people = 10
+cols_people = 10
+room = Room.Room(rows_people, cols_people, 500, 42)
 
 height_per_block = WINDOW_HEIGHT // len(room.grid)
 width_per_block = WINDOW_WIDTH // len(room.grid[0])

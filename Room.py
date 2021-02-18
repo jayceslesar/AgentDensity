@@ -32,7 +32,8 @@ class Room:
             num_steps (int): number of steps in simulation
             seed (int): the seed to use
         """
-        self.initial_infected = np.random.randint(0, num_rows_people*num_cols_people)
+        self.initial_infected_row = np.median([i for i in range(num_rows_people*2 + 1) if not i % 2 == 0])
+        self.initial_infected_col = np.median([i for i in range(num_cols_people*2 + 1) if not i % 2 == 0])
         self.num_rows = num_rows_people*2 + 1
         self.num_cols = num_cols_people*2 + 1
         self.iterations = num_steps
@@ -51,7 +52,7 @@ class Room:
                     row.append(Cell.Cell(i, j))
                 elif j % 2 != 0:
                     a = Agent.Agent(n, i, j, self.seed)
-                    if n == self.initial_infected:
+                    if i == self.initial_infected_row and j == self.initial_infected_col:
                         a.infected = True
                         self.initial_agent = a
                     row.append(Cell.Cell(i, j, a))
