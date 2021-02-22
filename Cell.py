@@ -10,7 +10,7 @@ class Cell:
             self.production_rate = self.agent.production_rate
         else:
             self.agent = None
-            self.production_rate = 0
+            self.production_rate = None
 
         self.row = row
         self.column = column

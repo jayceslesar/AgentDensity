@@ -14,6 +14,7 @@ import Agent
 import numpy as np
 import Cell
 import copy
+from scipy.stats import invgamma
 
 
 def ficks_law(diffusivity, concentration1, concentration2, area, length):
@@ -46,6 +47,10 @@ class Room:
         self.time_length = 1
         self.grid = []
 
+        a = 2.4
+        self.production_rates = invgamma.rvs(a, size=num_cols_people*num_rows_people, loc=7, scale=5)
+        np.random.shuffle(self.production_rates)
+
         n = 0
 
         # border row for top and bottom rows
@@ -56,6 +61,7 @@ class Room:
                     row.append(Cell.Cell(i, j))
                 elif j % 2 != 0:
                     a = Agent.Agent(n, i, j, self.seed)
+                    a.production_rate = self.production_rates[n]
                     if i == self.initial_infected_row and j == self.initial_infected_col:
                         a.infected = True
                         self.initial_agent = a

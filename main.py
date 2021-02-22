@@ -5,7 +5,6 @@ import time
 from pygame.rect import *
 
 
-
 SCREEN, CLOCK = None, None
 
 def draw(grid):
