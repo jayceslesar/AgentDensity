@@ -52,8 +52,7 @@ class Room:
         self.time_length = 1
         self.grid = []
 
-        a = 2.4
-        self.production_rates = invgamma.rvs(a, size=num_cols_people*num_rows_people, loc=7, scale=5)
+        self.production_rates = invgamma.rvs(a=2.4, size=num_cols_people*num_rows_people, loc=7, scale=5)
         np.random.shuffle(self.production_rates)
 
         n = 0
@@ -67,8 +66,8 @@ class Room:
                 elif j % 2 != 0:
                     a = Agent.Agent(n, i, j, self.seed)
                     a.production_rate = self.production_rates[n]
-                    a.intake_per_step = np.random.randint(INTAKE_LBOUND, INTAKE_UBOUND)
-                    a.exposure_boundary = np.random.randint(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
+                    a.intake_per_step = np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+                    a.exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
                     # print(a.exposure_boundary)
                     if i == self.initial_infectious_row and j == self.initial_infectious_col:
                         a.infectious = True
@@ -79,6 +78,9 @@ class Room:
                     row.append(Cell.Cell(i, j))
             self.grid.append(row)
         self.width = self.grid[0][0].width
+
+        # check if our actual n = expected n
+        assert n == num_rows_people*num_rows_people
 
     def __str__(self):
         out = ""
@@ -127,8 +129,8 @@ class Room:
 
     def get_concentration_array(self):
         sorted_array = []
-        for i in range(len(self.grid[0])):
-            for j in range(len(self.grid)):
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[0])):
                 current = self.grid[i][j]
                 curr_tuple = (i, j, current)
                 sorted_array.append(curr_tuple)
