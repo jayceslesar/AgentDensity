@@ -17,7 +17,7 @@ class Virus:
 
     def decrease_number(self, number):
         # if self.virus_number < number:
-        #     raise SubtractionError("ERROR: Virus number subtraction is invalid!")
+        #     raise SubtractionError("ERROR: Virus number subtraction is invalid!" + str(self.virus_number) + " - " + str(number) + " is not valid!")
         # else:
         #     self.virus_number = self.virus_number - number
         self.virus_number = self.virus_number - number

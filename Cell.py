@@ -85,6 +85,8 @@ class Cell:
     def update_age(self, time):
         for virus in self.virus_array:
             virus.update_age(time)
+            if virus.age >= virus.lifetime:
+                self.virus_array.remove(virus)
 
     def update_percentages(self):
         for virus in self.virus_array:
@@ -94,8 +96,8 @@ class Cell:
         self.update_concentration()
         self.update_percentages()
     def update(self, time):
-        self.update_concentration()
         self.update_age(time)
+        self.update_concentration()
         self.update_percentages()
 
 

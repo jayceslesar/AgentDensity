@@ -217,4 +217,7 @@ class Room:
         for i in range(0, iterations):
             copy_grid = self.update_surrounding_cells(sorted_array, copy_grid)
         self.grid = copy_grid
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                self.grid[i][j].update()
 
