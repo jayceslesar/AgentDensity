@@ -67,8 +67,8 @@ class Room:
                 elif j % 2 != 0:
                     a = Agent.Agent(n, i, j, self.seed)
                     a.production_rate = self.production_rates[n]
-                    a.intake_per_step = np.random.randint(INTAKE_LBOUND, INTAKE_UBOUND)
-                    a.exposure_boundary = np.random.randint(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
+                    a.intake_per_step = np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+                    a.exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
                     # print(a.exposure_boundary)
                     if i == self.initial_infectious_row and j == self.initial_infectious_col:
                         a.infectious = True
