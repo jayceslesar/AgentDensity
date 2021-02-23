@@ -3,7 +3,7 @@ import numpy as np
 
 class Agent:
     def __init__(self, number: int, row: int, col: int, seed: int):
-        np.random.seed(seed)
+        # np.random.seed(seed)
         """
         Agent constructor
 
@@ -18,18 +18,20 @@ class Agent:
         self.col = col
 
         # for how much concentration of virus agent is producing at a given time
-        self.production_rate = 9
+        self.production_rate = None
+        self.intake_per_step = None
+        self.exposure_boundary = None
 
         # tracking variables for run specific decisions
         self.untouched = True
-        self.infected = False
+        self.infectious = False
         self.recovered = False
         self.exposed = False
 
         # counter variables for run specific desicions
         self.total_exposure = 0  # for stat tracking
         self.steps_exposed = 0
-        self.steps_infected = 0
+        self.steps_infectious = 0
 
         # stats for network
         self.num_infected = 0  # for stat tracking
@@ -74,26 +76,26 @@ class Agent:
 
 
     def __str__(self):
-        if self.infected:
+        if self.infectious:
             return "I"
         if self.recovered:
             return "R"
         if self.exposed:
             return "E"
-        if not self.infected:
+        if not self.infectious:
             return "O"
         if self.currently_quarantined:
             return "Q"
 
 
     def get_color(self):
-        if self.infected:  # red
+        if self.infectious:  # red
             return (255, 0, 0)
         if self.recovered:  # dark green
             return (61, 99, 17)
         if self.exposed:  # yellow
             return (250, 247, 36)
-        if not self.infected:  # red
+        if not self.infectious:  # red
             return (0, 255, 0)
         if self.currently_quarantined:  # purple
             return (147, 112, 219)

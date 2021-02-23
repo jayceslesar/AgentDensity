@@ -24,7 +24,12 @@ def ficks_law(diffusivity, concentration1, concentration2, area, length):
 
 class Room:
     def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int):
-        np.random.seed(seed)
+        # np.random.seed(seed)
+        INTAKE_LBOUND = 2
+        INTAKE_UBOUND = 8
+
+        EXPOSURE_LBOUND = 100
+        EXPOSURE_UBOUND = 200
         """Initialize the instance of this Room
 
         Args:
@@ -35,11 +40,11 @@ class Room:
         """
         self.num_rows = num_rows_people*2 + 1
         self.num_cols = num_cols_people*2 + 1
-        # get center of grid to place initial infected agent
-        self.initial_infected_row = [i for i in range(self.num_rows) if int(i) % 2 != 0]
-        self.initial_infected_row = self.initial_infected_row[int((len(self.initial_infected_row) - 1)/2)]
-        self.initial_infected_col = [i for i in range(self.num_cols) if int(i) % 2 != 0]
-        self.initial_infected_col = self.initial_infected_col[int((len(self.initial_infected_col) - 1)/2)]
+        # get center of grid to place initial infectious agent
+        self.initial_infectious_row = [i for i in range(self.num_rows) if int(i) % 2 != 0]
+        self.initial_infectious_row = self.initial_infectious_row[int((len(self.initial_infectious_row) - 1)/2)]
+        self.initial_infectious_col = [i for i in range(self.num_cols) if int(i) % 2 != 0]
+        self.initial_infectious_col = self.initial_infectious_col[int((len(self.initial_infectious_col) - 1)/2)]
         # other initializers
         self.iterations = num_steps
         self.seed = seed
@@ -62,8 +67,11 @@ class Room:
                 elif j % 2 != 0:
                     a = Agent.Agent(n, i, j, self.seed)
                     a.production_rate = self.production_rates[n]
-                    if i == self.initial_infected_row and j == self.initial_infected_col:
-                        a.infected = True
+                    a.intake_per_step = np.random.randint(INTAKE_LBOUND, INTAKE_UBOUND)
+                    a.exposure_boundary = np.random.randint(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
+                    # print(a.exposure_boundary)
+                    if i == self.initial_infectious_row and j == self.initial_infectious_col:
+                        a.infectious = True
                         self.initial_agent = a
                     row.append(Cell.Cell(i, j, a))
                     n += 1
@@ -81,8 +89,6 @@ class Room:
         return out
 
     def _step(self):
-        # to be changed or randomized
-        INFECTED_CUTOFF = 0.6
 
         # iterate through rows and columns of cells
         for i in range(self.num_rows):
@@ -93,10 +99,10 @@ class Room:
                     continue
 
                 # update total exposure, += concentration
-                self.grid[i][j].agent.total_exposure += self.grid[i][j].concentration
+                self.grid[i][j].agent.total_exposure += self.grid[i][j].concentration * self.grid[i][j].agent.intake_per_step
 
                 # update untouched, exposed
-                if self.grid[i][j].concentration > 0:
+                if self.grid[i][j].agent.total_exposure > self.grid[i][j].agent.exposure_boundary:
                     self.grid[i][j].agent.untouched = False
                     self.grid[i][j].agent.exposed = True
 
@@ -104,13 +110,9 @@ class Room:
                     # update steps exposed
                     self.grid[i][j].agent.steps_exposed += 1
 
-                # update infected
-                # if self.grid[i][j].agent.total_exposure > INFECTED_CUTOFF:
-                #     self.grid[i][j].agent.infected = True
-
-                if self.grid[i][j].agent.infected:
-                    # update steps infected
-                    self.grid[i][j].agent.steps_infected += 1
+                if self.grid[i][j].agent.infectious:
+                    # update steps infectious
+                    self.grid[i][j].agent.steps_infectious += 1
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
                     self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
 
