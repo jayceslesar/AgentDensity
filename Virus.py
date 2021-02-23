@@ -16,10 +16,11 @@ class Virus:
         self.percentage_of_cell = 0
 
     def decrease_number(self, number):
-        if self.virus_number < number:
-            raise SubtractionError("ERROR: Virus number subtraction is invalid!")
-        else:
-            self.virus_number = self.virus_number - number
+        # if self.virus_number < number:
+        #     raise SubtractionError("ERROR: Virus number subtraction is invalid!")
+        # else:
+        #     self.virus_number = self.virus_number - number
+        self.virus_number = self.virus_number - number
 
     def update_age(self,time):
         self.age += time

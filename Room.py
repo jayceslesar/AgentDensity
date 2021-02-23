@@ -13,6 +13,7 @@ Date:
 import Agent
 import numpy as np
 import Cell
+import Virus
 import copy
 from scipy.stats import invgamma
 
@@ -101,7 +102,7 @@ class Room:
         # iterate through rows and columns of cells
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-
+                print("Step " + str(self.steps_taken))
                 # check if agent is not in cell
                 if self.grid[i][j].agent is None:
                     continue
@@ -122,9 +123,14 @@ class Room:
                     # update steps infectious
                     self.grid[i][j].agent.steps_infectious += 1
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
-                    self.grid[i][j].total_virus_number += (self.grid[i][j].production_rate) * self.time_length
+                    producer_virus = Virus.Virus()
+                    producer_virus.virus_number += (self.grid[i][j].production_rate) * self.time_length
+                    self.grid[i][j].virus_array.append(producer_virus)
+                    self.grid[i][j].update_concentration()
+                    self.grid[i][j].update_percentages()
 
         self.simple_spread()
+
 
         self.steps_taken += 1
 
@@ -166,32 +172,39 @@ class Room:
                     length = np.math.sqrt(squared_length) * width_factor
                     area = width_factor * height_factor
                     rate = ficks_law(diffusivity, concentration1, concentration2, area, length)
-                    record = (curr_i, curr_j, rate)
+                    additional_virus = self.grid[i][j].diffuse(rate, self.time_length)
+                    copy_grid[i][j].conserve_mass(rate, self.time_length)
+                    copy_grid[i][j].update_concentration()
+                    copy_grid[i][j].update_percentages()
+                    record = (curr_i, curr_j, additional_virus)
                     surrounding.append(record)
 
         for entry in surrounding:
             if entry[2] is not None:
                 i = entry[0]
                 j = entry[1]
-                volume = (float(self.width) ** 2) * float(self.grid[entry[0]][entry[1]].height)
-                additional_concentration = (entry[2] * self.time_length) / (volume)
-
-                # keep track of the concentration history
-                # calculate age first
-                width_factor = self.grid[i][j].width
-                squared_length = (abs(current_cell[0] - i) ** 2) + (abs(current_cell[1] - j) ** 2)
-                length = np.math.sqrt(squared_length) * width_factor
-                age = length/(AGE_SCALE * self.max_length) * self.time_length
-                # # come up with a lifetime based on a random distribution
-                # lifetime = np.random.normal(MEAN_LIFETIME, STD_LIFETIME, 1)
-                # # add age to array
-                # copy_grid[i][j].concetration_history = (age, lifetime)
-
-                # add additional concetration to the concentration
-                copy_grid[i][j].concentration += additional_concentration
-
-                # # subtract the additional concentration from the source in order to satisfy conservation of mass
-                # copy_grid[current_cell[0]][current_cell[1]].concentration -= additional_concentration
+                additional_virus = entry[2]
+                copy_grid[i][j].virus_array += additional_virus
+                copy_grid[i][j].update_wo_age()
+                # volume = (float(self.width) ** 2) * float(self.grid[entry[0]][entry[1]].height)
+                #
+                # additional_concentration = (entry[2] * self.time_length) / (volume)
+                #
+                # # calculate age first
+                # width_factor = self.grid[i][j].width
+                # squared_length = (abs(current_cell[0] - i) ** 2) + (abs(current_cell[1] - j) ** 2)
+                # length = np.math.sqrt(squared_length) * width_factor
+                # # age = length/(AGE_SCALE * self.max_length) * self.time_length
+                # # # come up with a lifetime based on a random distribution
+                # # lifetime = np.random.normal(MEAN_LIFETIME, STD_LIFETIME, 1)
+                # # # add age to array
+                # # copy_grid[i][j].concetration_history = (age, lifetime)
+                #
+                # # add additional concetration to the concentration
+                # copy_grid[i][j].concentration += additional_concentration
+                #
+                # # # subtract the additional concentration from the source in order to satisfy conservation of mass
+                # # copy_grid[current_cell[0]][current_cell[1]].concentration -= additional_concentration
 
         return copy_grid
 
@@ -204,3 +217,4 @@ class Room:
         for i in range(0, iterations):
             copy_grid = self.update_surrounding_cells(sorted_array, copy_grid)
         self.grid = copy_grid
+

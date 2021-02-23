@@ -60,15 +60,25 @@ class Cell:
         amount = rate*time
         additional_virus = []
         for entry in self.virus_array:
-            new_amount = amount * entry.percentage
+            new_amount = amount * entry.percentage_of_cell
             new_virus = copy.deepcopy(entry)
             new_virus.virus_number = new_amount
             new_virus.percentage_of_cell = 0
-            entry.decrease_number(new_amount)
             additional_virus.append(new_virus)
         return additional_virus
 
+    def conserve_mass(self, rate, time):
+        amount = rate * time
+        for entry in self.virus_array:
+            new_amount = amount * entry.percentage_of_cell
+            entry.decrease_number(new_amount)
+
+
     def update_concentration(self):
+        total_virus_number = 0
+        for virus in self.virus_array:
+            total_virus_number += virus.virus_number
+        self.total_virus_number = total_virus_number
         volume = self.width * self.width * self.height
         self.concentration = float(self.total_virus_number)/volume
 
@@ -80,6 +90,9 @@ class Cell:
         for virus in self.virus_array:
             virus.update_percentage(self.concentration)
 
+    def update_wo_age(self):
+        self.update_concentration()
+        self.update_percentages()
     def update(self, time):
         self.update_concentration()
         self.update_age(time)
