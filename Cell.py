@@ -1,4 +1,6 @@
 import Agent
+import Virus
+import copy
 
 
 class Cell:
@@ -23,6 +25,9 @@ class Cell:
                              0.6: (255, 178, 102), 0.7: (255, 165, 77), 0.8: (255, 153, 51), 0.9: (255, 140, 25), 1.0: (255, 127, 0)}
         self.diffusivity = 0.004
         self.color_upper_limit = 12
+        # used to keep track of the concetration ages
+        self.virus_array = []
+        self.total_virus_number = 0
 
     def get_color(self):
         return self.scaled_color()
@@ -50,6 +55,37 @@ class Cell:
             else:
                 color = (0, 0, 255)
         return color
+
+    def diffuse(self, rate, time):
+        amount = rate*time
+        additional_virus = []
+        for entry in self.virus_array:
+            new_amount = amount * entry.percentage
+            new_virus = copy.deepcopy(entry)
+            new_virus.virus_number = new_amount
+            new_virus.percentage_of_cell = 0
+            entry.decrease_number(new_amount)
+            additional_virus.append(new_virus)
+        return additional_virus
+
+    def update_concentration(self):
+        volume = self.width * self.width * self.height
+        self.concentration = float(self.total_virus_number)/volume
+
+    def update_age(self, time):
+        for virus in self.virus_array:
+            virus.update_age(time)
+
+    def update_percentages(self):
+        for virus in self.virus_array:
+            virus.update_percentage(self.concentration)
+
+    def update(self, time):
+        self.update_concentration()
+        self.update_age(time)
+        self.update_percentages()
+
+
 
     def __str__(self):
         if self.agent is not None:

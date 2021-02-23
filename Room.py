@@ -16,6 +16,13 @@ import Cell
 import copy
 from scipy.stats import invgamma
 
+# Scaling number used for age calculation (that is based on length)
+AGE_SCALE = 1
+
+# Mean and Standard Deviation for the lifetime of a virus
+MEAN_LIFETIME = 3
+STD_LIFETIME = 1
+
 
 def ficks_law(diffusivity, concentration1, concentration2, area, length):
     numerator = float((concentration1 - concentration2) * area * diffusivity)
@@ -51,6 +58,7 @@ class Room:
         self.steps_taken = 0
         self.time_length = 1
         self.grid = []
+        self.max_length = np.math.sqrt((num_rows_people ** 2) + (num_cols_people ** 2))
 
         a = 2.4
         self.production_rates = invgamma.rvs(a, size=num_cols_people*num_rows_people, loc=7, scale=5)
@@ -114,7 +122,7 @@ class Room:
                     # update steps infectious
                     self.grid[i][j].agent.steps_infectious += 1
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
-                    self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
+                    self.grid[i][j].total_virus_number += (self.grid[i][j].production_rate) * self.time_length
 
         self.simple_spread()
 
@@ -167,7 +175,23 @@ class Room:
                 j = entry[1]
                 volume = (float(self.width) ** 2) * float(self.grid[entry[0]][entry[1]].height)
                 additional_concentration = (entry[2] * self.time_length) / (volume)
+
+                # keep track of the concentration history
+                # calculate age first
+                width_factor = self.grid[i][j].width
+                squared_length = (abs(current_cell[0] - i) ** 2) + (abs(current_cell[1] - j) ** 2)
+                length = np.math.sqrt(squared_length) * width_factor
+                age = length/(AGE_SCALE * self.max_length) * self.time_length
+                # # come up with a lifetime based on a random distribution
+                # lifetime = np.random.normal(MEAN_LIFETIME, STD_LIFETIME, 1)
+                # # add age to array
+                # copy_grid[i][j].concetration_history = (age, lifetime)
+
+                # add additional concetration to the concentration
                 copy_grid[i][j].concentration += additional_concentration
+
+                # # subtract the additional concentration from the source in order to satisfy conservation of mass
+                # copy_grid[current_cell[0]][current_cell[1]].concentration -= additional_concentration
 
         return copy_grid
 
