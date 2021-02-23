@@ -90,6 +90,7 @@ class Room:
 
     def _step(self):
 
+        self.fallout()
         # iterate through rows and columns of cells
         for i in range(self.num_rows):
             for j in range(self.num_cols):
@@ -168,6 +169,7 @@ class Room:
                 volume = (float(self.width) ** 2) * float(self.grid[entry[0]][entry[1]].height)
                 additional_concentration = (entry[2] * self.time_length) / (volume)
                 copy_grid[i][j].concentration += additional_concentration
+                copy_grid[current_cell[0]][current_cell[1]].concentration -= additional_concentration
 
         return copy_grid
 
@@ -180,3 +182,10 @@ class Room:
         for i in range(0, iterations):
             copy_grid = self.update_surrounding_cells(sorted_array, copy_grid)
         self.grid = copy_grid
+
+    def fallout(self):
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                fallout_rate = np.random.normal(0.1, 0.01, 1)[0]
+                self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - fallout_rate)
+
