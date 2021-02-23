@@ -79,6 +79,9 @@ class Room:
             self.grid.append(row)
         self.width = self.grid[0][0].width
 
+        # check if our actual n = expected n
+        assert n == num_rows_people*num_rows_people
+
     def __str__(self):
         out = ""
         for row in self.grid:
@@ -126,8 +129,8 @@ class Room:
 
     def get_concentration_array(self):
         sorted_array = []
-        for i in range(len(self.grid[0])):
-            for j in range(len(self.grid)):
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[0])):
                 current = self.grid[i][j]
                 curr_tuple = (i, j, current)
                 sorted_array.append(curr_tuple)
