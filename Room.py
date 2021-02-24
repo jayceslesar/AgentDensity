@@ -49,13 +49,13 @@ class Room:
         self.iterations = num_steps
         self.seed = seed
         self.steps_taken = 0
-        self.time_length = 1
+        self.time_length = 2
         self.grid = []
 
         self.production_rates = invgamma.rvs(a=2.4, size=num_cols_people*num_rows_people, loc=7, scale=5)
         np.random.shuffle(self.production_rates)
 
-        n = 0
+        self.n = 0
 
         # border row for top and bottom rows
         for i in range(self.num_rows):
@@ -64,8 +64,8 @@ class Room:
                 if i % 2 == 0:
                     row.append(Cell.Cell(i, j))
                 elif j % 2 != 0:
-                    a = Agent.Agent(n, i, j, self.seed)
-                    a.production_rate = self.production_rates[n]
+                    a = Agent.Agent(self.n, i, j, self.seed, 'cloth')
+                    a.production_rate = self.production_rates[self.n]
                     a.intake_per_step = np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
                     a.exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
                     # print(a.exposure_boundary)
@@ -73,14 +73,14 @@ class Room:
                         a.infectious = True
                         self.initial_agent = a
                     row.append(Cell.Cell(i, j, a))
-                    n += 1
+                    self.n += 1
                 else:
                     row.append(Cell.Cell(i, j))
             self.grid.append(row)
         self.width = self.grid[0][0].width
 
         # check if our actual n = expected n
-        assert n == num_rows_people*num_rows_people
+        assert self.n == num_rows_people*num_rows_people
 
     def __str__(self):
         out = ""

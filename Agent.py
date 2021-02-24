@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Agent:
-    def __init__(self, number: int, row: int, col: int, seed: int):
+    def __init__(self, number: int, row: int, col: int, seed: int, masktype: str):
         # np.random.seed(seed)
         """
         Agent constructor
@@ -12,6 +12,7 @@ class Agent:
             row (int): row index
             col (int): col index
             seed (int): the seed to use
+            masktype (str): type of mask -> None, 'N95', 'cloth', 'double; (assumes double is cloth over surgical)
         """
         self.number = number
         self.row = row
@@ -32,6 +33,20 @@ class Agent:
         self.total_exposure = 0  # for stat tracking
         self.steps_exposed = 0
         self.steps_infectious = 0
+
+        self.masktype = masktype
+        if self.masktype == None:
+            self.exhale_mask_factor = 1
+            self.inhale_mask_factor = 1
+        if self.masktype == 'N95':
+            self.exhale_mask_factor = 1 - 0.95
+            self.inhale_mask_factor = 1 - 0.95
+        if self.masktype == 'cloth':
+            self.exhale_mask_factor = 1 - 0.70
+            self.inhale_mask_factor = 1 - 0.70
+        if self.masktype == 'double':
+            self.exhale_mask_factor = 1 - 0.85
+            self.inhale_mask_factor = 1 - 0.85
 
         # stats for network
         self.num_infected = 0  # for stat tracking
