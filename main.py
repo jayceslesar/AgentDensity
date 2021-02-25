@@ -37,7 +37,7 @@ def viz(room):
                 sys.exit()
 
         pygame.display.update()
-        time.sleep(.0001)
+        time.sleep(.25)
         # pygame.quit()
 
 
