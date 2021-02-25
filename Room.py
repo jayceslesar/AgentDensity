@@ -64,9 +64,9 @@ class Room:
                 if i % 2 == 0:
                     row.append(Cell.Cell(i, j))
                 elif j % 2 != 0:
-                    a = Agent.Agent(self.n, i, j, self.seed, 'cloth')
-                    a.production_rate = self.production_rates[self.n]
-                    a.intake_per_step = np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+                    a = Agent.Agent(self.n, i, j, self.seed, 'none')
+                    a.production_rate = a.exhale_mask_factor * self.production_rates[self.n]
+                    a.intake_per_step = a.inhale_mask_factor * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
                     a.exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
                     # print(a.exposure_boundary)
                     if i == self.initial_infectious_row and j == self.initial_infectious_col:

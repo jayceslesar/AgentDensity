@@ -1,3 +1,5 @@
+import os
+
 import Room
 import pygame, sys
 from pygame.locals import *
@@ -22,6 +24,10 @@ def draw(grid):
 
 
 def viz(room):
+    path = input("What folder do you want to save your screenshots into? Please specify the path")
+    if not os.path.exists(path):
+        os.makedirs(path)
+
     pygame.init()
     global SCREEN, CLOCK
     SCREEN = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
@@ -37,8 +43,16 @@ def viz(room):
                 sys.exit()
 
         pygame.display.update()
-        time.sleep(.25)
+        screenshot(SCREEN, path, room.steps_taken)
+        time.sleep(.02)
         # pygame.quit()
+
+
+def screenshot(screen, path, step):
+    title = "step" + str(step)
+    file_save_as = path + "/" + title + ".png"
+    pygame.image.save(screen, file_save_as)
+    print(f"step {step} has been screenshotted")
 
 
 BLACK = (0, 0, 0)

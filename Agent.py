@@ -35,10 +35,10 @@ class Agent:
         self.steps_infectious = 0
 
         self.masktype = masktype
-        if self.masktype == None:
+        if self.masktype == "none":
             self.exhale_mask_factor = 1
             self.inhale_mask_factor = 1
-        if self.masktype == 'N95':
+        if self.masktype == 'n95':
             self.exhale_mask_factor = 1 - 0.95
             self.inhale_mask_factor = 1 - 0.95
         if self.masktype == 'cloth':
