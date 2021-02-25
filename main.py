@@ -24,7 +24,8 @@ def draw(grid):
 
 
 def viz(room):
-    path = input("What folder do you want to save your screenshots into? Please specify the path")
+    path = input("What folder do you want to save your screenshots into? Please specify the path \n")
+    skip = int(input("How many steps between screenshots? \n"))
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -43,7 +44,8 @@ def viz(room):
                 sys.exit()
 
         pygame.display.update()
-        screenshot(SCREEN, path, room.steps_taken)
+        if room.steps_taken%skip == 0:
+            screenshot(SCREEN, path, room.steps_taken)
         time.sleep(.02)
         # pygame.quit()
 
