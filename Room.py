@@ -117,6 +117,7 @@ class Room:
         return out
 
     def _step(self):
+        """Represents one step in the simulation."""
         self.fallout()
         # iterate through rows and columns of cells
         for i in range(self.num_rows):
@@ -148,25 +149,23 @@ class Room:
 
         self.steps_taken += 1
 
-
     def take_second(self, element):
+        """Get the element at index 2 in a make shift struct."""
         return element[2].concentration
 
-    def get_concentration_array(self):
-        sorted_array = []
+    def get_sorted_concentration_array(self):
+        """Get the list of concentrations"""
+        ret = []
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 current = self.grid[i][j]
                 curr_tuple = (i, j, current)
-                sorted_array.append(curr_tuple)
-        return sorted_array
-
-    def sort_concentration_array(self):
-        unsorted_array = self.get_concentration_array()
-        sorted_array = sorted(unsorted_array, key = self.take_second, reverse = True)
-        return sorted_array
+                ret.append(curr_tuple)
+        sorted_array = sorted(ret, key = self.take_second, reverse = True)
+        return ret
 
     def update_surrounding_cells(self, sorted_array, copy_grid):
+        """Updates the surrounding cells with concentration diffusion from target cell."""
         current_cell = sorted_array.pop(0)
         i = current_cell[0]
         j = current_cell[1]
@@ -200,10 +199,10 @@ class Room:
 
         return copy_grid
 
-
     def simple_spread(self):
+        """Runs a spread of grid"""
         # NOTE: This implementation uses a rudimentary approach that involves Fick's Law
-        sorted_array = self.sort_concentration_array()
+        sorted_array = self.get_sorted_concentration_array()
         iterations = len(sorted_array)
         copy_grid = self.grid
         for i in range(0, iterations):
@@ -211,6 +210,7 @@ class Room:
         self.grid = copy_grid
 
     def fallout(self):
+        """Represents the fallout of particles in the air."""
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 fallout_rate = np.random.normal(0.1, 0.01, 1)[0]

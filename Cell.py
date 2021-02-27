@@ -3,6 +3,13 @@ import Agent
 
 class Cell:
     def __init__(self, row: int, column: int, Agent=None):
+        """Initialize a cell class
+
+        Args:
+            row (int): row of cell
+            column (int): column of cell
+            Agent ([Agent], optional): Some cells have an Agent. Defaults to None.
+        """
 
         # not all cells have Agents
         if Agent is not None:
@@ -18,22 +25,11 @@ class Cell:
         self.concentration = 0
         self.width = 2
         self.height = 10
-        self.diffusivity = 4
-        self.gradient_map = {0.0: (255, 255, 255 ), 0.1: (255, 242, 230), 0.2: (255,229,204), 0.3: (255, 217, 179), 0.4: (255, 204, 153), 0.5: (255, 191, 128),
-                             0.6: (255, 178, 102), 0.7: (255, 165, 77), 0.8: (255, 153, 51), 0.9: (255, 140, 25), 1.0: (255, 127, 0)}
         self.diffusivity = 0.004
         self.color_upper_limit = .75
 
     def get_color(self):
-        return self.scaled_color()
-
-    def _color(self):
-        try:
-            return self.gradient_map[round(self.concentration, 1)]
-        except:
-            return self.gradient_map[1.0]
-
-    def scaled_color(self):
+        """Represent the color of the cell by the concentration inside."""
         if self.concentration < (self.color_upper_limit / 2):
             green = 255
             blue  = 255
