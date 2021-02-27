@@ -2,7 +2,8 @@ import numpy as np
 
 
 class Agent:
-    def __init__(self, number: int, row: int, col: int, seed: int, masktype: str):
+    def __init__(self, number: int, row: int, col: int, seed: int, exhale_mask_factor: float, inhale_mask_factor: float, production_rate: float,
+                 intake_per_step: float, exposure_boundary: float):
         # np.random.seed(seed)
         """
         Agent constructor
@@ -19,9 +20,9 @@ class Agent:
         self.col = col
 
         # for how much concentration of virus agent is producing at a given time
-        self.production_rate = None
-        self.intake_per_step = None
-        self.exposure_boundary = None
+        self.production_rate = production_rate
+        self.intake_per_step = intake_per_step
+        self.exposure_boundary = exposure_boundary
 
         # tracking variables for run specific decisions
         self.untouched = True
@@ -34,19 +35,9 @@ class Agent:
         self.steps_exposed = 0
         self.steps_infectious = 0
 
-        self.masktype = masktype
-        if self.masktype == "none":
-            self.exhale_mask_factor = 1
-            self.inhale_mask_factor = 1
-        if self.masktype == 'n95':
-            self.exhale_mask_factor = 1 - 0.95
-            self.inhale_mask_factor = 1 - 0.95
-        if self.masktype == 'cloth':
-            self.exhale_mask_factor = 1 - 0.70
-            self.inhale_mask_factor = 1 - 0.70
-        if self.masktype == 'double':
-            self.exhale_mask_factor = 1 - 0.85
-            self.inhale_mask_factor = 1 - 0.85
+        # mask effectiveness
+        self.exhale_mask_factor = exhale_mask_factor
+        self.inhale_mask_factor = inhale_mask_factor
 
         # stats for network
         self.num_infected = 0  # for stat tracking

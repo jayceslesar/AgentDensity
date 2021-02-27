@@ -23,13 +23,16 @@ def ficks_law(diffusivity, concentration1, concentration2, area, length):
 
 
 class Room:
-    def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int):
+    def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool):
         # np.random.seed(seed)
         INTAKE_LBOUND = 2
         INTAKE_UBOUND = 8
 
         EXPOSURE_LBOUND = 100
         EXPOSURE_UBOUND = 200
+
+        INHALE_MASK_FACTOR = 0.5
+        EXHALE_MASK_FACTOR = 0.5
         """Initialize the instance of this Room
 
         Args:
@@ -37,13 +40,19 @@ class Room:
             num_cols_people (int): number of actual cols
             num_steps (int): number of steps in simulation
             seed (int): the seed to use
+            have_teacher (bool): implement a teacher on a random side if true, (one row with person in the middle tacked onto top or bottomo)
         """
         self.num_rows = num_rows_people*2 + 1
         self.num_cols = num_cols_people*2 + 1
+        self.expected_n = num_cols_people*num_rows_people
+        if have_teacher:
+            self.expected_n += 1
         # get center of grid to place initial infectious agent
         self.initial_infectious_row = [i for i in range(self.num_rows) if int(i) % 2 != 0]
+        # center row
         self.initial_infectious_row = self.initial_infectious_row[int((len(self.initial_infectious_row) - 1)/2)]
         self.initial_infectious_col = [i for i in range(self.num_cols) if int(i) % 2 != 0]
+        # center column
         self.initial_infectious_col = self.initial_infectious_col[int((len(self.initial_infectious_col) - 1)/2)]
         # other initializers
         self.iterations = num_steps
@@ -52,23 +61,24 @@ class Room:
         self.time_length = 2
         self.grid = []
 
-        self.production_rates = invgamma.rvs(a=2.4, size=num_cols_people*num_rows_people, loc=7, scale=5)
+        self.production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=7, scale=5))
         np.random.shuffle(self.production_rates)
 
         self.n = 0
+        # one more row for teacher/professor
 
-        # border row for top and bottom rows
         for i in range(self.num_rows):
             row = []
+            # columns
             for j in range(self.num_cols):
                 if i % 2 == 0:
                     row.append(Cell.Cell(i, j))
                 elif j % 2 != 0:
-                    a = Agent.Agent(self.n, i, j, self.seed, 'none')
-                    a.production_rate = a.exhale_mask_factor * self.production_rates[self.n]
-                    a.intake_per_step = a.inhale_mask_factor * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
-                    a.exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
-                    # print(a.exposure_boundary)
+                    # agent attributes
+                    production_rate = EXHALE_MASK_FACTOR * self.production_rates[3]
+                    intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+                    exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
+                    a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
                     if i == self.initial_infectious_row and j == self.initial_infectious_col:
                         a.infectious = True
                         self.initial_agent = a
@@ -77,10 +87,26 @@ class Room:
                 else:
                     row.append(Cell.Cell(i, j))
             self.grid.append(row)
-        self.width = self.grid[0][0].width
 
-        # check if our actual n = expected n
-        assert self.n == num_rows_people*num_rows_people
+        # extra two rows for teacher/professor (they are against a wall)
+        if have_teacher:
+            extra_start = self.num_rows
+            self.num_rows += 1
+            for i in range(extra_start, self.num_rows):
+                row = []
+                for j in range(self.num_cols):
+                    if j == self.initial_infectious_col:
+                        production_rate = EXHALE_MASK_FACTOR * self.production_rates[3]
+                        intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+                        exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
+                        a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
+                        row.append(Cell.Cell(i, j, a))
+                    else:
+                        row.append(Cell.Cell(i, j))
+                self.grid.append(row)
+
+
+        self.width = self.grid[0][0].width
 
     def __str__(self):
         out = ""
@@ -91,7 +117,6 @@ class Room:
         return out
 
     def _step(self):
-
         self.fallout()
         # iterate through rows and columns of cells
         for i in range(self.num_rows):
@@ -129,8 +154,8 @@ class Room:
 
     def get_concentration_array(self):
         sorted_array = []
-        for i in range(len(self.grid)):
-            for j in range(len(self.grid[0])):
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
                 current = self.grid[i][j]
                 curr_tuple = (i, j, current)
                 sorted_array.append(curr_tuple)
@@ -147,8 +172,8 @@ class Room:
         j = current_cell[1]
         concentration = current_cell[2].concentration
         surrounding = []
-        for curr_i in range(len(self.grid)):
-            for curr_j in range(len(self.grid[0])):
+        for curr_i in range(self.num_rows):
+            for curr_j in range(self.num_cols):
                 if curr_j == j and curr_i == i:
                     continue
                 elif concentration > self.grid[curr_i][curr_j].concentration:

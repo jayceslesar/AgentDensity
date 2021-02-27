@@ -10,8 +10,8 @@ from pygame.rect import *
 SCREEN, CLOCK = None, None
 
 def draw(grid):
-    for x, i in enumerate(range(len(room.grid))):
-        for y, j in enumerate(range(len(room.grid[0]))):
+    for x, i in enumerate(range(room.num_rows)):
+        for y, j in enumerate(range(room.num_cols)):
             rect = pygame.Rect(x*height_per_block, y*height_per_block,
                                height_per_block, height_per_block)
 
@@ -60,12 +60,13 @@ def screenshot(screen, path, step):
 BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
-rows_people = 5
-cols_people = 5
-room = Room.Room(rows_people, cols_people, 1000, 42)
+rows_people = 7
+cols_people = 7
+HAVE_TEACHER = True
+room = Room.Room(rows_people, cols_people, 1000, 42, HAVE_TEACHER)
 
-height_per_block = WINDOW_HEIGHT // len(room.grid)
-width_per_block = WINDOW_WIDTH // len(room.grid[0])
+height_per_block = WINDOW_HEIGHT // room.num_rows
+width_per_block = WINDOW_WIDTH // room.num_cols
 
 if __name__ == '__main__':
     viz(room)
