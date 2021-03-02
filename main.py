@@ -9,18 +9,18 @@ from pygame.rect import *
 
 SCREEN, CLOCK = None, None
 
-def draw(grid):
+def draw(room):
     for x, i in enumerate(range(room.num_rows)):
         for y, j in enumerate(range(room.num_cols)):
-            rect = pygame.Rect(x*height_per_block, y*height_per_block,
+            rect = pygame.Rect(y*height_per_block, x*height_per_block,
                                height_per_block, height_per_block)
 
             global SCREEN
-            pygame.draw.rect(SCREEN, grid[i][j].get_color(), rect)
+            pygame.draw.rect(SCREEN, room.grid[i][j].get_color(), rect)
             # print("The color of cell " + str(i) + str(j) + " is " + str(grid[i][j].get_color()))
 
-            if grid[i][j].agent is not None:
-                pygame.draw.rect(SCREEN, grid[i][j].agent.get_color(), rect, 4)
+            if room.grid[i][j].agent is not None:
+                pygame.draw.rect(SCREEN, room.grid[i][j].agent.get_color(), rect, 4)
 
 
 def viz(room):
@@ -37,7 +37,7 @@ def viz(room):
 
     while room.steps_taken < room.iterations:
         room._step()
-        draw(room.grid)
+        draw(room)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -60,8 +60,8 @@ def screenshot(screen, path, step):
 BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
-rows_people = 7
-cols_people = 7
+rows_people = 11
+cols_people = 3
 HAVE_TEACHER = True
 room = Room.Room(rows_people, cols_people, 1000, 42, HAVE_TEACHER)
 
