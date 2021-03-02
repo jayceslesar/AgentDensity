@@ -105,7 +105,6 @@ class Room:
                         row.append(Cell.Cell(i, j))
                 self.grid.append(row)
 
-
         self.width = self.grid[0][0].width
 
     def __str__(self):

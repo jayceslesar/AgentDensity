@@ -80,7 +80,6 @@ class Agent:
         self.lag_from_contact_tracing = None
         self.currently_quarantined = False
 
-
     def __str__(self):
         if self.infectious:
             return "I"
@@ -92,7 +91,6 @@ class Agent:
             return "O"
         if self.currently_quarantined:
             return "Q"
-
 
     def get_color(self):
         if self.infectious:  # red
