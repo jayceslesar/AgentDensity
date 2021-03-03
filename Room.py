@@ -61,7 +61,8 @@ class Room:
         self.time_length = 2
         self.grid = []
 
-        self.production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=7, scale=5))
+        self.production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
+        self.production_rates = self.production_rates[:len(self.production_rates)//2]
         np.random.shuffle(self.production_rates)
 
         self.n = 0
@@ -75,7 +76,7 @@ class Room:
                     row.append(Cell.Cell(i, j))
                 elif j % 2 != 0:
                     # agent attributes
-                    production_rate = EXHALE_MASK_FACTOR * self.production_rates[3]
+                    production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
                     intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
                     exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
                     a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
