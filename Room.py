@@ -61,7 +61,7 @@ class Room:
         self.time_length = 2
         self.grid = []
 
-        self.production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
+        self.production_rates = sorted(list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4)))
         self.production_rates = self.production_rates[:len(self.production_rates)//2]
         np.random.shuffle(self.production_rates)
 
