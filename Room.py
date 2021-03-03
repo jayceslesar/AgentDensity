@@ -61,8 +61,8 @@ class Room:
         self.time_length = 2
         self.grid = []
 
-        self.production_rates = sorted(list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4)))
-        self.production_rates = self.production_rates[:len(self.production_rates)//2]
+        self.infected_production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
+        self.production_rates = sorted(self.infected_production_rates[:len(self.infected_production_rates)//2])
         np.random.shuffle(self.production_rates)
 
         self.n = 0
@@ -82,6 +82,7 @@ class Room:
                     a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
                     if i == self.initial_infectious_row and j == self.initial_infectious_col:
                         a.infectious = True
+                        a.production_rate = np.random.choice(self.infected_production_rates)
                         self.initial_agent = a
                     row.append(Cell.Cell(i, j, a))
                     self.n += 1
