@@ -24,10 +24,13 @@ def draw(room):
 
 
 def viz(room):
-    path = input("What folder do you want to save your screenshots into? Please specify the path \n")
-    skip = int(input("How many steps between screenshots? \n"))
-    if not os.path.exists(path):
-        os.makedirs(path)
+    choice = input('do you want screenshots?\n')
+    if choice == 'y':
+        path = input("What folder do you want to save your screenshots into? Please specify the path \n")
+        skip = int(input("How many steps between screenshots? \n"))
+        if not os.path.exists(path):
+            os.makedirs(path)
+
 
     pygame.init()
     global SCREEN, CLOCK
@@ -44,9 +47,9 @@ def viz(room):
                 sys.exit()
 
         pygame.display.update()
-        if room.steps_taken%skip == 0:
+        if choice == 'y' and room.steps_taken%skip == 0:
             screenshot(SCREEN, path, room.steps_taken)
-        time.sleep(.02)
+        # time.sleep(0.05)
         # pygame.quit()
 
 
@@ -60,10 +63,10 @@ def screenshot(screen, path, step):
 BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
-rows_people = 11
-cols_people = 3
-HAVE_TEACHER = True
-room = Room.Room(rows_people, cols_people, 1000, 42, HAVE_TEACHER)
+rows_people = 10
+cols_people = 10
+HAVE_TEACHER = False
+room = Room.Room(rows_people, cols_people, 100000, 42, HAVE_TEACHER)
 
 height_per_block = WINDOW_HEIGHT // room.num_rows
 width_per_block = WINDOW_WIDTH // room.num_cols

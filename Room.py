@@ -25,14 +25,16 @@ def ficks_law(diffusivity, concentration1, concentration2, area, length):
 class Room:
     def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool):
         # np.random.seed(seed)
-        INTAKE_LBOUND = 2
-        INTAKE_UBOUND = 8
+        # 2, 8 Simple, 1, 4 efficient
+        INTAKE_LBOUND = 1
+        INTAKE_UBOUND = 4
 
-        EXPOSURE_LBOUND = 100
-        EXPOSURE_UBOUND = 200
+        # 100, 200 for simple
+        EXPOSURE_LBOUND = 2000
+        EXPOSURE_UBOUND = 2500
 
-        INHALE_MASK_FACTOR = 0.5
-        EXHALE_MASK_FACTOR = 0.5
+        INHALE_MASK_FACTOR = 1.0
+        EXHALE_MASK_FACTOR = 1.0
         """Initialize the instance of this Room
 
         Args:
@@ -58,11 +60,15 @@ class Room:
         self.iterations = num_steps
         self.seed = seed
         self.steps_taken = 0
-        self.time_length = 2
+        # 2 for simple, 8 old
+        self.time_length = 8
         self.grid = []
+        self.ideal_mass = 0.0
+        self.actual_mass = 0.0
+        self.falloff_rate = 0.0
 
         self.infected_production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
-        self.production_rates = sorted(self.infected_production_rates[:len(self.infected_production_rates)//2])
+        self.production_rates =  sorted(self.infected_production_rates)[:len(self.infected_production_rates)//2]
         np.random.shuffle(self.production_rates)
 
         self.n = 0
@@ -123,7 +129,6 @@ class Room:
         # iterate through rows and columns of cells
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-
                 # check if agent is not in cell
                 if self.grid[i][j].agent is None:
                     continue
@@ -146,8 +151,24 @@ class Room:
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
                     self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
 
-        self.simple_spread()
-
+        # Checking conservation of mass
+        # self.ideal_mass = 0
+        # for i in range(self.num_rows):
+        #     for j in range(self.num_cols):
+        #         width_factor = self.grid[i][j].width
+        #         height_factor = self.grid[i][j].height
+        #         self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+        self.efficient_spread()
+        # self.actual_mass = 0
+        # for i in range(self.num_rows):
+        #     for j in range(self.num_cols):
+        #         width_factor = self.grid[i][j].width
+        #         height_factor = self.grid[i][j].height
+        #         self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+        # if abs(self.ideal_mass - self.actual_mass) <= .001:
+        #     print('mass conserved.')
+        # else:
+        #     print(self.ideal_mass, self.actual_mass)
         self.steps_taken += 1
 
     def take_second(self, element):
@@ -210,10 +231,47 @@ class Room:
             copy_grid = self.update_surrounding_cells(sorted_array, copy_grid)
         self.grid = copy_grid
 
+    def get_coordinate_list(self, i, j):
+        """gets list of lower, higher, left, and right cell
+
+        Args:
+            i (int): origin row index
+            j (int): origin col index
+
+        Returns:
+            list: list of tuples of coordinates for grid
+        """
+        return [(i,j-1), (i,j+1), (i+1,j), (i-1,j)]
+
+    def efficient_spread(self):
+        """ Linear algorithm for calculating flux across grid
+        """
+        copy_grid = copy.deepcopy(self.grid)
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                total_flux = 0
+                num_fluxes = 0
+                concentration1 = self.grid[i][j].concentration
+                diffusivity = self.grid[i][j].diffusivity
+                width_factor = self.grid[i][j].width
+                height_factor = self.grid[i][j].height
+                length = width_factor
+                area = width_factor * height_factor
+                for coor in self.get_coordinate_list(i,j):
+                    try:
+                        concentration2 = self.grid[coor[0]][coor[1]].concentration
+                        total_flux += ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        num_fluxes += 1
+                    except IndexError:
+                        pass
+                copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
+        self.grid = copy_grid
+
+
     def fallout(self):
         """Represents the fallout of particles in the air."""
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                fallout_rate = np.random.normal(0.1, 0.01, 1)[0]
-                self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - fallout_rate)
+                self.falloff_rate = np.random.normal(0.05, 0.001, 1)[0]
+                self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - self.falloff_rate)
 
