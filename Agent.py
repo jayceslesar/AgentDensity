@@ -23,6 +23,7 @@ class Agent:
         self.production_rate = production_rate
         self.intake_per_step = intake_per_step
         self.exposure_boundary = exposure_boundary
+        self.volume = 16.2
 
         # tracking variables for run specific decisions
         self.untouched = True

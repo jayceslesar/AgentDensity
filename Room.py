@@ -21,6 +21,9 @@ def ficks_law(diffusivity, concentration1, concentration2, area, length):
     numerator = float((concentration1 - concentration2) * area * diffusivity)
     return (float(numerator))/(float(length))
 
+def advection_equation(velocity, concentration, area, length):
+    numerator = float((concentration) * area * velocity)
+    return (float(numerator))/(float(length))
 
 class Room:
     def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool):
@@ -61,7 +64,7 @@ class Room:
         self.seed = seed
         self.steps_taken = 0
         # 2 for simple, 8 old
-        self.time_length = 8
+        self.time_length = 1
         self.grid = []
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
@@ -152,23 +155,23 @@ class Room:
                     self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
 
         # Checking conservation of mass
-        # self.ideal_mass = 0
-        # for i in range(self.num_rows):
-        #     for j in range(self.num_cols):
-        #         width_factor = self.grid[i][j].width
-        #         height_factor = self.grid[i][j].height
-        #         self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+        self.ideal_mass = 0
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                width_factor = self.grid[i][j].width
+                height_factor = self.grid[i][j].height
+                self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
         self.efficient_spread()
-        # self.actual_mass = 0
-        # for i in range(self.num_rows):
-        #     for j in range(self.num_cols):
-        #         width_factor = self.grid[i][j].width
-        #         height_factor = self.grid[i][j].height
-        #         self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
-        # if abs(self.ideal_mass - self.actual_mass) <= .001:
-        #     print('mass conserved.')
-        # else:
-        #     print(self.ideal_mass, self.actual_mass)
+        self.actual_mass = 0
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                width_factor = self.grid[i][j].width
+                height_factor = self.grid[i][j].height
+                self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+        if abs(self.ideal_mass - self.actual_mass) <= .001:
+            print('mass conserved.')
+        else:
+            print(self.ideal_mass, self.actual_mass)
         self.steps_taken += 1
 
     def take_second(self, element):
@@ -249,9 +252,8 @@ class Room:
         copy_grid = copy.deepcopy(self.grid)
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                total_flux = 0
                 num_fluxes = 0
-                concentration1 = self.grid[i][j].concentration
+                concentration1 = copy_grid[i][j].concentration
                 diffusivity = self.grid[i][j].diffusivity
                 width_factor = self.grid[i][j].width
                 height_factor = self.grid[i][j].height
@@ -260,13 +262,29 @@ class Room:
                 for coor in self.get_coordinate_list(i,j):
                     try:
                         concentration2 = self.grid[coor[0]][coor[1]].concentration
-                        total_flux += ficks_law(diffusivity, concentration1, concentration2, area, length)
-                        num_fluxes += 1
+                        total_flux = ficks_law(diffusivity, concentration1, concentration2, area, length)
+                        temp_conc = 0
+                        if copy_grid[i][j].agent is None:
+                            temp_conc = (total_flux)*self.time_length/(width_factor**2*height_factor)
+                            copy_grid[i][j].concentration -= temp_conc
+                        else:
+                            temp_conc = (total_flux)*self.time_length/(width_factor**2*height_factor - copy_grid[i][j].agent.volume)
+                            copy_grid[i][j].concentration -= temp_conc
+                        if self.grid[coor[0]][coor[1]].agent is None:
+                            copy_grid[coor[0]][coor[1]].concentration += temp_conc
+                        else:
+                            copy_grid[coor[0]][coor[1]].concentration += temp_conc
                     except IndexError:
                         pass
-                copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
+                # if copy_grid[i][j].agent is None:
+                #     copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
+                # else:
+                #     copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor - copy_grid[i][j].agent.volume)
         self.grid = copy_grid
 
+
+    def advection(self):
+        copy_grid = copy.deepcopy(self.grid)
 
     def fallout(self):
         """Represents the fallout of particles in the air."""

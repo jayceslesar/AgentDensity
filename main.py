@@ -49,7 +49,7 @@ def viz(room):
         pygame.display.update()
         if choice == 'y' and room.steps_taken%skip == 0:
             screenshot(SCREEN, path, room.steps_taken)
-        # time.sleep(0.05)
+        time.sleep(1)
         # pygame.quit()
 
 
@@ -63,8 +63,8 @@ def screenshot(screen, path, step):
 BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
-rows_people = 10
-cols_people = 10
+rows_people = 5
+cols_people = 5
 HAVE_TEACHER = False
 room = Room.Room(rows_people, cols_people, 100000, 42, HAVE_TEACHER)
 
