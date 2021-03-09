@@ -63,8 +63,8 @@ def screenshot(screen, path, step):
 BLACK = (0, 0, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
-rows_people = 10
-cols_people = 10
+rows_people = 5
+cols_people = 5
 HAVE_TEACHER = False
 room = Room.Room(rows_people, cols_people, 100000, 42, HAVE_TEACHER)
 

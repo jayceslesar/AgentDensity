@@ -29,6 +29,7 @@ class Cell:
         self.diffusivity = 0.4
         # .75 for ss
         self.color_upper_limit = 22
+        self.advec_vec = None
 
     def get_color(self):
         """Represent the color of the cell by the concentration inside."""

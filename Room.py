@@ -14,6 +14,7 @@ import Agent
 import numpy as np
 import Cell
 import copy
+import math
 from scipy.stats import invgamma
 
 
@@ -65,7 +66,7 @@ class Room:
         self.seed = seed
         self.steps_taken = 0
         # 2 for simple, 8 old
-        self.time_length = 8
+        self.time_length = 2
         self.grid = []
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
@@ -119,6 +120,9 @@ class Room:
 
         self.width = self.grid[0][0].width
 
+        self.grid[self.num_rows-1][self.initial_infectious_col].advec_vec = ("u", .05)
+        # print(self.num_rows-1, )
+
     def __str__(self):
         out = ""
         for row in self.grid:
@@ -156,23 +160,24 @@ class Room:
                     self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
 
         # Checking conservation of mass
-        # self.ideal_mass = 0
-        # for i in range(self.num_rows):
-        #     for j in range(self.num_cols):
-        #         width_factor = self.grid[i][j].width
-        #         height_factor = self.grid[i][j].height
-        #         self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+        self.ideal_mass = 0
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                width_factor = self.grid[i][j].width
+                height_factor = self.grid[i][j].height
+                self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
         self.efficient_spread()
-        # self.actual_mass = 0
-        # for i in range(self.num_rows):
-        #     for j in range(self.num_cols):
-        #         width_factor = self.grid[i][j].width
-        #         height_factor = self.grid[i][j].height
-        #         self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
-        # if abs(self.ideal_mass - self.actual_mass) <= .001:
-        #     print('mass conserved.')
-        # else:
-        #     print(self.ideal_mass, self.actual_mass)
+        self.advection()
+        self.actual_mass = 0
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                width_factor = self.grid[i][j].width
+                height_factor = self.grid[i][j].height
+                self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+        if abs(self.ideal_mass - self.actual_mass) <= .5:
+            print('mass conserved.')
+        else:
+            print(self.ideal_mass, self.actual_mass)
         self.steps_taken += 1
 
     def take_second(self, element):
@@ -268,12 +273,48 @@ class Room:
                         num_fluxes += 1
                     except IndexError:
                         pass
-                if copy_grid[i][j].agent is None:
-                    copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
-                else:
-                    copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor - copy_grid[i][j].agent.volume)
+                copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
         self.grid = copy_grid
 
+    def direct_vector(self, direction, coordinate):
+        affected_vector = []
+        if direction == 'u':
+            for i in range(coordinate[0]-1, -1, -1):
+                cur_cor = (i, coordinate[1])
+                affected_vector.append(cur_cor)
+        elif direction =='d':
+            print('test2')
+            for i in range(coordinate[0]+1, self.num_rows):
+                cur_cor = (i, coordinate[1])
+                affected_vector.append(cur_cor)
+        elif direction == 'r':
+            print('test3')
+            for j in range(coordinate[1]+1, self.num_cols):
+                cur_cor = (coordinate[0], j)
+                affected_vector.append(cur_cor)
+        elif direction == 'l':
+            print('test4')
+            for j in range(coordinate[1]-1, -1, -1):
+                cur_cor = (coordinate[0], j)
+                affected_vector.append(cur_cor)
+        return affected_vector
+
+    def advection(self):
+        copy_grid = copy.deepcopy(self.grid)
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                width_factor = self.grid[i][j].width
+                height_factor = self.grid[i][j].height
+                area = width_factor * height_factor
+                # print(copy_grid[i][j].advec_vec)
+                if copy_grid[i][j].advec_vec is not None:
+                    affected_vector = self.direct_vector(copy_grid[i][j].advec_vec[0],(i,j))
+                    for c in range(len(affected_vector)-1):
+                        distance = math.sqrt((i - affected_vector[c][0])**2 + (j - affected_vector[c][1])**2)*width_factor
+                        change = advection_equation(copy_grid[i][j].advec_vec[1], self.grid[affected_vector[c][0]][affected_vector[c][1]].concentration, area, distance)
+                        copy_grid[affected_vector[c+1][0]][affected_vector[c+1][1]].concentration += change
+                        copy_grid[affected_vector[c][0]][affected_vector[c][1]].concentration -= change
+        self.grid = copy_grid
 
     def fallout(self):
         """Represents the fallout of particles in the air."""
