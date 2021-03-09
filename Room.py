@@ -21,6 +21,10 @@ def ficks_law(diffusivity, concentration1, concentration2, area, length):
     numerator = float((concentration1 - concentration2) * area * diffusivity)
     return (float(numerator))/(float(length))
 
+def advection_equation(velocity, concentration, area, length):
+    numerator = float((concentration) * area * velocity)
+    return (float(numerator))/(float(length))
+
 
 class Room:
     def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool):
@@ -264,7 +268,10 @@ class Room:
                         num_fluxes += 1
                     except IndexError:
                         pass
-                copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
+                if copy_grid[i][j].agent is None:
+                    copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
+                else:
+                    copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor - copy_grid[i][j].agent.volume)
         self.grid = copy_grid
 
 

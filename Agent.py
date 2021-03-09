@@ -29,6 +29,7 @@ class Agent:
         self.infectious = False
         self.recovered = False
         self.exposed = False
+        self.volume = 16.2
 
         # counter variables for run specific desicions
         self.total_exposure = 0  # for stat tracking
