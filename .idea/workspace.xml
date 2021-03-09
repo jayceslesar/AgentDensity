@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:origin/master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0ebdff5e-fffa-4960-80cb-de3e940d79e7" name="Default Changelist" comment="fan graphic updated">
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
+    <list id="8191977d-2a87-44e6-921e-9c3d976b3baf" name="implemented new attributes and functions for fall off rate and conservation of mass" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="heavy_fall_off_rate" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="ProjectId" id="1oLpuf8yCawMNlzgbvTy36uz0ZY" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Google Drive/Third Year/Semester 2/STAT 291/Code" />
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AgentDensity" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0ebdff5e-fffa-4960-80cb-de3e940d79e7" name="Default Changelist" comment="" />
+      <changelist id="8191977d-2a87-44e6-921e-9c3d976b3baf" name="implemented new attributes and functions for fall off rate and conservation of mass" comment="" />
+      <created>1613075949004</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1613075949004</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Updated agent attributes">
+      <created>1613347062753</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1613347062753</updated>
+    </task>
+    <task id="LOCAL-00002" summary="updated spread stuff">
+      <created>1613352993780</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1613352993780</updated>
+    </task>
+    <task id="LOCAL-00003" summary="finished simple spread implementation">
+      <created>1613353770209</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1613353770209</updated>
+    </task>
+    <task id="LOCAL-00004" summary="quick fix">
+      <created>1613354717842</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1613354717842</updated>
+    </task>
+    <task id="LOCAL-00005" summary="finished for now">
+      <created>1613355234956</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1613355234956</updated>
+    </task>
+    <task id="LOCAL-00006" summary="rgb colors">
+      <created>1613369210649</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1613369210649</updated>
+    </task>
+    <task id="LOCAL-00007" summary="what i have now">
+      <created>1613531717418</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1613531717418</updated>
+    </task>
+    <task id="LOCAL-00008" summary="what i have now">
+      <created>1613532903418</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1613532903418</updated>
+    </task>
+    <task id="LOCAL-00009" summary="what i have now">
+      <created>1613532961020</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1613532961020</updated>
+    </task>
+    <task id="LOCAL-00010" summary="asdf">
+      <created>1613534690021</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1613534690021</updated>
+    </task>
+    <task id="LOCAL-00011" summary="color function is all good (blue)">
+      <created>1613680348837</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1613680348837</updated>
+    </task>
+    <task id="LOCAL-00012" summary="implemented new attributes and functions for fall off rate and conservation of mass">
+      <created>1614099405278</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1614099405278</updated>
+    </task>
+    <task id="LOCAL-00013" summary="implemented fall off rate stuff">
+      <created>1614102758787</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1614102758787</updated>
+    </task>
+    <task id="LOCAL-00014" summary="doesn't work. Too computatationally heavy?">
+      <created>1614103295203</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1614103295203</updated>
+    </task>
+    <task id="LOCAL-00015" summary="fan graphic added">
+      <created>1615323151521</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1615323151521</updated>
+    </task>
+    <task id="LOCAL-00016" summary="fan image">
+      <created>1615323505348</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1615323505348</updated>
+    </task>
+    <task id="LOCAL-00017" summary="agent graphic added">
+      <created>1615323858035</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1615323858035</updated>
+    </task>
+    <task id="LOCAL-00018" summary="agent graphic added -- replaced Jayce">
+      <created>1615324576088</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1615324576088</updated>
+    </task>
+    <task id="LOCAL-00019" summary="agent_graphics added">
+      <created>1615325450779</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1615325450779</updated>
+    </task>
+    <task id="LOCAL-00020" summary="fan graphic updated">
+      <created>1615325633196</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1615325633196</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Updated agent attributes" />
+    <MESSAGE value="updated spread stuff" />
+    <MESSAGE value="finished simple spread implementation" />
+    <MESSAGE value="quick fix" />
+    <MESSAGE value="finished for now" />
+    <MESSAGE value="rgb colors" />
+    <MESSAGE value="what i have now" />
+    <MESSAGE value="asdf" />
+    <MESSAGE value="color function is all good (blue)" />
+    <MESSAGE value="implemented new attributes and functions for fall off rate and conservation of mass" />
+    <MESSAGE value="implemented fall off rate stuff" />
+    <MESSAGE value="doesn't work. Too computatationally heavy?" />
+    <MESSAGE value="fan graphic added" />
+    <MESSAGE value="fan image" />
+    <MESSAGE value="agent graphic added" />
+    <MESSAGE value="agent graphic added -- replaced Jayce" />
+    <MESSAGE value="agent_graphics added" />
+    <MESSAGE value="fan graphic updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="fan graphic updated" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2660" y="275" key="FileChooserDialogImpl" timestamp="1614103998879">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2660" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1614103998879" />
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1613424274574" />
+    <state width="1899" height="268" key="GridCell.Tab.0.bottom" timestamp="1615326920736">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="268" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615326920736" />
+    <state width="1899" height="268" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615325574790" />
+    <state width="1899" height="146" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1613576651573" />
+    <state width="1899" height="268" key="GridCell.Tab.0.center" timestamp="1615326920736">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="268" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615326920736" />
+    <state width="1899" height="268" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615325574789" />
+    <state width="1899" height="146" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1613576651573" />
+    <state width="1899" height="268" key="GridCell.Tab.0.left" timestamp="1615326920735">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="268" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615326920735" />
+    <state width="1899" height="268" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615325574789" />
+    <state width="1899" height="146" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1613576651573" />
+    <state width="1899" height="268" key="GridCell.Tab.0.right" timestamp="1615326920736">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="268" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615326920736" />
+    <state width="1899" height="268" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615325574790" />
+    <state width="1899" height="146" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1613576651573" />
+    <state width="1899" height="348" key="GridCell.Tab.1.bottom" timestamp="1614103573027">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1614103573027" />
+    <state width="1899" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1613527981739" />
+    <state width="1899" height="348" key="GridCell.Tab.1.center" timestamp="1614103573027">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1614103573027" />
+    <state width="1899" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1613527981739" />
+    <state width="1899" height="348" key="GridCell.Tab.1.left" timestamp="1614103573027">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1614103573027" />
+    <state width="1899" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1613527981739" />
+    <state width="1899" height="348" key="GridCell.Tab.1.right" timestamp="1614103573027">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1614103573027" />
+    <state width="1899" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1613527981739" />
+    <state x="184" y="86" key="MergeDialog" timestamp="1613361831284">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="184" y="86" key="MergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1613361831284" />
+    <state x="598" y="281" key="MultipleFileMergeDialog" timestamp="1613536594332">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="598" y="281" key="MultipleFileMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1613536594332" />
+    <state x="2727" y="433" key="VCS.ChangelistChooser" timestamp="1614103535368">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2727" y="433" key="VCS.ChangelistChooser/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1614103535368" />
+    <state x="2472" y="253" key="Vcs.Push.Dialog.v2" timestamp="1615325634193">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615323275831" />
+    <state x="2472" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615325634193" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1613534715000" />
+    <state x="2697" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1615323281853">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614047601036" />
+    <state x="2697" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615323281853" />
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1613576640398" />
+    <state x="2660" y="233" key="git4idea.branch.GitSmartOperationDialog" timestamp="1614102494046">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2660" y="233" key="git4idea.branch.GitSmartOperationDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1614102494046" />
+  </component>
+</project>

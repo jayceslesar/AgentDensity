@@ -8,8 +8,9 @@ from pygame.rect import *
 
 
 SCREEN, CLOCK = None, None
+FAN_CYCLES = 20
 
-def draw(room):
+def draw(room, step):
     for x, i in enumerate(range(room.num_rows)):
         for y, j in enumerate(range(room.num_cols)):
             rect = pygame.Rect(y*height_per_block, x*height_per_block,
@@ -27,7 +28,15 @@ def draw(room):
                 agent_img = pygame.transform.scale(agent_img, (height_per_block-2, height_per_block-2))
                 SCREEN.blit(agent_img, rect)
             if room.grid[i][j].advec_vec is not None:
-                fan_img = pygame.image.load('fan.png')
+                factor = FAN_CYCLES/4
+                if step%FAN_CYCLES <= factor:
+                    fan_img = pygame.image.load('fan1.png')
+                elif step%FAN_CYCLES <= factor * 2:
+                    fan_img = pygame.image.load('fan2.png')
+                elif step%FAN_CYCLES <= factor * 3:
+                    fan_img = pygame.image.load('fan3.png')
+                else:
+                    fan_img = pygame.image.load('fan4.png')
                 fan_img = pygame.transform.scale(fan_img, (height_per_block, height_per_block))
                 SCREEN.blit(fan_img, rect)
 
@@ -47,9 +56,10 @@ def viz(room):
     CLOCK = pygame.time.Clock()
     SCREEN.fill(BLACK)
 
+    steps_taken = 0
     while room.steps_taken < room.iterations:
         room._step()
-        draw(room)
+        draw(room, steps_taken)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -58,6 +68,8 @@ def viz(room):
         pygame.display.update()
         if choice == 'y' and room.steps_taken%skip == 0:
             screenshot(SCREEN, path, room.steps_taken)
+
+        steps_taken += 1
         # time.sleep(0.05)
         # pygame.quit()
 
