@@ -104,3 +104,15 @@ class Agent:
             return (0, 255, 0)
         if self.currently_quarantined:  # purple
             return (147, 112, 219)
+
+    def get_color_string(self):
+        if self.infectious:  # red
+            return "red"
+        if self.recovered:  # dark green
+            return "dark_green"
+        if self.exposed:  # yellow
+            return "yellow"
+        if not self.infectious:  # red
+            return "green"
+        if self.currently_quarantined:  # purple
+            return "purple"

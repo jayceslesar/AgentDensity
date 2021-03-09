@@ -21,7 +21,9 @@ def draw(room):
 
             if room.grid[i][j].agent is not None:
                 pygame.draw.rect(SCREEN, room.grid[i][j].agent.get_color(), rect, 4)
-                agent_img = pygame.image.load('blank_agent.png')
+                color_string = room.grid[i][j].agent.get_color_string()
+                file_name = color_string + '_agent.png'
+                agent_img = pygame.image.load(file_name)
                 agent_img = pygame.transform.scale(agent_img, (height_per_block-2, height_per_block-2))
                 SCREEN.blit(agent_img, rect)
             if room.grid[i][j].advec_vec is not None:
