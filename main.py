@@ -8,7 +8,7 @@ from pygame.rect import *
 
 
 SCREEN, CLOCK = None, None
-FAN_CYCLES = 20
+FAN_CYCLES = 12
 
 def draw(room, step):
     for x, i in enumerate(range(room.num_rows)):
