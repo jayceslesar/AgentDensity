@@ -253,7 +253,7 @@ class Room:
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 num_fluxes = 0
-                concentration1 = copy_grid[i][j].concentration
+                concentration1 = self.grid[i][j].concentration
                 diffusivity = self.grid[i][j].diffusivity
                 width_factor = self.grid[i][j].width
                 height_factor = self.grid[i][j].height
