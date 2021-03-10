@@ -8,7 +8,7 @@ from pygame.rect import *
 
 
 SCREEN, CLOCK = None, None
-FAN_CYCLES = 12
+FAN_CYCLES = 4
 
 def draw(room, step):
     for x, i in enumerate(range(room.num_rows)):
@@ -29,11 +29,11 @@ def draw(room, step):
                 SCREEN.blit(agent_img, rect)
             if room.grid[i][j].advec_vec is not None:
                 factor = FAN_CYCLES/4
-                if step%FAN_CYCLES <= factor:
+                if step%FAN_CYCLES < factor:
                     fan_img = pygame.image.load('fan1.png')
-                elif step%FAN_CYCLES <= factor * 2:
+                elif step%FAN_CYCLES < factor * 2:
                     fan_img = pygame.image.load('fan2.png')
-                elif step%FAN_CYCLES <= factor * 3:
+                elif step%FAN_CYCLES < factor * 3:
                     fan_img = pygame.image.load('fan3.png')
                 else:
                     fan_img = pygame.image.load('fan4.png')
