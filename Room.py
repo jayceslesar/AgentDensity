@@ -28,7 +28,7 @@ def advection_equation(velocity, concentration, area, length):
 
 
 class Room:
-    def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool):
+    def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool, moving_agent: bool):
         # np.random.seed(seed)
         # 2, 8 Simple, 1, 4 efficient
         INTAKE_LBOUND = 1
@@ -48,22 +48,44 @@ class Room:
             num_steps (int): number of steps in simulation
             seed (int): the seed to use
             have_teacher (bool): implement a teacher on a random side if true, (one row with person in the middle tacked onto top or bottomo)
+            moving_agent (bool): if there is a moving agent, if there is then no initial infectious, but a moving infected agent that 'walks' the room
         """
+        self.seed = seed
+        self.n = 0
         self.num_rows = num_rows_people*2 + 1
         self.num_cols = num_cols_people*2 + 1
         self.expected_n = num_cols_people*num_rows_people
+        self.moving_agent = moving_agent
+        self.infected_production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
+        self.production_rates =  sorted(self.infected_production_rates)[:len(self.infected_production_rates)//2]
+        np.random.shuffle(self.production_rates)
+
         if have_teacher:
             self.expected_n += 1
         # get center of grid to place initial infectious agent
-        self.initial_infectious_row = [i for i in range(self.num_rows) if int(i) % 2 != 0]
-        # center row
-        self.initial_infectious_row = self.initial_infectious_row[int((len(self.initial_infectious_row) - 1)/2)]
-        self.initial_infectious_col = [i for i in range(self.num_cols) if int(i) % 2 != 0]
-        # center column
-        self.initial_infectious_col = self.initial_infectious_col[int((len(self.initial_infectious_col) - 1)/2)]
+        if not self.moving_agent:
+            self.initial_infectious_row = [i for i in range(self.num_rows) if int(i) % 2 != 0]
+            # center row
+            self.initial_infectious_row = self.initial_infectious_row[int((len(self.initial_infectious_row) - 1)/2)]
+            self.initial_infectious_col = [i for i in range(self.num_cols) if int(i) % 2 != 0]
+            # center column
+            self.initial_infectious_col = self.initial_infectious_col[int((len(self.initial_infectious_col) - 1)/2)]
+            self.center_col = self.initial_infectious_col
+        else:
+            self.center_col = [i for i in range(self.num_cols) if int(i) % 2 != 0]
+            # center column
+            self.center_col = self.center_col[int((len(self.center_col) - 1)/2)]
+            self.initial_infectious_row, self.initial_infectious_col = 0, 0
+            production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+            intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+            exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
+            self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
+            self.agent_to_move.infectious = True
+            self.n += 1
+            self.expected_n += 1
+
         # other initializers
         self.iterations = num_steps
-        self.seed = seed
         self.steps_taken = 0
         # 2 for simple, 8 old
         self.time_length = 2
@@ -71,13 +93,6 @@ class Room:
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
         self.falloff_rate = 0.0
-
-        self.infected_production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
-        self.production_rates =  sorted(self.infected_production_rates)[:len(self.infected_production_rates)//2]
-        np.random.shuffle(self.production_rates)
-
-        self.n = 0
-        # one more row for teacher/professor
 
         for i in range(self.num_rows):
             row = []
@@ -91,7 +106,7 @@ class Room:
                     intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
                     exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
                     a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
-                    if i == self.initial_infectious_row and j == self.initial_infectious_col:
+                    if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
                         a.infectious = True
                         a.production_rate = np.random.choice(self.infected_production_rates)
                         self.initial_agent = a
@@ -104,12 +119,12 @@ class Room:
         # extra two rows for teacher/professor (they are against a wall)
         if have_teacher:
             extra_start = self.num_rows
-            self.num_rows += 1
+            self.num_rows += 2
             for i in range(extra_start, self.num_rows):
                 row = []
                 for j in range(self.num_cols):
-                    if j == self.initial_infectious_col:
-                        production_rate = EXHALE_MASK_FACTOR * self.production_rates[3]
+                    if j == self.center_col and i != self.num_rows - 1:
+                        production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
                         intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
                         exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
                         a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
@@ -120,8 +135,42 @@ class Room:
 
         self.width = self.grid[0][0].width
 
-        self.grid[self.num_rows-1][self.initial_infectious_col].advec_vec = ("u", .05)
-        # print(self.num_rows-1, )
+        self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
+
+        if self.moving_agent:
+            self.grid[0][0].agent = self.agent_to_move
+
+        # generate walkable path
+        self.moving_path = []
+        self.move_index = 0
+        for i in range(self.num_rows):
+            if i % 2 == 0:
+                coordinates_in_row = []
+                for j in range(self.num_cols):
+                    if (i != 0 and j == 0) or j == self.num_cols:
+                        coordinates_in_row.append([i - 1, j])
+                        coordinates_in_row.append([i, j])
+                    else:
+                        coordinates_in_row.append([i, j])
+                self.moving_path.append(coordinates_in_row)
+
+        self.moving_path = self.moving_path[:-1]
+
+        for i in range(len(self.moving_path)):
+            if i % 2 != 0:
+                self.moving_path[i] = list(reversed(self.moving_path[i]))
+
+        for i in range(len(self.moving_path)):
+            if i % 2 != 0:
+                self.moving_path[i][-1][1] = self.num_cols - 1
+                self.moving_path[i-1].append(self.moving_path[i][-1])
+                self.moving_path[i] = self.moving_path[i][:-1]
+
+        self.moving_path = [item for sublist in self.moving_path for item in sublist]
+        for rev in list(reversed(self.moving_path)):
+            self.moving_path.append(rev)
+        print(self.moving_path)
+
 
     def __str__(self):
         out = ""
@@ -131,8 +180,26 @@ class Room:
             out += "\n"
         return out
 
+    def _move(self):
+        """Handles how the moving agent moves"""
+        if self.move_index >= len(self.moving_path) - 1:
+            self.move_index = 0
+
+        from_row, from_col = self.moving_path[self.move_index]
+        to_row, to_col = self.moving_path[self.move_index + 1]
+        self.grid[from_row][from_col].agent = None
+
+        self.grid[to_row][to_col].agent = self.agent_to_move
+
+        self.move_index += 1
+
+
     def _step(self):
         """Represents one step in the simulation."""
+        if self.moving_agent:
+            # every 5 steps
+            if self.steps_taken % 5 == 0:
+                self._move()
         self.fallout()
         # iterate through rows and columns of cells
         for i in range(self.num_rows):
@@ -157,7 +224,7 @@ class Room:
                     # update steps infectious
                     self.grid[i][j].agent.steps_infectious += 1
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
-                    self.grid[i][j].concentration += (self.grid[i][j].production_rate) * self.time_length
+                    self.grid[i][j].concentration += (self.grid[i][j].agent.production_rate) * self.time_length
 
         # Checking conservation of mass
         self.ideal_mass = 0
@@ -250,7 +317,25 @@ class Room:
         Returns:
             list: list of tuples of coordinates for grid
         """
-        return [(i,j-1), (i,j+1), (i+1,j), (i-1,j)]
+        if i == 0 and j == 0:
+            return [(i + 1, j), (i, j + 1)]
+        if i == 0 and j == self.num_cols:
+            return [(i + 1, j), (i, j - 1)]
+        if i == self.num_rows and j == 0:
+            return [(i - 1, j), (i, j + 1)]
+        if i == self.num_rows and j == self.num_cols:
+            return [(i - 1, j), (i, j - 1)]
+        if i == 0:
+            return [(i, j - 1), (i, j + 1), (i +  1, j)]
+        if i == self.num_rows:
+            return [(i, j - 1), (i, j + 1), (i -  1, j)]
+        if j == 0:
+            return [(i - 1, j), (i + 1, j), (i, j + 1)]
+        if j == self.num_cols:
+            return [(i - 1, j), (i + 1, j), (i, j - 1)]
+
+
+        return [(i, j-1), (i, j+1), (i+1,j), (i-1,j)]
 
     def efficient_spread(self):
         """ Linear algorithm for calculating flux across grid
@@ -322,4 +407,3 @@ class Room:
             for j in range(self.num_cols):
                 self.falloff_rate = np.random.normal(0.05, 0.001, 1)[0]
                 self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - self.falloff_rate)
-
