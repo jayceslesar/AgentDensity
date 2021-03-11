@@ -88,7 +88,7 @@ class Room:
         self.iterations = num_steps
         self.steps_taken = 0
         # 2 for simple, 8 old
-        self.time_length = 2
+        self.time_length = 3
         self.grid = []
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
