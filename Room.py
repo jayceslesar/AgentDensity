@@ -193,7 +193,7 @@ class Room:
 
 
     def _step(self):
-        print([[self.grid[i][j].concentration for j in range(self.num_cols)] for i in range(self.num_rows)])
+        # print([[self.grid[i][j].concentration for j in range(self.num_cols)] for i in range(self.num_rows)])
         """Represents one step in the simulation."""
         if self.moving_agent:
             # every 5 steps
