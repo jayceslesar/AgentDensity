@@ -1,5 +1,6 @@
 import os
-
+import glob
+from PIL import Image
 import Room
 import pygame, sys
 from pygame.locals import *
@@ -44,6 +45,7 @@ def draw(room, step):
 def viz(room):
     choice = input('do you want screenshots?\n')
     if choice == 'y':
+        stills = []
         path = input("What folder do you want to save your screenshots into? Please specify the path \n")
         skip = int(input("How many steps between screenshots? \n"))
         if not os.path.exists(path):
@@ -68,15 +70,22 @@ def viz(room):
         pygame.display.update()
         if choice == 'y' and room.steps_taken%skip == 0:
             screenshot(SCREEN, path, room.steps_taken)
+            stills.append(os.path.join(path, "step" + str(room.steps_taken) + ".png"))
 
         steps_taken += 1
         # time.sleep(0.05)
         # pygame.quit()
 
+    if choice == 'y':
+        img, *imgs = [Image.open(f) for f in stills]
+        img.save(fp=os.path.join(path, 'sim.gif'), format='GIF', append_images=imgs, save_all=True, duration=20, loop=0)
+        for im in stills:
+            os.remove(im)
+
 
 def screenshot(screen, path, step):
     title = "step" + str(step)
-    file_save_as = path + "/" + title + ".png"
+    file_save_as = os.path.join(path, title + ".png")
     pygame.image.save(screen, file_save_as)
     print(f"step {step} has been screenshotted")
 
@@ -88,7 +97,7 @@ rows_people = 5
 cols_people = 5
 HAVE_TEACHER = True
 MOVING_AGENT = True
-room = Room.Room(rows_people, cols_people, 100000, 42, HAVE_TEACHER, MOVING_AGENT)
+room = Room.Room(rows_people, cols_people, 10000, 42, HAVE_TEACHER, MOVING_AGENT)
 
 height_per_block = WINDOW_HEIGHT // room.num_rows
 width_per_block = WINDOW_WIDTH // room.num_cols

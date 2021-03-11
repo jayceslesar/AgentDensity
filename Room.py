@@ -197,7 +197,7 @@ class Room:
         """Represents one step in the simulation."""
         if self.moving_agent:
             # every 5 steps
-            if self.steps_taken % 5 == 0:
+            if self.steps_taken % 20 == 0:
                 self._move()
         self.fallout()
         # iterate through rows and columns of cells
