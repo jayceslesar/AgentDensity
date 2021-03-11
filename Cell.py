@@ -26,9 +26,9 @@ class Cell:
         self.width = 2
         self.height = 10
         # 0.004 for ss
-        self.diffusivity = 0.4
+        self.diffusivity = 1.6
         # .75 for ss
-        self.color_upper_limit = 22
+        self.color_upper_limit = 18
         self.advec_vec = None
 
     def get_color(self):

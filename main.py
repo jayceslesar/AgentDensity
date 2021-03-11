@@ -96,7 +96,7 @@ WINDOW_WIDTH = 800
 rows_people = 5
 cols_people = 5
 HAVE_TEACHER = True
-MOVING_AGENT = True
+MOVING_AGENT = False
 room = Room.Room(rows_people, cols_people, 10000, 42, HAVE_TEACHER, MOVING_AGENT)
 
 height_per_block = WINDOW_HEIGHT // room.num_rows

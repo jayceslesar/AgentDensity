@@ -135,7 +135,7 @@ class Room:
 
         self.width = self.grid[0][0].width
 
-        self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
+        # self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
 
         if self.moving_agent:
             self.grid[0][0].agent = self.agent_to_move
