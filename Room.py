@@ -35,8 +35,8 @@ class Room:
         INTAKE_UBOUND = 4
 
         # 100, 200 for simple
-        EXPOSURE_LBOUND = 2000
-        EXPOSURE_UBOUND = 2500
+        EXPOSURE_LBOUND = 3000
+        EXPOSURE_UBOUND = 4000
 
         INHALE_MASK_FACTOR = 1.0
         EXHALE_MASK_FACTOR = 1.0
@@ -193,6 +193,7 @@ class Room:
 
 
     def _step(self):
+        print([[self.grid[i][j].concentration for j in range(self.num_cols)] for i in range(self.num_rows)])
         """Represents one step in the simulation."""
         if self.moving_agent:
             # every 5 steps
@@ -239,10 +240,10 @@ class Room:
                 width_factor = self.grid[i][j].width
                 height_factor = self.grid[i][j].height
                 self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
-        if abs(self.ideal_mass - self.actual_mass) <= .5:
-            print('mass conserved.')
-        else:
-            print(self.ideal_mass, self.actual_mass)
+        # if abs(self.ideal_mass - self.actual_mass) <= .5:
+        #     print('mass conserved.')
+        # else:
+        #     print(self.ideal_mass, self.actual_mass)
         self.steps_taken += 1
 
     def take_second(self, element):
