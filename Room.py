@@ -169,8 +169,6 @@ class Room:
         self.moving_path = [item for sublist in self.moving_path for item in sublist]
         for rev in list(reversed(self.moving_path)):
             self.moving_path.append(rev)
-        print(self.moving_path)
-
 
     def __str__(self):
         out = ""

@@ -23,20 +23,20 @@ def draw(room, step):
             if room.grid[i][j].agent is not None:
                 pygame.draw.rect(SCREEN, room.grid[i][j].agent.get_color(), rect, 4)
                 color_string = room.grid[i][j].agent.get_color_string()
-                file_name = color_string + '_agent.png'
+                file_name = os.path.join('assets', color_string + '_agent.png')
                 agent_img = pygame.image.load(file_name)
                 agent_img = pygame.transform.scale(agent_img, (height_per_block-2, height_per_block-2))
                 SCREEN.blit(agent_img, rect)
             if room.grid[i][j].advec_vec is not None:
                 factor = FAN_CYCLES/4
                 if step%FAN_CYCLES < factor:
-                    fan_img = pygame.image.load('fan1.png')
+                    fan_img = pygame.image.load(os.path.join('assets', 'fan1.png'))
                 elif step%FAN_CYCLES < factor * 2:
-                    fan_img = pygame.image.load('fan2.png')
+                    fan_img = pygame.image.load(os.path.join('assets', 'fan2.png'))
                 elif step%FAN_CYCLES < factor * 3:
-                    fan_img = pygame.image.load('fan3.png')
+                    fan_img = pygame.image.load(os.path.join('assets', 'fan3.png'))
                 else:
-                    fan_img = pygame.image.load('fan4.png')
+                    fan_img = pygame.image.load(os.path.join('assets', 'fan4.png'))
                 fan_img = pygame.transform.scale(fan_img, (height_per_block, height_per_block))
                 SCREEN.blit(fan_img, rect)
 
