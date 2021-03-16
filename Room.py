@@ -35,8 +35,8 @@ class Room:
         INTAKE_UBOUND = 4
 
         # 100, 200 for simple
-        EXPOSURE_LBOUND = 3000
-        EXPOSURE_UBOUND = 4000
+        EXPOSURE_LBOUND = 500
+        EXPOSURE_UBOUND = 1500
 
         INHALE_MASK_FACTOR = 1.0
         EXHALE_MASK_FACTOR = 1.0
@@ -92,7 +92,7 @@ class Room:
         self.grid = []
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
-        self.falloff_rate = 0.0
+        self.falloff_rate = 0.05
 
         for i in range(self.num_rows):
             row = []

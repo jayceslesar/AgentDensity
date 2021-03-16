@@ -73,7 +73,7 @@ def viz(room):
             stills.append(os.path.join(path, "step" + str(room.steps_taken) + ".png"))
 
         steps_taken += 1
-        # time.sleep(0.05)
+        time.sleep(0.5)
         # pygame.quit()
 
     if choice == 'y':
