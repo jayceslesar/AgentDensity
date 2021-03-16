@@ -6,6 +6,7 @@ import pygame, sys
 from pygame.locals import *
 import time
 from pygame.rect import *
+import csv
 
 
 SCREEN, CLOCK = None, None
@@ -76,6 +77,15 @@ def viz(room):
         time.sleep(0.5)
         # pygame.quit()
 
+    with open(room.filename, 'w') as csvfile:
+        # creating a csv writer object
+        csvwriter = csv.writer(csvfile)
+
+        # writing the fields
+        csvwriter.writerow(room.fields)
+
+        # writing the data rows
+        csvwriter.writerows(room.rows)
     if choice == 'y':
         img, *imgs = [Image.open(f) for f in stills]
         img.save(fp=os.path.join(path, 'sim.gif'), format='GIF', append_images=imgs, save_all=True, duration=20, loop=0)
@@ -97,7 +107,7 @@ rows_people = 5
 cols_people = 5
 HAVE_TEACHER = True
 MOVING_AGENT = False
-room = Room.Room(rows_people, cols_people, 10000, 42, HAVE_TEACHER, MOVING_AGENT)
+room = Room.Room(rows_people, cols_people, 500, 42, HAVE_TEACHER, MOVING_AGENT)
 
 height_per_block = WINDOW_HEIGHT // room.num_rows
 width_per_block = WINDOW_WIDTH // room.num_cols

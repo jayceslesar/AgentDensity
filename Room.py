@@ -16,6 +16,7 @@ import Cell
 import copy
 import math
 from scipy.stats import invgamma
+import csv
 
 
 def ficks_law(diffusivity, concentration1, concentration2, area, length):
@@ -83,6 +84,10 @@ class Room:
             self.agent_to_move.infectious = True
             self.n += 1
             self.expected_n += 1
+
+        self.fields = ["Time Step", "difference", "close", "far", "ratio"]
+        self.rows = []
+        self.filename = "concentration_graph.csv"
 
         # other initializers
         self.iterations = num_steps
@@ -246,6 +251,16 @@ class Room:
         #     print(self.ideal_mass, self.actual_mass)
         self.steps_taken += 1
 
+        close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
+        far = self.grid[0][0].concentration
+        diff = close - far
+        ratio = far/close
+        # print(diff)
+
+        self.rows.append([str(self.steps_taken), str(diff), str(close), str(far), str(ratio)])
+        print (self.steps_taken)
+
+
     def take_second(self, element):
         """Get the element at index 2 in a make shift struct."""
         return element[2].concentration
@@ -404,5 +419,5 @@ class Room:
         """Represents the fallout of particles in the air."""
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                self.falloff_rate = np.random.normal(0.05, 0.001, 1)[0]
+                self.falloff_rate = np.random.normal(0.00000005, 0.001, 1)[0]
                 self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - self.falloff_rate)
