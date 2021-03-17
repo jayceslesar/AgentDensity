@@ -410,7 +410,7 @@ class Room:
                     affected_vector = self.direct_vector(copy_grid[i][j].advec_vec[0],(i,j))
                     for c in range(len(affected_vector)-1):
                         distance = math.sqrt((i - affected_vector[c][0])**2 + (j - affected_vector[c][1])**2)*width_factor
-                        change = advection_equation(copy_grid[i][j].advec_vec[1], self.grid[affected_vector[c][0]][affected_vector[c][1]].concentration, area, distance)
+                        change = advection_equation(copy_grid[i][j].advec_vec[1], self.grid[affected_vector[c][0]][affected_vector[c][1]].concentration, area, distance)*self.time_length
                         copy_grid[affected_vector[c+1][0]][affected_vector[c+1][1]].concentration += change
                         copy_grid[affected_vector[c][0]][affected_vector[c][1]].concentration -= change
         self.grid = copy_grid
