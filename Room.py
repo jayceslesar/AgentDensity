@@ -85,7 +85,7 @@ class Room:
             self.n += 1
             self.expected_n += 1
 
-        self.fields = ["Time Step", "difference", "close", "far", "ratio"]
+        self.fields = ["steps_taken", "difference", "close", "far", "ratio"]
         self.rows = []
         self.filename = "concentration_graph.csv"
 
