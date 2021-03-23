@@ -30,7 +30,7 @@ def advection_equation(velocity, concentration, area, length):
 
 class Room:
     def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool, moving_agent: bool):
-        # np.random.seed(seed)
+        np.random.seed(seed)
         # 2, 8 Simple, 1, 4 efficient
         INTAKE_LBOUND = 1
         INTAKE_UBOUND = 4
