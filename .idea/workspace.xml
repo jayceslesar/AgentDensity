@@ -27,12 +27,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ebdff5e-fffa-4960-80cb-de3e940d79e7" name="Default Changelist" comment="Good presentation parameters">
-      <change afterPath="$PROJECT_DIR$/2500 Run.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/concentration_graph.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cell.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cell.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Room.py" beforeDir="false" afterPath="$PROJECT_DIR$/Room.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation.py" afterDir="false" />
     </list>
     <list id="8191977d-2a87-44e6-921e-9c3d976b3baf" name="implemented new attributes and functions for fall off rate and conservation of mass" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,7 +62,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Code" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.simulation">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AgentDensity" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -87,8 +84,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="simulation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AgentDensity" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/simulation.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.simulation" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.main" />
       </list>
@@ -334,30 +353,30 @@
     </state>
     <state x="2660" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1614103998879" />
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1613424274574" />
-    <state width="1899" height="328" key="GridCell.Tab.0.bottom" timestamp="1615930271784">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state width="1899" height="244" key="GridCell.Tab.0.bottom" timestamp="1616515964387">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="268" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615490946587" />
-    <state width="1899" height="328" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615930271784" />
-    <state width="1899" height="146" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1613576651573" />
-    <state width="1899" height="328" key="GridCell.Tab.0.center" timestamp="1615930271784">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state width="1899" height="244" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1616472148612" />
+    <state width="1899" height="244" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1616515964387" />
+    <state width="1899" height="244" key="GridCell.Tab.0.center" timestamp="1616515964387">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="268" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615490946587" />
-    <state width="1899" height="328" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615930271784" />
-    <state width="1899" height="146" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1613576651573" />
-    <state width="1899" height="328" key="GridCell.Tab.0.left" timestamp="1615930271784">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state width="1899" height="244" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1616472148612" />
+    <state width="1899" height="244" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1616515964387" />
+    <state width="1899" height="244" key="GridCell.Tab.0.left" timestamp="1616515964387">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="268" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615490946587" />
-    <state width="1899" height="328" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615930271784" />
-    <state width="1899" height="146" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1613576651573" />
-    <state width="1899" height="328" key="GridCell.Tab.0.right" timestamp="1615930271784">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state width="1899" height="244" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1616472148612" />
+    <state width="1899" height="244" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1616515964387" />
+    <state width="1899" height="244" key="GridCell.Tab.0.right" timestamp="1616515964387">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="268" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615490946587" />
-    <state width="1899" height="328" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615930271784" />
-    <state width="1899" height="146" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1613576651573" />
+    <state width="1899" height="244" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1616472148612" />
+    <state width="1899" height="244" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1616515964387" />
     <state width="1899" height="348" key="GridCell.Tab.1.bottom" timestamp="1614103573027">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
@@ -396,12 +415,12 @@
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615327836982" />
     <state x="2472" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615496209527" />
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1613534715000" />
-    <state x="2697" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1615930101493">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1616513187337">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615490880979" />
-    <state x="2697" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1615930101493" />
-    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1613576640398" />
+    <state x="2697" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1616472112257" />
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1616513187337" />
     <state x="2660" y="233" key="git4idea.branch.GitSmartOperationDialog" timestamp="1614102494046">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>

@@ -264,7 +264,7 @@ class Room:
         # print(diff)
 
         self.rows.append([str(self.steps_taken), str(diff), str(close), str(far), str(ratio)])
-        print (self.steps_taken)
+        # print (self.steps_taken)
 
 
     def take_second(self, element):
