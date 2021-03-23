@@ -98,6 +98,7 @@ class Room:
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
         self.falloff_rate = 0.05
+        self.falloff_rate_mean = 0.000000005
 
         for i in range(self.num_rows):
             row = []
@@ -140,7 +141,7 @@ class Room:
 
         self.width = self.grid[0][0].width
 
-        # self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
+        self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
 
         if self.moving_agent:
             self.grid[0][0].agent = self.agent_to_move
@@ -182,6 +183,11 @@ class Room:
                 out += str(cell) + " "
             out += "\n"
         return out
+
+    def change_diff(self, new_diff):
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                self.grid[i][j].diffusivity = new_diff
 
     def _move(self):
         """Handles how the moving agent moves"""
@@ -419,5 +425,5 @@ class Room:
         """Represents the fallout of particles in the air."""
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                self.falloff_rate = np.random.normal(0.00000005, 0.001, 1)[0]
+                self.falloff_rate = np.random.normal(self.falloff_rate_mean, 0.001, 1)[0]
                 self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - self.falloff_rate)

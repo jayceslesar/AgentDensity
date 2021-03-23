@@ -7,6 +7,7 @@ from pygame.locals import *
 import time
 from pygame.rect import *
 import csv
+import copy
 
 
 SCREEN, CLOCK = None, None
@@ -108,6 +109,48 @@ cols_people = 5
 HAVE_TEACHER = True
 MOVING_AGENT = False
 room = Room.Room(rows_people, cols_people, 500, 42, HAVE_TEACHER, MOVING_AGENT)
+
+room1 = copy.deepcopy(room)
+room1.change_diff(0.8)
+room1.filename = "room1"
+
+room12 = copy.deepcopy(room1)
+room12.falloff_rate_mean = 0.0005
+room12.filename = "room12.csv"
+
+
+room2 = copy.deepcopy(room)
+room2.change_diff(0.6)
+room2.filename = "room2.csv"
+
+room22 = copy.deepcopy(room2)
+room22.falloff_rate_mean = 0.0005
+room22.filename = "room22.csv"
+
+room3 = copy.deepcopy(room)
+room3.change_diff(0.4)
+room3.filename = "room3.csv"
+
+room32 = copy.deepcopy(room3)
+room32.falloff_rate_mean = 0.0005
+room32.filename = "room32.csv"
+
+room4 = copy.deepcopy(room)
+room4.change_diff(1.3)
+room4.filename = "room4.csv"
+
+room42 = copy.deepcopy(room4)
+room42.falloff_rate_mean = 0.0005
+room42.filename = "room42.csv"
+
+room5 = copy.deepcopy(room)
+room5.change_diff(1)
+
+room52 = copy.deepcopy(room5)
+room52.falloff_rate_mean = 0.0005
+room52.filename = "room52.csv"
+
+
 
 height_per_block = WINDOW_HEIGHT // room.num_rows
 width_per_block = WINDOW_WIDTH // room.num_cols
