@@ -35,6 +35,7 @@ class Cell:
         """Represent the color of the cell by the concentration inside."""
         if self.concentration < 0:
             print("concentration is less than 0!!!!!")
+        print(self.concentration)
         if self.concentration < (self.color_upper_limit / 2):
             green = 255
             blue  = 255
