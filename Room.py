@@ -236,7 +236,10 @@ class Room:
             for j in range(self.num_cols):
                 width_factor = self.grid[i][j].width
                 height_factor = self.grid[i][j].height
-                self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+                if self.grid[i][j].agent is None:
+                    self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+                else:
+                    self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
         self.efficient_spread()
         self.advection()
         self.actual_mass = 0
@@ -244,7 +247,10 @@ class Room:
             for j in range(self.num_cols):
                 width_factor = self.grid[i][j].width
                 height_factor = self.grid[i][j].height
-                self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+                if self.grid[i][j].agent is None:
+                    self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
+                else:
+                    self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
         if abs(self.ideal_mass - self.actual_mass) <= .5:
             print('mass conserved.')
         else:
