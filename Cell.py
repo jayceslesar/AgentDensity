@@ -26,7 +26,7 @@ class Cell:
         self.width = 2
         self.height = 10
         # 0.004 for ss
-        self.diffusivity = .6
+        self.diffusivity = 0.6
         # .75 for ss
         self.color_upper_limit = 40
         self.advec_vec = None
@@ -35,7 +35,7 @@ class Cell:
         """Represent the color of the cell by the concentration inside."""
         if self.concentration < 0:
             print("concentration is less than 0!!!!!")
-        print(self.concentration)
+        # print(self.concentration)
         if self.concentration < (self.color_upper_limit / 2):
             green = 255
             blue  = 255

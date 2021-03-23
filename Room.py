@@ -97,7 +97,7 @@ class Room:
         self.grid = []
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
-        self.falloff_rate = 0.05
+        self.falloff_rate_mean = 0.000000005
 
         for i in range(self.num_rows):
             row = []
@@ -251,10 +251,10 @@ class Room:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
                 else:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
-        if abs(self.ideal_mass - self.actual_mass) <= .5:
-            print('mass conserved.')
-        else:
-            print(self.ideal_mass, self.actual_mass)
+        # if abs(self.ideal_mass - self.actual_mass) <= .5:
+        #     print('mass conserved.')
+        # else:
+        #     print(self.ideal_mass, self.actual_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
@@ -428,5 +428,10 @@ class Room:
         """Represents the fallout of particles in the air."""
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                self.falloff_rate = np.random.normal(0.000000005, 0.001, 1)[0]
+                self.falloff_rate = np.random.normal(self.falloff_rate_mean, 0.001, 1)[0]
                 self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - self.falloff_rate)
+
+    def change_diff(self, new_diff):
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                self.grid[i][j].diffusivity = new_diff
