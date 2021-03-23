@@ -3,6 +3,7 @@ import csv
 import copy
 import itertools
 import pandas as pd
+import os
 
 SCREEN, CLOCK = None, None
 FAN_CYCLES = 4
@@ -53,36 +54,34 @@ def simulate(room_array):
         final_dict[key] = list(itertools.chain.from_iterable([sim_dict[key] for sim_dict in sim_dicts]))
 
     final_df = pd.DataFrame(final_dict)
-    final_df.to_csv("analysis_data.csv")
-
-
-
-rows_people = 5
-cols_people = 5
-HAVE_TEACHER = True
-MOVING_AGENT = False
-iterations = 100
-room = Room.Room(rows_people, cols_people, iterations, 42, HAVE_TEACHER, MOVING_AGENT)
-
-simulations = []
-new_diff = 0.8
-
-for i in range(0,6):
-
-    copy_room = copy.deepcopy(room)
-    copy_room.change_diff(new_diff)
-    filename = "room_d_" + str(new_diff) + "_t_" + str(copy_room.time_length) + ".csv"
-    copy_room.filename = filename
-    simulations.append((copy_room, new_diff))
-
-    for j in range(1,6):
-        new_copy_room = copy.deepcopy(copy_room)
-        new_copy_room.time_length = copy_room.time_length - (j * 0.5)
-        filename = "room_d_" + str(new_diff) + "_t_" + str(new_copy_room.time_length) + ".csv"
-        new_copy_room.filename = filename
-        simulations.append((new_copy_room, new_diff))
-
-    new_diff = new_diff/2
+    final_df.to_csv(os.path.join("data","analysis_data.csv"))
 
 if __name__ == '__main__':
+    rows_people = 5
+    cols_people = 5
+    HAVE_TEACHER = True
+    MOVING_AGENT = False
+    iterations = 2500
+    room = Room.Room(rows_people, cols_people, iterations, 42, HAVE_TEACHER, MOVING_AGENT)
+
+    simulations = []
+    new_diff = 0.8
+
+    for i in range(0,6):
+
+        copy_room = copy.deepcopy(room)
+        copy_room.change_diff(new_diff)
+        filename = "room_d_" + str(new_diff) + "_t_" + str(copy_room.time_length) + ".csv"
+        copy_room.filename = filename
+        simulations.append((copy_room, new_diff))
+
+        for j in range(1,6):
+            new_copy_room = copy.deepcopy(copy_room)
+            new_copy_room.time_length = copy_room.time_length - (j * 0.5)
+            filename = "room_d_" + str(new_diff) + "_t_" + str(new_copy_room.time_length) + ".csv"
+            new_copy_room.filename = filename
+            simulations.append((new_copy_room, new_diff))
+
+        new_diff = new_diff/2
+
     simulate(simulations)
