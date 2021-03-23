@@ -245,10 +245,10 @@ class Room:
                 width_factor = self.grid[i][j].width
                 height_factor = self.grid[i][j].height
                 self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
-        # if abs(self.ideal_mass - self.actual_mass) <= .5:
-        #     print('mass conserved.')
-        # else:
-        #     print(self.ideal_mass, self.actual_mass)
+        if abs(self.ideal_mass - self.actual_mass) <= .5:
+            print('mass conserved.')
+        else:
+            print(self.ideal_mass, self.actual_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
@@ -372,7 +372,10 @@ class Room:
                         num_fluxes += 1
                     except IndexError:
                         pass
-                copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
+                if copy_grid[i][j].agent is None:
+                    copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
+                else:
+                    copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor - copy_grid[i][j].agent.volume)
         self.grid = copy_grid
 
     def direct_vector(self, direction, coordinate):
@@ -419,5 +422,5 @@ class Room:
         """Represents the fallout of particles in the air."""
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                self.falloff_rate = np.random.normal(0.00000005, 0.001, 1)[0]
+                self.falloff_rate = np.random.normal(0.000000005, 0.001, 1)[0]
                 self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - self.falloff_rate)
