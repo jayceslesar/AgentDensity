@@ -205,6 +205,7 @@ class Room:
 
     def _step(self):
         # print([[self.grid[i][j].concentration for j in range(self.num_cols)] for i in range(self.num_rows)])
+        # print(self.grid[0][0].concentration)
         """Represents one step in the simulation."""
         if self.moving_agent:
             # every 5 steps
@@ -257,10 +258,10 @@ class Room:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
                 else:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
-        if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
-            print('mass conserved.')
-        else:
-            print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
+        # if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
+        #     print('mass conserved.')
+        # else:
+        #     print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
