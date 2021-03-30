@@ -2,13 +2,16 @@ import Agent
 
 
 class Cell:
-    def __init__(self, row: int, column: int, Agent=None):
+    def __init__(self, row: int, column: int, width: float, height: float, Agent=None):
         """Initialize a cell class
 
         Args:
             row (int): row of cell
             column (int): column of cell
             Agent ([Agent], optional): Some cells have an Agent. Defaults to None.
+            width (float): width of cell
+            height (float): height of cell
+
         """
 
         # not all cells have Agents
@@ -23,8 +26,8 @@ class Cell:
         self.column = column
         self.color = (255, 255, 255)
         self.concentration = 0
-        self.width = 2
-        self.height = 3
+        self.width = width# in meters
+        self.height = height # in meters
         # 0.004 for ss
 
         self.real_diffusivity = 2.83e-5

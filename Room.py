@@ -24,6 +24,7 @@ def ficks_law(diffusivity, concentration1, concentration2, area, length):
     numerator = float((concentration1 - concentration2) * area * diffusivity)
     return (float(numerator))/(float(length))
 
+
 def advection_equation(velocity, concentration, area, length):
     numerator = float((concentration) * area * velocity)
     return (float(numerator))/(float(length))
@@ -100,7 +101,7 @@ class Room:
             # columns
             for j in range(self.num_cols):
                 if i % 2 == 0:
-                    row.append(Cell.Cell(i, j))
+                    row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT))
                 elif j % 2 != 0:
                     # Don't change this
                     if np.random.randint(2) == 0:
@@ -113,10 +114,10 @@ class Room:
                     if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
                         a.infectious = True
                         self.initial_agent = a
-                    row.append(Cell.Cell(i, j, a))
+                    row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT, a))
                     self.n += 1
                 else:
-                    row.append(Cell.Cell(i, j))
+                    row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT))
             self.grid.append(row)
 
         # extra two rows for teacher/professor (they are against a wall)
@@ -135,9 +136,9 @@ class Room:
                         exposure_boundary = np.random.uniform(sim_params.EXPOSURE_LBOUND, sim_params.EXPOSURE_UBOUND)
                         a = Agent.Agent(self.n, i, j, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
                         a.intake_per_step = a.intake_per_step * sim_params.INHALE_MASK_FACTOR
-                        row.append(Cell.Cell(i, j, a))
+                        row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT, a))
                     else:
-                        row.append(Cell.Cell(i, j))
+                        row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT))
                 self.grid.append(row)
 
         self.width = self.grid[0][0].width
