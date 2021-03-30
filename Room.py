@@ -68,10 +68,15 @@ class Room:
             # center column
             self.center_col = self.center_col[int((len(self.center_col) - 1)/2)]
             self.initial_infectious_row, self.initial_infectious_col = 0, 0
-            production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
-            intake_per_step = sim_params.INHALE_MASK_FACTOR * np.random.uniform(sim_params.INTAKE_LBOUND, sim_params.INTAKE_UBOUND)
+            # Dont change this
+            if np.random.randint(2) == 0:
+                production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+            else:
+                production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
             exposure_boundary = np.random.uniform(sim_params.EXPOSURE_LBOUND, sim_params.EXPOSURE_UBOUND)
-            self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
+            self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
+            # Dont change this
+            self.agent_to_move.intake_per_step = self.agent_to_move.intake_per_step * sim_params.INHALE_MASK_FACTOR
             self.agent_to_move.infectious = True
             self.n += 1
             self.expected_n += 1
@@ -97,11 +102,14 @@ class Room:
                 if i % 2 == 0:
                     row.append(Cell.Cell(i, j))
                 elif j % 2 != 0:
-                    # agent attributes
-                    production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
-                    intake_per_step = sim_params.INHALE_MASK_FACTOR * np.random.uniform(sim_params.INTAKE_LBOUND, sim_params.INTAKE_UBOUND)
+                    # Don't change this
+                    if np.random.randint(2) == 0:
+                        production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+                    else:
+                        production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
                     exposure_boundary = np.random.uniform(sim_params.EXPOSURE_LBOUND, sim_params.EXPOSURE_UBOUND)
-                    a = Agent.Agent(self.n, i, j, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
+                    a = Agent.Agent(self.n, i, j, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
+                    a.intake_per_step = a.intake_per_step * sim_params.INHALE_MASK_FACTOR
                     if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
                         a.infectious = True
                         self.initial_agent = a
@@ -119,10 +127,14 @@ class Room:
                 row = []
                 for j in range(self.num_cols):
                     if j == self.center_col and i != self.num_rows - 1:
-                        production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
-                        intake_per_step = sim_params.INHALE_MASK_FACTOR * np.random.uniform(sim_params.INTAKE_LBOUND, sim_params.INTAKE_UBOUND)
+                        if np.random.randint(2) == 0:
+                            production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+                        else:
+                            production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
+                        # intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
                         exposure_boundary = np.random.uniform(sim_params.EXPOSURE_LBOUND, sim_params.EXPOSURE_UBOUND)
-                        a = Agent.Agent(self.n, i, j, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
+                        a = Agent.Agent(self.n, i, j, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
+                        a.intake_per_step = a.intake_per_step * sim_params.INHALE_MASK_FACTOR
                         row.append(Cell.Cell(i, j, a))
                     else:
                         row.append(Cell.Cell(i, j))
