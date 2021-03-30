@@ -31,9 +31,6 @@ def advection_equation(velocity, concentration, area, length):
 class Room:
     def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool, moving_agent: bool):
         np.random.seed(seed)
-        # 2, 8 Simple, 1, 4 efficient
-        INTAKE_LBOUND = 1
-        INTAKE_UBOUND = 4
 
         # 100, 200 for simple
         EXPOSURE_LBOUND = 500
@@ -77,10 +74,13 @@ class Room:
             # center column
             self.center_col = self.center_col[int((len(self.center_col) - 1)/2)]
             self.initial_infectious_row, self.initial_infectious_col = 0, 0
-            production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
-            intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+            if np.random.randint(2) == 0:
+                production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+            else:
+                production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
             exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
-            self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
+            self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
+            self.agent_to_move.intake_per_step = self.agent_to_move.intake_per_step * INHALE_MASK_FACTOR
             self.agent_to_move.infectious = True
             self.n += 1
             self.expected_n += 1
@@ -93,11 +93,11 @@ class Room:
         self.iterations = num_steps
         self.steps_taken = 0
         # 2 for simple, 8 old
-        self.time_length = 3
+        self.time_length = 1
         self.grid = []
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
-        self.falloff_rate_mean = 0.000000005
+        self.falloff_rate = 1.7504e-4
 
         for i in range(self.num_rows):
             row = []
@@ -107,13 +107,15 @@ class Room:
                     row.append(Cell.Cell(i, j))
                 elif j % 2 != 0:
                     # agent attributes
-                    production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
-                    intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+                    if np.random.randint(2) == 0:
+                        production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+                    else:
+                        production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
                     exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
-                    a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
+                    a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
+                    a.intake_per_step = a.intake_per_step * INHALE_MASK_FACTOR
                     if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
                         a.infectious = True
-                        a.production_rate = np.random.choice(self.infected_production_rates)
                         self.initial_agent = a
                     row.append(Cell.Cell(i, j, a))
                     self.n += 1
@@ -129,10 +131,14 @@ class Room:
                 row = []
                 for j in range(self.num_cols):
                     if j == self.center_col and i != self.num_rows - 1:
-                        production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
-                        intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+                        if np.random.randint(2) == 0:
+                            production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+                        else:
+                            production_rate = EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
+                        # intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
                         exposure_boundary = np.random.uniform(EXPOSURE_LBOUND, EXPOSURE_UBOUND)
-                        a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, intake_per_step, exposure_boundary)
+                        a = Agent.Agent(self.n, i, j, self.seed, INHALE_MASK_FACTOR, EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
+                        a.intake_per_step = a.intake_per_step * INHALE_MASK_FACTOR
                         row.append(Cell.Cell(i, j, a))
                     else:
                         row.append(Cell.Cell(i, j))
@@ -213,7 +219,7 @@ class Room:
                     continue
 
                 # update total exposure, += concentration
-                self.grid[i][j].agent.total_exposure += self.grid[i][j].concentration * self.grid[i][j].agent.intake_per_step
+                self.grid[i][j].agent.total_exposure += self.grid[i][j].concentration * self.grid[i][j].agent.intake_per_step * self.time_length
 
                 # update untouched, exposed
                 if self.grid[i][j].agent.total_exposure > self.grid[i][j].agent.exposure_boundary:
@@ -251,10 +257,10 @@ class Room:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
                 else:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
-        # if abs(self.ideal_mass - self.actual_mass) <= .5:
-        #     print('mass conserved.')
-        # else:
-        #     print(self.ideal_mass, self.actual_mass)
+        if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
+            print('mass conserved.')
+        else:
+            print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
@@ -428,7 +434,7 @@ class Room:
         """Represents the fallout of particles in the air."""
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                self.falloff_rate = np.random.normal(self.falloff_rate_mean, 0.001, 1)[0]
+                # self.falloff_rate = np.random.normal(self.falloff_rate_mean, 0.001, 1)[0]
                 self.grid[i][j].concentration = self.grid[i][j].concentration * (1 - self.falloff_rate)
 
     def change_diff(self, new_diff):

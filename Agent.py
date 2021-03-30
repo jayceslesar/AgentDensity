@@ -3,7 +3,7 @@ import numpy as np
 
 class Agent:
     def __init__(self, number: int, row: int, col: int, seed: int, exhale_mask_factor: float, inhale_mask_factor: float, production_rate: float,
-                 intake_per_step: float, exposure_boundary: float):
+                 exposure_boundary: float, intake_per_step=None):
         # np.random.seed(seed)
         """
         Agent constructor
@@ -21,7 +21,9 @@ class Agent:
 
         # for how much concentration of virus agent is producing at a given time
         self.production_rate = production_rate
-        self.intake_per_step = intake_per_step
+        self.breathe_volume = 0.0005
+        self.breathe_per_second = 0.233
+        self.intake_per_step = self.breathe_per_second * self.breathe_volume
         self.exposure_boundary = exposure_boundary
 
         # tracking variables for run specific decisions
@@ -29,7 +31,7 @@ class Agent:
         self.infectious = False
         self.recovered = False
         self.exposed = False
-        self.volume = 16.2
+        self.volume = 0.062
 
         # counter variables for run specific desicions
         self.total_exposure = 0  # for stat tracking

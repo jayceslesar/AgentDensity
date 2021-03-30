@@ -24,11 +24,14 @@ class Cell:
         self.color = (255, 255, 255)
         self.concentration = 0
         self.width = 2
-        self.height = 10
+        self.height = 3
         # 0.004 for ss
-        self.diffusivity = 0.6
+
+        self.real_diffusivity = 2.83e-5
+        self.micro_current_factor = 1
+        self.diffusivity = self.micro_current_factor*self.real_diffusivity
         # .75 for ss
-        self.color_upper_limit = 40
+        self.color_upper_limit = .2
         self.advec_vec = None
 
     def get_color(self):

@@ -105,7 +105,7 @@ WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
 rows_people = 5
 cols_people = 5
-HAVE_TEACHER = True
+HAVE_TEACHER = False
 MOVING_AGENT = False
 room = Room.Room(rows_people, cols_people, 500, 42, HAVE_TEACHER, MOVING_AGENT)
 
