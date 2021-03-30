@@ -211,7 +211,7 @@ class Room:
             # every 5 steps
             if self.steps_taken % 20 == 0:
                 self._move()
-        # self.fallout()
+        self.fallout()
         # iterate through rows and columns of cells
         for i in range(self.num_rows):
             for j in range(self.num_cols):
