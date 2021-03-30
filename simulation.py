@@ -5,6 +5,8 @@ import itertools
 import pandas as pd
 import os
 
+
+
 SCREEN, CLOCK = None, None
 FAN_CYCLES = 4
 
@@ -24,11 +26,11 @@ def run(room, diff, group):
         room._step()
         steps_taken += 1
         if room.steps_taken == p25:
-            print("25% done")
+            print(f"25% done")
         elif room.steps_taken == p50:
-            print("50% done")
+            print(f"50% done")
         elif room.steps_taken == p75:
-            print("75% done")
+            print(f"75% done")
 
     for i in range(len(room.rows)):
         for j in range(len(room.fields)):
@@ -62,7 +64,8 @@ if __name__ == '__main__':
     HAVE_TEACHER = True
     MOVING_AGENT = False
     iterations = 2500
-    room = Room.Room(rows_people, cols_people, iterations, 42, HAVE_TEACHER, MOVING_AGENT)
+    seed = 42
+    room = Room.Room(rows_people, cols_people, iterations, seed, HAVE_TEACHER, MOVING_AGENT)
 
     simulations = []
     new_diff = 0.8

@@ -7,10 +7,11 @@ from pygame.locals import *
 import time
 from pygame.rect import *
 import csv
+import sim_params
 
 
 SCREEN, CLOCK = None, None
-FAN_CYCLES = 4
+FAN_CYCLES = sim_params.FAN_CYCLES
 
 def draw(room, step):
     for x, i in enumerate(range(room.num_rows)):
@@ -101,13 +102,9 @@ def screenshot(screen, path, step):
 
 
 BLACK = (0, 0, 0)
-WINDOW_HEIGHT = 800
-WINDOW_WIDTH = 800
-rows_people = 5
-cols_people = 5
-HAVE_TEACHER = False
-MOVING_AGENT = False
-room = Room.Room(rows_people, cols_people, 500, 42, HAVE_TEACHER, MOVING_AGENT)
+WINDOW_HEIGHT = sim_params.WINDOW_HEIGHT
+WINDOW_WIDTH = sim_params.WINDOW_WIDTH
+room = Room.Room(sim_params.ROWS_PEOPLE, sim_params.COLS_PEOPLE, sim_params.ITERATIONS, sim_params.SEED, sim_params.HAVE_TEACHER, sim_params.MOVING_AGENT)
 
 height_per_block = WINDOW_HEIGHT // room.num_rows
 width_per_block = WINDOW_WIDTH // room.num_cols
