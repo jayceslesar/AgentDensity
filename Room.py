@@ -442,3 +442,6 @@ class Room:
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 self.grid[i][j].diffusivity = new_diff
+
+    def change_infected_prod_rate(self, new_rate):
+        self.grid[self.initial_infectious_row][self.initial_infectious_col] = new_rate
