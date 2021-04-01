@@ -17,7 +17,7 @@ import copy
 import math
 from scipy.stats import invgamma
 import csv
-import sim_params
+import params
 
 
 def ficks_law(diffusivity, concentration1, concentration2, area, length):
@@ -31,29 +31,25 @@ def advection_equation(velocity, concentration, area, length):
 
 
 class Room:
-    def __init__(self, num_rows_people: int, num_cols_people: int, num_steps, seed: int, have_teacher: bool, moving_agent: bool):
-        np.random.seed(seed)
+    def __init__(self, sim_params: dict):
+        np.random.seed(sim_params['SEED'])
         """Initialize the instance of this Room
 
         Args:
-            num_rows_people (int): number of actual rows
-            num_cols_people (int): number of actual cols
-            num_steps (int): number of steps in simulation
-            seed (int): the seed to use
-            have_teacher (bool): implement a teacher on a random side if true, (one row with person in the middle tacked onto top or bottomo)
-            moving_agent (bool): if there is a moving agent, if there is then no initial infectious, but a moving infected agent that 'walks' the room
+            sim_params (dict): dictionary of parameters that get passed in
         """
-        self.seed = seed
+        self.sim_params = vars(params.Params_Class())
+        self.seed = self.sim_params['SEED']
         self.n = 0
-        self.num_rows = num_rows_people*2 + 1
-        self.num_cols = num_cols_people*2 + 1
-        self.expected_n = num_cols_people*num_rows_people
-        self.moving_agent = moving_agent
+        self.num_rows = self.sim_params['ROWS_PEOPLE']*2 + 1
+        self.num_cols = self.sim_params['COLS_PEOPLE']*2 + 1
+        self.expected_n = self.sim_params['ROWS_PEOPLE']*self.sim_params['COLS_PEOPLE']
+        self.moving_agent = self.sim_params['MOVING_AGENT']
         self.infected_production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
         self.production_rates =  sorted(self.infected_production_rates)[:len(self.infected_production_rates)//2]
         np.random.shuffle(self.production_rates)
 
-        if have_teacher:
+        if self.sim_params['HAVE_TEACHER']:
             self.expected_n += 1
         # get center of grid to place initial infectious agent
         if not self.moving_agent:
@@ -71,13 +67,13 @@ class Room:
             self.initial_infectious_row, self.initial_infectious_col = 0, 0
             # Dont change this
             if np.random.randint(2) == 0:
-                production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+                production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
             else:
-                production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
-            exposure_boundary = np.random.uniform(sim_params.EXPOSURE_LBOUND, sim_params.EXPOSURE_UBOUND)
-            self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
+                production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
+            exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
+            self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
             # Dont change this
-            self.agent_to_move.intake_per_step = self.agent_to_move.intake_per_step * sim_params.INHALE_MASK_FACTOR
+            self.agent_to_move.intake_per_step = self.agent_to_move.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
             self.agent_to_move.infectious = True
             self.n += 1
             self.expected_n += 1
@@ -87,7 +83,7 @@ class Room:
         self.filename = "concentration_graph.csv"
 
         # other initializers
-        self.iterations = num_steps
+        self.iterations = self.sim_params['NUM_STEPS']
         self.steps_taken = 0
         # 2 for simple, 8 old
         self.time_length = 1
@@ -101,27 +97,27 @@ class Room:
             # columns
             for j in range(self.num_cols):
                 if i % 2 == 0:
-                    row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT))
+                    row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT']))
                 elif j % 2 != 0:
                     # Don't change this
                     if np.random.randint(2) == 0:
-                        production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+                        production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
                     else:
-                        production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
-                    exposure_boundary = np.random.uniform(sim_params.EXPOSURE_LBOUND, sim_params.EXPOSURE_UBOUND)
-                    a = Agent.Agent(self.n, i, j, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
-                    a.intake_per_step = a.intake_per_step * sim_params.INHALE_MASK_FACTOR
+                        production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
+                    exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
+                    a = Agent.Agent(self.n, i, j, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
+                    a.intake_per_step = a.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
                     if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
                         a.infectious = True
                         self.initial_agent = a
-                    row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT, a))
+                    row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT'], a))
                     self.n += 1
                 else:
-                    row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT))
+                    row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT']))
             self.grid.append(row)
 
         # extra two rows for teacher/professor (they are against a wall)
-        if have_teacher:
+        if self.sim_params['HAVE_TEACHER']:
             extra_start = self.num_rows
             self.num_rows += 2
             for i in range(extra_start, self.num_rows):
@@ -129,16 +125,16 @@ class Room:
                 for j in range(self.num_cols):
                     if j == self.center_col and i != self.num_rows - 1:
                         if np.random.randint(2) == 0:
-                            production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.production_rates)
+                            production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
                         else:
-                            production_rate = sim_params.EXHALE_MASK_FACTOR * np.random.choice(self.infected_production_rates)
+                            production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
                         # intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
-                        exposure_boundary = np.random.uniform(sim_params.EXPOSURE_LBOUND, sim_params.EXPOSURE_UBOUND)
-                        a = Agent.Agent(self.n, i, j, self.seed, sim_params.INHALE_MASK_FACTOR, sim_params.EXHALE_MASK_FACTOR, production_rate, exposure_boundary)
-                        a.intake_per_step = a.intake_per_step * sim_params.INHALE_MASK_FACTOR
-                        row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT, a))
+                        exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
+                        a = Agent.Agent(self.n, i, j, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
+                        a.intake_per_step = a.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
+                        row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT'], a))
                     else:
-                        row.append(Cell.Cell(i, j, sim_params.CELL_WIDTH, sim_params.CELL_HEIGHT))
+                        row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT']))
                 self.grid.append(row)
 
         self.width = self.grid[0][0].width

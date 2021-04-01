@@ -7,11 +7,13 @@ from pygame.locals import *
 import time
 from pygame.rect import *
 import csv
-import sim_params
+import params
+
+sim_params = vars(params.Params_Class())  # dict we can change any value of at any time that gets passed into a Room class
 
 
 SCREEN, CLOCK = None, None
-FAN_CYCLES = sim_params.FAN_CYCLES
+FAN_CYCLES = sim_params['FAN_CYCLES']
 
 def draw(room, step):
     for x, i in enumerate(range(room.num_rows)):
@@ -102,9 +104,9 @@ def screenshot(screen, path, step):
 
 
 BLACK = (0, 0, 0)
-WINDOW_HEIGHT = sim_params.WINDOW_HEIGHT
-WINDOW_WIDTH = sim_params.WINDOW_WIDTH
-room = Room.Room(sim_params.ROWS_PEOPLE, sim_params.COLS_PEOPLE, sim_params.ITERATIONS, sim_params.SEED, sim_params.HAVE_TEACHER, sim_params.MOVING_AGENT)
+WINDOW_HEIGHT = sim_params['WINDOW_HEIGHT']
+WINDOW_WIDTH = sim_params['WINDOW_WIDTH']
+room = Room.Room(sim_params)
 
 height_per_block = WINDOW_HEIGHT // room.num_rows
 width_per_block = WINDOW_WIDTH // room.num_cols
