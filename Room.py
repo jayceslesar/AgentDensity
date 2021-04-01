@@ -38,7 +38,7 @@ class Room:
         Args:
             sim_params (dict): dictionary of parameters that get passed in
         """
-        self.sim_params = vars(params.Params_Class())
+        self.sim_params = sim_params
         self.seed = self.sim_params['SEED']
         self.n = 0
         self.num_rows = self.sim_params['ROWS_PEOPLE']*2 + 1
