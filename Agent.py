@@ -20,10 +20,10 @@ class Agent:
         self.col = col
 
         # for how much concentration of virus agent is producing at a given time
-        self.production_rate = production_rate
         self.breathe_volume = 0.0005
         self.breathe_per_second = 0.233
-        self.intake_per_step = self.breathe_per_second * self.breathe_volume
+        self.production_rate = production_rate * self.breathe_volume * self.breathe_per_second*1.04e-19 * exhale_mask_factor
+        self.intake_per_step = self.breathe_per_second * self.breathe_volume * inhale_mask_factor
         self.exposure_boundary = exposure_boundary
 
         # tracking variables for run specific decisions

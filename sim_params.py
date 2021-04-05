@@ -27,7 +27,7 @@ EXHALE_MASK_FACTOR = 1.0
 
 #  Cell Speficic (meters)
 CELL_WIDTH = 1
-CELL_HEIGHT = 1
+CELL_HEIGHT = 3
 
 
 class Sim_Params():

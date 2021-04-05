@@ -66,14 +66,16 @@ class Room:
             self.center_col = self.center_col[int((len(self.center_col) - 1)/2)]
             self.initial_infectious_row, self.initial_infectious_col = 0, 0
             # Dont change this
-            if np.random.randint(2) == 0:
-                production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
-            else:
-                production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
+            # if np.random.randint(2) == 0:
+            #     production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
+            # else:
+            #     production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
+            production_rate = np.random.exponential(scale=400) / 0.001 # to convert to cubic
             exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
             self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
             # Dont change this
-            self.agent_to_move.intake_per_step = self.agent_to_move.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
+            # TODO: @carter fix this
+            # self.agent_to_move.intake_per_step = self.agent_to_move.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
             self.agent_to_move.infectious = True
             self.n += 1
             self.expected_n += 1
@@ -100,13 +102,15 @@ class Room:
                     row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT']))
                 elif j % 2 != 0:
                     # Don't change this
-                    if np.random.randint(2) == 0:
-                        production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
-                    else:
-                        production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
+                    # if np.random.randint(2) == 0:
+                    #     production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
+                    # else:
+                    #     production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
+                    production_rate = np.random.exponential(scale=400) / 0.001
                     exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
                     a = Agent.Agent(self.n, i, j, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
-                    a.intake_per_step = a.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
+                    # TODO: @carter fix this
+                    # a.intake_per_step = a.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
                     if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
                         a.infectious = True
                         self.initial_agent = a
@@ -124,14 +128,16 @@ class Room:
                 row = []
                 for j in range(self.num_cols):
                     if j == self.center_col and i != self.num_rows - 1:
-                        if np.random.randint(2) == 0:
-                            production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
-                        else:
-                            production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
+                        # if np.random.randint(2) == 0:
+                        #     production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.production_rates)
+                        # else:
+                        #     production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
                         # intake_per_step = INHALE_MASK_FACTOR * np.random.uniform(INTAKE_LBOUND, INTAKE_UBOUND)
+                        production_rate = np.random.exponential(scale=400) / 0.001
                         exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
                         a = Agent.Agent(self.n, i, j, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
-                        a.intake_per_step = a.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
+                        # TODO: @carter fix this
+                        # a.intake_per_step = a.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
                         row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT'], a))
                     else:
                         row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT']))
@@ -228,7 +234,7 @@ class Room:
                     # update steps infectious
                     self.grid[i][j].agent.steps_infectious += 1
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
-                    self.grid[i][j].concentration += (self.grid[i][j].agent.production_rate) * self.time_length
+                    self.grid[i][j].concentration += (self.grid[i][j].agent.production_rate) * self.time_length / (self.grid[i][j].height * self.grid[i][j].width**2)
 
         # Checking conservation of mass
         self.ideal_mass = 0

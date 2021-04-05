@@ -34,7 +34,7 @@ class Cell:
         self.micro_current_factor = 1000
         self.diffusivity = self.micro_current_factor*self.real_diffusivity
         # .75 for ss
-        self.color_upper_limit = 15
+        self.color_upper_limit = 0.000000000000000075
         self.advec_vec = None
 
     def get_color(self):
