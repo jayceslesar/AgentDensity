@@ -85,7 +85,7 @@ class Room:
         self.filename = "concentration_graph.csv"
 
         # other initializers
-        self.iterations = self.sim_params['NUM_STEPS']
+        self.iterations = self.sim_params['ITERATIONS']
         print(self.iterations)
         self.steps_taken = 0
         # 2 for simple, 8 old

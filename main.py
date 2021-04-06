@@ -8,9 +8,10 @@ import time
 from pygame.rect import *
 import csv
 import params
+import json
 
-sim_params = vars(params.Params_Class())  # dict we can change any value of at any time that gets passed into a Room class
-
+with open('sim_params.json') as f:
+  sim_params = json.load(f)
 
 SCREEN, CLOCK = None, None
 FAN_CYCLES = sim_params['FAN_CYCLES']
