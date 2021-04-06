@@ -23,7 +23,6 @@ class Cell:
             self.production_rate = None
 
         self.row = row
-        self.sink = False
         self.column = column
         self.color = (255, 255, 255)
         self.concentration = 0
@@ -37,6 +36,9 @@ class Cell:
         # .75 for ss
         self.color_upper_limit = 0.000000000000000075
         self.advec_vec = None
+
+        self.sink = False
+        self.sink_velocity = 0
 
     def get_color(self):
         """Represent the color of the cell by the concentration inside."""
@@ -60,6 +62,11 @@ class Cell:
                 color = (0, 0, 255)
         # print(color)
         return color
+
+    def add_concentration(self, term):
+        self.concentration += term
+        if self.sink:
+            self.concentration = 0
 
 
     def __str__(self):

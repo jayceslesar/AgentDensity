@@ -146,7 +146,9 @@ class Room:
 
         self.width = self.grid[0][0].width
 
-         # self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
+        # self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
+        self.grid[self.num_rows-1][self.center_col].sink = True
+        self.grid[self.num_rows - 1][self.center_col].sink_velocity = 0.005
 
         if self.moving_agent:
             self.grid[0][0].agent = self.agent_to_move
@@ -236,7 +238,7 @@ class Room:
                     # update steps infectious
                     self.grid[i][j].agent.steps_infectious += 1
                     # TODO: @Brandon, this is what changes the cell concentration, please update with formula
-                    self.grid[i][j].concentration += (self.grid[i][j].agent.production_rate) * self.time_length / (self.grid[i][j].height * self.grid[i][j].width**2)
+                    self.grid[i][j].add_concentration((self.grid[i][j].agent.production_rate) * self.time_length / (self.grid[i][j].height * self.grid[i][j].width**2))
 
         # Checking conservation of mass
         self.ideal_mass = 0
@@ -320,8 +322,8 @@ class Room:
                 j = entry[1]
                 volume = (float(self.width) ** 2) * float(self.grid[entry[0]][entry[1]].height)
                 additional_concentration = (entry[2] * self.time_length) / (volume)
-                copy_grid[i][j].concentration += additional_concentration
-                copy_grid[current_cell[0]][current_cell[1]].concentration -= additional_concentration
+                copy_grid[i][j].add_concentration(additional_concentration)
+                copy_grid[current_cell[0]][current_cell[1]].add_concentration(-1 * additional_concentration)
 
         return copy_grid
 
@@ -387,9 +389,9 @@ class Room:
                     except IndexError:
                         pass
                 if copy_grid[i][j].agent is None:
-                    copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)
+                    copy_grid[i][j].add_concentration(-1 * ((total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor)))
                 else:
-                    copy_grid[i][j].concentration -= (total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor - copy_grid[i][j].agent.volume)
+                    copy_grid[i][j].add_concentration(-1 * ((total_flux/num_fluxes)*self.time_length/(width_factor**2*height_factor - copy_grid[i][j].agent.volume)))
         self.grid = copy_grid
 
     def direct_vector(self, direction, coordinate):
@@ -428,8 +430,18 @@ class Room:
                     for c in range(len(affected_vector)-1):
                         distance = math.sqrt((i - affected_vector[c][0])**2 + (j - affected_vector[c][1])**2)*width_factor
                         change = advection_equation(copy_grid[i][j].advec_vec[1], self.grid[affected_vector[c][0]][affected_vector[c][1]].concentration, area, distance)*self.time_length
-                        copy_grid[affected_vector[c+1][0]][affected_vector[c+1][1]].concentration += change
-                        copy_grid[affected_vector[c][0]][affected_vector[c][1]].concentration -= change
+                        copy_grid[affected_vector[c+1][0]][affected_vector[c+1][1]].add_concentration(change)
+                        copy_grid[affected_vector[c][0]][affected_vector[c][1]].add_concentration(-1 * change)
+
+                if copy_grid[i][j].sink and copy_grid[i][j].sink_velocity != 0:
+                    for x in range(self.num_rows):
+                        for y in range(self.num_cols):
+                            if x == i and y == j:
+                                continue
+                            distance = math.sqrt(abs(x - i)**2 + abs(y - j)**2)
+                            change = advection_equation(copy_grid[i][j].sink_velocity, self.grid[x][y].concentration, area, distance) * self.time_length
+                            copy_grid[x][y].add_concentration(-1 * change)
+
         self.grid = copy_grid
 
     def fallout(self):
