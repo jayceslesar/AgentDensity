@@ -86,6 +86,7 @@ class Room:
 
         # other initializers
         self.iterations = self.sim_params['NUM_STEPS']
+        print(self.iterations)
         self.steps_taken = 0
         # 2 for simple, 8 old
         self.time_length = 1
@@ -203,7 +204,8 @@ class Room:
 
 
     def _step(self):
-        print([[self.grid[i][j].concentration for j in range(self.num_cols)] for i in range(self.num_rows)])
+        # print(self.steps_taken)
+        # print([[self.grid[i][j].concentration for j in range(self.num_cols)] for i in range(self.num_rows)])
         # print(self.grid[0][0].concentration)
         """Represents one step in the simulation."""
         if self.moving_agent:

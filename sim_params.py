@@ -5,7 +5,7 @@ ROWS_PEOPLE = 5
 COLS_PEOPLE = 5
 HAVE_TEACHER = True
 MOVING_AGENT = False
-ITERATIONS = 2500
+ITERATIONS = 10000000
 FAN_CYCLES = 4
 
 # viz...
@@ -38,7 +38,7 @@ class Sim_Params():
         COLS_PEOPLE = 5
         HAVE_TEACHER = True
         MOVING_AGENT = False
-        ITERATIONS = 2500
+        ITERATIONS = 10000000
         FAN_CYCLES = 4
 
         # viz...
