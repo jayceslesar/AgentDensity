@@ -148,6 +148,7 @@ class Room:
 
         # self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
         self.grid[self.num_rows-1][self.center_col].sink = True
+        # Keep this velocity really low, just try without advection right now, anything below .3 m/s
         self.grid[self.num_rows - 1][self.center_col].sink_velocity = 0.005
 
         if self.moving_agent:
@@ -433,6 +434,11 @@ class Room:
                         copy_grid[affected_vector[c+1][0]][affected_vector[c+1][1]].add_concentration(change)
                         copy_grid[affected_vector[c][0]][affected_vector[c][1]].add_concentration(-1 * change)
 
+                # Implement pulling along vector
+                # create vector with x and y direct to create direction, the rate is given by magnitude/distance
+                # Look at angle of x and y vector and distribute to cells accordingly (45 degree example is half goes to diagonal and 1/4 goes to the others)
+                # Calculate (sphere around purifier gives you volume) flow rate volume/second is equal to velocity*area surface (spherical terms) 
+                    # Start with air changes per hour, calc volume of the room, divide by ten minutes, calculate vector
                 if copy_grid[i][j].sink and copy_grid[i][j].sink_velocity != 0:
                     for x in range(self.num_rows):
                         for y in range(self.num_cols):

@@ -62,7 +62,8 @@ class Cell:
                 color = (0, 0, 255)
         # print(color)
         return color
-
+    # Could pad grid with filters to make this work, but what if filtration system is inside room?
+    # For windows, there is no suction, just the diffusion pulling concentration out the window
     def add_concentration(self, term):
         self.concentration += term
         if self.sink:
