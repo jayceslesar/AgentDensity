@@ -23,6 +23,7 @@ class Cell:
             self.production_rate = None
 
         self.row = row
+        self.sink = False
         self.column = column
         self.color = (255, 255, 255)
         self.concentration = 0
