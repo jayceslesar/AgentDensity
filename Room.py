@@ -444,79 +444,31 @@ class Room:
                         for y in range(self.num_cols):
                             if x == i and y == j:
                                 continue
-
                             # Get x and y components of the vector and sum them
                             # Note, flipped them, because it just works out that way
-                            x_component = abs(y - j)
-                            y_component = abs(x - i)
-                            sum_component = x_component + y_component
-                            x_proportion = x_component/sum_component
-                            y_proportion = y_component/sum_component
-
-                            # In the 4 adjacent cells, figure out two are "closest" to the sink with ties broken arbitrarily
-                            # --> (this is when the cell might be directly above a sink
-                            # the directions are going to be ((x,y), closeness)
-                            up_direction = ((0,0), float('inf'))
-                            down_direction = ((0,0), float('inf'))
-                            right_direction = ((0,0), float('inf'))
-                            left_direction = ((0,0), float('inf'))
-                            sides_checked = 0
-
-                            try:
-                                # test to see if cell exists
-                                cell = copy_grid[x - 1][y]
-                                # get closeness
-                                closeness = abs((x-1) - i)
-                                up_direction = ((x-1, y), closeness)
-
-                            except IndexError:
-                                pass
-
-                            try:
-                                # test to see if cell exists
-                                cell = copy_grid[x + 1][y]
-                                # get closeness
-                                closeness = abs((x+1) - i)
-                                down_direction = ((x+1, y), closeness)
-
-                            except IndexError:
-                                pass
-
-                            try:
-                                # test to see if cell exists
-                                cell = copy_grid[x][y - 1]
-                                # get closeness
-                                closeness = abs((y-1) - j)
-                                left_direction = ((x, y-1), closeness)
-
-                            except IndexError:
-                                pass
-
-                            try:
-                                # test to see if cell exists
-                                cell = copy_grid[x][y + 1]
-                                # get closeness
-                                closeness = abs((y+1) - j)
-                                right_direction = ((x, y+1), closeness)
-
-                            except IndexError:
-                                pass
+                            x_component = j - y
+                            y_component = i - x
+                            sum_component = abs(x_component) + abs(y_component)
+                            x_proportion = abs(x_component)/sum_component
+                            y_proportion = abs(y_component)/sum_component
 
                             distance = math.sqrt(abs(x - i)**2 + abs(y - j)**2)
                             change = advection_equation(copy_grid[i][j].sink_velocity, self.grid[x][y].concentration, area, distance) * self.time_length
 
-                            # find the closest adjacent cell between up and down
-                            up_down = [up_direction, down_direction]
-                            min_up_down = min(up_down, key = lambda t: t[1])
-                            left_right = [left_direction, right_direction]
-                            min_left_right = min(left_right, key=lambda t: t[1])
-
                             amount_to_left_right = x_proportion * change
                             amount_to_up_down = y_proportion * change
-
                             copy_grid[x][y].add_concentration(-1 * change)
-                            copy_grid[min_up_down[0][0]][min_up_down[0][1]].add_concentration(amount_to_up_down)
-                            copy_grid[min_left_right[0][0]][min_left_right[0][1]].add_concentration(amount_to_left_right)
+
+
+                            if x_component > 0:
+                                copy_grid[x][y + 1].add_concentration(amount_to_left_right)
+                            elif x_component < 0:
+                                copy_grid[x][y - 1].add_concentration(amount_to_left_right)
+
+                            if y_component < 0:
+                                copy_grid[x - 1][y].add_concentration(amount_to_up_down)
+                            elif y_component > 0:
+                                copy_grid[x + 1][y].add_concentration(amount_to_up_down)
 
         self.grid = copy_grid
 
