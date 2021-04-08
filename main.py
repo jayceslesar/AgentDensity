@@ -1,20 +1,20 @@
 import os
-import glob
 from PIL import Image
 import Room
-import pygame, sys
+import pygame
+import sys
 from pygame.locals import *
-import time
 from pygame.rect import *
 import csv
-import params
 import json
 
+
 with open('sim_params.json') as f:
-  sim_params = json.load(f)
+    sim_params = json.load(f)
 
 SCREEN, CLOCK = None, None
 FAN_CYCLES = sim_params['FAN_CYCLES']
+
 
 def draw(room, step):
     for x, i in enumerate(range(room.num_rows)):
@@ -34,12 +34,12 @@ def draw(room, step):
                 agent_img = pygame.transform.scale(agent_img, (height_per_block-2, height_per_block-2))
                 SCREEN.blit(agent_img, rect)
             if room.grid[i][j].advec_vec is not None:
-                factor = FAN_CYCLES/4
-                if step%FAN_CYCLES < factor:
+                factor = FAN_CYCLES / 4
+                if step % FAN_CYCLES < factor:
                     fan_img = pygame.image.load(os.path.join('images', 'fan1.png'))
-                elif step%FAN_CYCLES < factor * 2:
+                elif step % FAN_CYCLES < factor * 2:
                     fan_img = pygame.image.load(os.path.join('images', 'fan2.png'))
-                elif step%FAN_CYCLES < factor * 3:
+                elif step % FAN_CYCLES < factor * 3:
                     fan_img = pygame.image.load(os.path.join('images', 'fan3.png'))
                 else:
                     fan_img = pygame.image.load(os.path.join('images', 'fan4.png'))
@@ -55,7 +55,6 @@ def viz(room):
         skip = int(input("How many steps between screenshots? \n"))
         if not os.path.exists(path):
             os.makedirs(path)
-
 
     pygame.init()
     global SCREEN, CLOCK
@@ -73,7 +72,7 @@ def viz(room):
                 sys.exit()
 
         pygame.display.update()
-        if choice == 'y' and room.steps_taken%skip == 0:
+        if choice == 'y' and room.steps_taken % skip == 0:
             screenshot(SCREEN, path, room.steps_taken)
             stills.append(os.path.join(path, "step" + str(room.steps_taken) + ".png"))
 
