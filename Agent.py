@@ -76,7 +76,7 @@ class Agent:
         self.agents_infected_iterations = []
         self.total_infected = 0
         self.iteration_infected = None
-        self.iteration_recovered =None
+        self.iteration_recovered = None
 
         # UNIMPLEMENTED
         self.tested_since_last_step = None

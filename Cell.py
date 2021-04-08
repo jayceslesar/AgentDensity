@@ -1,4 +1,3 @@
-import Agent
 
 
 class Cell:
@@ -26,8 +25,8 @@ class Cell:
         self.column = column
         self.color = (255, 255, 255)
         self.concentration = 0
-        self.width = width# in meters
-        self.height = height # in meters
+        self.width = width  # in meters
+        self.height = height  # in meters
         # 0.004 for ss
 
         self.real_diffusivity = 2.83e-5
@@ -47,7 +46,7 @@ class Cell:
         # print(self.concentration)
         if self.concentration < (self.color_upper_limit / 2):
             green = 255
-            blue  = 255
+            blue = 255
             decrease_factor = 255/(self.color_upper_limit / 2)
             red = 255 - decrease_factor * self.concentration
             color = (red, green, blue)
@@ -62,13 +61,13 @@ class Cell:
                 color = (0, 0, 255)
         # print(color)
         return color
+
     # Could pad grid with filters to make this work, but what if filtration system is inside room?
     # For windows, there is no suction, just the diffusion pulling concentration out the window
     def add_concentration(self, term):
         self.concentration += term
         if self.sink:
             self.concentration = 0
-
 
     def __str__(self):
         if self.agent is not None:
