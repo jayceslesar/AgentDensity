@@ -446,7 +446,6 @@ class Room:
                                 continue
                             x_vec = np.array([i - x,0])
                             y_vec = np.array([0,j - y])
-                            print(dot_prod)
                             distance = math.sqrt(abs(x - i)**2 + abs(y - j)**2)
                             change = advection_equation(copy_grid[i][j].sink_velocity, self.grid[x][y].concentration, area, distance) * self.time_length
                             copy_grid[x][y].add_concentration(-1 * change)
