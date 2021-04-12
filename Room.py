@@ -143,10 +143,10 @@ class Room:
 
         self.width = self.grid[0][0].width
 
-        # self.grid[self.num_rows-1][self.center_col].advec_vec = ("u", .05)
-        self.grid[self.num_rows-1][self.center_col].sink = True
-        # Keep this velocity really low, just try without advection right now, anything below .3 m/s
-        self.grid[self.num_rows - 1][self.center_col].sink_velocity = 0.005
+        self.grid[0][0].source = True
+        self.grid[0][0].pressure_delta = 1000000000
+        self.grid[self.num_rows-1][self.num_cols-1].sink = True
+        self.grid[self.num_rows-1][self.num_cols-1].pressure_delta = 9000000
 
         if self.moving_agent:
             self.grid[0][0].agent = self.agent_to_move
@@ -249,7 +249,7 @@ class Room:
                 else:
                     self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
         self.efficient_spread()
-        # self.advection()
+        self.advection()
         self.actual_mass = 0
         for i in range(self.num_rows):
             for j in range(self.num_cols):
@@ -259,10 +259,10 @@ class Room:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
                 else:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
-        if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
-            print('mass conserved.')
-        else:
-            print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
+        # if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
+        #     print('mass conserved.')
+        # else:
+        #     print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
@@ -413,24 +413,48 @@ class Room:
                 affected_vector.append(cur_cor)
         return affected_vector
 
-    def new_advection(self):
-        copy_grid = copy.deepcopy(self.grid)
+    def advection(self):
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                continue
-                # get pressure TODO: Get pressure function
-                # check if cell is source
-                    # add pressure
-                # check if cell is sink
-                    # add negative pressure
-                # find the proportion of aerosol mols in total number of mols
-                # find additional mols of air from new pressure, add to total mols of cell
-                # use get_coordinate_list to find adjacent cells, iterate
-                    # calculate pressure of surrounding each cell, store in array
-                    # calculate n1*p2/p1 - n (for adj cell), add to total sum
-                # TODO: figure out how to get from total mols transferred to mols of aerosol transfered
+                self.grid[i][j].update_pressure()
+                self.grid[i][j].update_w_mol_prop()
+        copy_grid = copy.deepcopy(self.grid)
 
-    def advection(self):
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                pressures = []
+                aerosol_props = []
+                for coor in self.get_coordinate_list(i, j):
+                    # add pressure to array
+                    try:
+                        pressures.append(copy_grid[i][j].pressure - copy_grid[coor[0]][coor[1]].pressure)
+                        aerosol_props.append(copy_grid[coor[0]][coor[1]].mol_w_prop)
+                    except IndexError:
+                        pass
+                # calculate delta pressure
+                delta_pressure = sum(pressures)/len(pressures)
+
+                if self.grid[i][j].agent == None:
+                    volume = copy_grid[i][j].width**2*copy_grid[i][j].height
+                else:
+                    volume = copy_grid[i][j].width**2*copy_grid[i][j].height- copy_grid[i][j].agent.volume
+
+                # calculate delta mols
+                delta_mols = delta_pressure*volume/(copy_grid[i][j].gas_const*copy_grid[i][j].temperature)
+
+                copy_grid[i][j].mols -= delta_mols
+                delta_aerosol_mols = 0
+                if delta_mols > 0:
+                    delta_aerosols_mols = abs(delta_mols*copy_grid[i][j].mol_w_prop)
+                    delta_aerosol_mass = delta_aerosols_mols*copy_grid[i][j].molar_mass_w
+                    copy_grid[i][j].concentration -= (delta_aerosol_mass/volume)
+                elif delta_mols < 0:
+                    delta_aerosols_mols = abs(delta_mols*(sum(aerosol_props)/len(aerosol_props)))
+                    delta_aerosol_mass = delta_aerosols_mols*copy_grid[i][j].molar_mass_w
+                    copy_grid[i][j].concentration += (delta_aerosol_mass/volume)
+
+
+    def old_advection(self):
         copy_grid = copy.deepcopy(self.grid)
         for i in range(self.num_rows):
             for j in range(self.num_cols):

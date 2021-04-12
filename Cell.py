@@ -38,20 +38,32 @@ class Cell:
 
         self.sink = False
         self.source = False
+        self.pressure_delta = 0.0005
 
         self.temperature = sim_params["TEMPERATURE"]
         self.gas_const = sim_params["GAS_CONST"]
-        self.mols = sim_params["MOLS"]*width**2*height
+        self.mols = sim_params["MOLS"]*self.width**2*self.height
         self.molar_mass_a = sim_params["MOLAR_MASS_A"]
         self.molar_mass_w = sim_params["MOLAR_MASS_W"]
         self.pressure = self.update_pressure()
-        self.mol_w_prop
+        self.mol_w_prop = self.update_w_mol_prop()
 
     def update_pressure(self):
-        self.pressure = self.mols*self.gas_const*self.temperature/(self.width**2*self.height)
+        if self.agent == None:
+            self.pressure = self.mols*self.gas_const*self.temperature/(self.width**2*self.height)
+        else:
+            self.pressure = self.mols*self.gas_const*self.temperature/(self.width**2*self.height - self.agent.volume)
+        # check if cell is source
+        if self.source:
+            # add pressure
+            self.pressure += self.pressure_delta
+        # check if cell is sink
+        if self.sink:
+            # add negative pressure
+            self.pressure -= self.pressure_delta
 
     def update_w_mol_prop(self):
-        self.mol_w_prop = self.concentration*width**2*height/self.molar_mass_w / self.mols
+        self.mol_w_prop = self.concentration*self.width**2*self.height/self.molar_mass_w / self.mols
 
     def get_color(self):
         """Represent the color of the cell by the concentration inside."""
