@@ -37,7 +37,16 @@ class Cell:
         self.advec_vec = None
 
         self.sink = False
-        self.sink_velocity = 0
+        self.source = False
+
+        self.temperature = sim_params["TEMPERATURE"]
+        self.gas_const = sim_params["GAS_CONST"]
+        self.mols = sim_params["MOLS"]*width**2*height
+        self.molar_mass_a = sim_params["MOLAR_MASS_A"]
+        self.molar_mass_w = sim_params["MOLAR_MASS_W"]
+
+    def get_w_mol_prop(self):
+        return self.concentration*width**2*height/self.molar_mass_w / self.mols
 
     def get_color(self):
         """Represent the color of the cell by the concentration inside."""

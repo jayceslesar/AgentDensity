@@ -216,6 +216,7 @@ class Room:
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 # check if agent is not in cell
+                self.grid[i][j].temperature +=1
                 if self.grid[i][j].agent is None:
                     continue
 
@@ -411,6 +412,23 @@ class Room:
                 cur_cor = (coordinate[0], j)
                 affected_vector.append(cur_cor)
         return affected_vector
+
+    def new_advection(self):
+        copy_grid = copy.deepcopy(self.grid)
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
+                continue
+                # get pressure TODO: Get pressure function
+                # check if cell is source
+                    # add pressure
+                # check if cell is sink
+                    # add negative pressure
+                # find the proportion of aerosol mols in total number of mols
+                # find additional mols of air from new pressure, add to total mols of cell
+                # use get_coordinate_list to find adjacent cells, iterate
+                    # calculate pressure of surrounding each cell, store in array
+                    # calculate n1*p2/p1 - n (for adj cell), add to total sum
+                # TODO: figure out how to get from total mols transferred to mols of aerosol transfered
 
     def advection(self):
         copy_grid = copy.deepcopy(self.grid)
