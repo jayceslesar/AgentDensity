@@ -1,7 +1,7 @@
 
 
 class Cell:
-    def __init__(self, row: int, column: int, width: float, height: float, Agent=None):
+    def __init__(self, row: int, column: int, sim_params: dict, Agent=None):
         """Initialize a cell class
 
         Args:
@@ -25,8 +25,8 @@ class Cell:
         self.column = column
         self.color = (255, 255, 255)
         self.concentration = 0
-        self.width = width  # in meters
-        self.height = height  # in meters
+        self.width = sim_params['CELL_WIDTH']  # in meters
+        self.height = sim_params['CELL_HEIGHT']  # in meters
         # 0.004 for ss
 
         self.real_diffusivity = 2.83e-5
@@ -37,7 +37,16 @@ class Cell:
         self.advec_vec = None
 
         self.sink = False
-        self.sink_velocity = 0
+        self.source = False
+
+        self.temperature = sim_params["TEMPERATURE"]
+        self.gas_const = sim_params["GAS_CONST"]
+        self.mols = sim_params["MOLS"]*width**2*height
+        self.molar_mass_a = sim_params["MOLAR_MASS_A"]
+        self.molar_mass_w = sim_params["MOLAR_MASS_W"]
+
+    def get_w_mol_prop(self):
+        return self.concentration*width**2*height/self.molar_mass_w / self.mols
 
     def get_color(self):
         """Represent the color of the cell by the concentration inside."""
