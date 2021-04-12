@@ -44,9 +44,14 @@ class Cell:
         self.mols = sim_params["MOLS"]*width**2*height
         self.molar_mass_a = sim_params["MOLAR_MASS_A"]
         self.molar_mass_w = sim_params["MOLAR_MASS_W"]
+        self.pressure = self.update_pressure()
+        self.mol_w_prop
 
-    def get_w_mol_prop(self):
-        return self.concentration*width**2*height/self.molar_mass_w / self.mols
+    def update_pressure(self):
+        self.pressure = self.mols*self.gas_const*self.temperature/(self.width**2*self.height)
+
+    def update_w_mol_prop(self):
+        self.mol_w_prop = self.concentration*width**2*height/self.molar_mass_w / self.mols
 
     def get_color(self):
         """Represent the color of the cell by the concentration inside."""
