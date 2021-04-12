@@ -72,7 +72,6 @@ class Room:
             exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
             self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
             # Dont change this
-            # TODO: @carter fix this
             # self.agent_to_move.intake_per_step = self.agent_to_move.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
             self.agent_to_move.infectious = True
             self.n += 1
@@ -98,7 +97,7 @@ class Room:
             # columns
             for j in range(self.num_cols):
                 if i % 2 == 0:
-                    row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT']))
+                    row.append(Cell.Cell(i, j, self.sim_params))
                 elif j % 2 != 0:
                     # Don't change this
                     # if np.random.randint(2) == 0:
@@ -106,17 +105,18 @@ class Room:
                     # else:
                     #     production_rate = self.sim_params['EXHALE_MASK_FACTOR'] * np.random.choice(self.infected_production_rates)
                     production_rate = np.random.exponential(scale=400) / 0.001
+                    # NOT CURRENTLY IN USE
                     exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
+
                     a = Agent.Agent(self.n, i, j, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
-                    # TODO: @carter fix this
                     # a.intake_per_step = a.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
                     if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
                         a.infectious = True
                         self.initial_agent = a
-                    row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT'], a))
+                    row.append(Cell.Cell(i, j, self.sim_params, a))
                     self.n += 1
                 else:
-                    row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT']))
+                    row.append(Cell.Cell(i, j, self.sim_params))
             self.grid.append(row)
 
         # extra two rows for teacher/professor (they are against a wall)
@@ -135,11 +135,10 @@ class Room:
                         production_rate = np.random.exponential(scale=400) / 0.001
                         exposure_boundary = np.random.uniform(self.sim_params['EXPOSURE_LBOUND'], self.sim_params['EXPOSURE_UBOUND'])
                         a = Agent.Agent(self.n, i, j, self.seed, self.sim_params['INHALE_MASK_FACTOR'], self.sim_params['EXHALE_MASK_FACTOR'], production_rate, exposure_boundary)
-                        # TODO: @carter fix this
                         # a.intake_per_step = a.intake_per_step * self.sim_params['INHALE_MASK_FACTOR']
-                        row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT'], a))
+                        row.append(Cell.Cell(i, j, self.sim_params, a))
                     else:
-                        row.append(Cell.Cell(i, j, self.sim_params['CELL_WIDTH'], self.sim_params['CELL_HEIGHT']))
+                        row.append(Cell.Cell(i, j, self.sim_params))
                 self.grid.append(row)
 
         self.width = self.grid[0][0].width
@@ -249,7 +248,7 @@ class Room:
                 else:
                     self.ideal_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
         self.efficient_spread()
-        self.advection()
+        # self.advection()
         self.actual_mass = 0
         for i in range(self.num_rows):
             for j in range(self.num_cols):
@@ -259,10 +258,10 @@ class Room:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
                 else:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
-        # if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
-        #     print('mass conserved.')
-        # else:
-        #     print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
+        if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
+            print('mass conserved.')
+        else:
+            print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration

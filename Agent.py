@@ -2,6 +2,7 @@ import numpy as np
 
 
 class Agent:
+    # TODO: change params to just the sims_param dict
     def __init__(self, number: int, row: int, col: int, seed: int, exhale_mask_factor: float, inhale_mask_factor: float, production_rate: float,
                  exposure_boundary: float, intake_per_step=None):
         # np.random.seed(seed)

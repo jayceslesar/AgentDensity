@@ -1,7 +1,7 @@
 
 
 class Cell:
-    def __init__(self, row: int, column: int, width: float, height: float, Agent=None):
+    def __init__(self, row: int, column: int, sim_params: dict, Agent=None):
         """Initialize a cell class
 
         Args:
@@ -25,8 +25,8 @@ class Cell:
         self.column = column
         self.color = (255, 255, 255)
         self.concentration = 0
-        self.width = width  # in meters
-        self.height = height  # in meters
+        self.width = sim_params['CELL_WIDTH']  # in meters
+        self.height = sim_params['CELL_HEIGHT']  # in meters
         # 0.004 for ss
 
         self.real_diffusivity = 2.83e-5
