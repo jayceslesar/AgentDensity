@@ -144,9 +144,9 @@ class Room:
         self.width = self.grid[0][0].width
 
         self.grid[0][0].source = True
-        self.grid[0][0].pressure_delta = 1000000000
+        self.grid[0][0].pressure_delta = 1000000
         self.grid[self.num_rows-1][self.num_cols-1].sink = True
-        self.grid[self.num_rows-1][self.num_cols-1].pressure_delta = 9000000
+        self.grid[self.num_rows-1][self.num_cols-1].pressure_delta = 1000000
 
         if self.moving_agent:
             self.grid[0][0].agent = self.agent_to_move
@@ -204,7 +204,7 @@ class Room:
 
     def _step(self):
         # print(self.steps_taken)
-        # print([[self.grid[i][j].concentration for j in range(self.num_cols)] for i in range(self.num_rows)])
+        print([[self.grid[i][j].mols for j in range(self.num_cols)] for i in range(self.num_rows)])
         # print(self.grid[0][0].concentration)
         """Represents one step in the simulation."""
         if self.moving_agent:
@@ -427,31 +427,32 @@ class Room:
                 for coor in self.get_coordinate_list(i, j):
                     # add pressure to array
                     try:
-                        pressures.append(copy_grid[i][j].pressure - copy_grid[coor[0]][coor[1]].pressure)
-                        aerosol_props.append(copy_grid[coor[0]][coor[1]].mol_w_prop)
+                        pressures.append(self.grid[i][j].pressure - self.grid[coor[0]][coor[1]].pressure)
+                        aerosol_props.append(self.grid[coor[0]][coor[1]].mol_w_prop)
                     except IndexError:
                         pass
                 # calculate delta pressure
                 delta_pressure = sum(pressures)/len(pressures)
 
                 if self.grid[i][j].agent == None:
-                    volume = copy_grid[i][j].width**2*copy_grid[i][j].height
+                    volume = self.grid[i][j].width**2*self.grid[i][j].height
                 else:
-                    volume = copy_grid[i][j].width**2*copy_grid[i][j].height- copy_grid[i][j].agent.volume
+                    volume = self.grid[i][j].width**2*self.grid[i][j].height- self.grid[i][j].agent.volume
 
                 # calculate delta mols
-                delta_mols = delta_pressure*volume/(copy_grid[i][j].gas_const*copy_grid[i][j].temperature)
+                delta_mols = delta_pressure*volume/(self.grid[i][j].gas_const*self.grid[i][j].temperature)
 
                 copy_grid[i][j].mols -= delta_mols
                 delta_aerosol_mols = 0
                 if delta_mols > 0:
-                    delta_aerosols_mols = abs(delta_mols*copy_grid[i][j].mol_w_prop)
-                    delta_aerosol_mass = delta_aerosols_mols*copy_grid[i][j].molar_mass_w
+                    delta_aerosols_mols = abs(delta_mols*self.grid[i][j].mol_w_prop)
+                    delta_aerosol_mass = delta_aerosols_mols*self.grid[i][j].molar_mass_w
                     copy_grid[i][j].concentration -= (delta_aerosol_mass/volume)
                 elif delta_mols < 0:
                     delta_aerosols_mols = abs(delta_mols*(sum(aerosol_props)/len(aerosol_props)))
-                    delta_aerosol_mass = delta_aerosols_mols*copy_grid[i][j].molar_mass_w
+                    delta_aerosol_mass = delta_aerosols_mols*self.grid[i][j].molar_mass_w
                     copy_grid[i][j].concentration += (delta_aerosol_mass/volume)
+        self.grid = copy_grid
 
 
     def old_advection(self):

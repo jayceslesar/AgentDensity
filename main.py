@@ -7,6 +7,7 @@ from pygame.locals import *
 from pygame.rect import *
 import csv
 import json
+import time
 
 
 with open('sim_params.json') as f:
@@ -77,7 +78,7 @@ def viz(room):
             stills.append(os.path.join(path, "step" + str(room.steps_taken) + ".png"))
 
         steps_taken += 1
-        # time.sleep(0.5)
+        time.sleep(.1)
         # pygame.quit()
 
     with open(room.filename, 'w') as csvfile:
