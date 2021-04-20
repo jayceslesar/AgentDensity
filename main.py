@@ -9,6 +9,7 @@ import csv
 import json
 
 
+
 with open('sim_params.json') as f:
     sim_params = json.load(f)
 
@@ -23,7 +24,12 @@ def draw(room, step):
                                height_per_block, height_per_block)
 
             global SCREEN
-            pygame.draw.rect(SCREEN, room.grid[i][j].get_color(), rect)
+            try:
+                pygame.draw.rect(SCREEN, room.grid[i][j].get_color(), rect)
+            except TypeError:
+                print(room.grid[i][j].get_color())
+                print(room.grid[i][j].concentration)
+                os._exit(0)
             # print("The color of cell " + str(i) + str(j) + " is " + str(grid[i][j].get_color()))
 
             if room.grid[i][j].agent is not None:

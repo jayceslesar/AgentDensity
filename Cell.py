@@ -29,6 +29,11 @@ class Cell:
         self.height = sim_params['CELL_HEIGHT']  # in meters
         # 0.004 for ss
 
+        if self.agent == None:
+            self.volume = self.width ** 2 * self.height
+        else:
+            self.volume = self.width ** 2 * self.height - self.agent.volume
+
         self.real_diffusivity = 2.83e-5
         self.micro_current_factor = 1000
         self.diffusivity = self.micro_current_factor*self.real_diffusivity
@@ -39,36 +44,26 @@ class Cell:
         self.sink = False
         self.source = False
         self.pressure_delta = 0.0005
+        self.source_mols_delta = 20000
+        self.sink_mols_delta = 100
 
         self.temperature = sim_params["TEMPERATURE"]
         self.gas_const = sim_params["GAS_CONST"]
         self.mols = sim_params["MOLS"]*self.width**2*self.height
+        self.ideal_mols = sim_params["MOLS"]*self.width**2*self.height
         self.molar_mass_a = sim_params["MOLAR_MASS_A"]
         self.molar_mass_w = sim_params["MOLAR_MASS_W"]
-        self.pressure = self.update_pressure()
-        self.mol_w_prop = self.update_w_mol_prop()
+        self.mol_w_prop = self.concentration*self.width**2*self.height/self.molar_mass_w / self.mols
 
-    def update_pressure(self):
-        if self.agent == None:
-            self.pressure = self.mols*self.gas_const*self.temperature/(self.width**2*self.height)
-        else:
-            self.pressure = self.mols*self.gas_const*self.temperature/(self.width**2*self.height - self.agent.volume)
-        # check if cell is source
-        if self.source:
-            # add pressure
-            self.pressure += self.pressure_delta
-        # check if cell is sink
-        if self.sink:
-            # add negative pressure
-            self.pressure -= self.pressure_delta
+
 
     def update_w_mol_prop(self):
         self.mol_w_prop = self.concentration*self.width**2*self.height/self.molar_mass_w / self.mols
 
     def get_color(self):
         """Represent the color of the cell by the concentration inside."""
-        if self.concentration < 0:
-            print("concentration is less than 0!!!!!")
+        # if self.concentration < 0:
+        #     print("concentration is less than 0!!!!!")
         # print(self.concentration)
         if self.concentration < (self.color_upper_limit / 2):
             green = 255
@@ -92,8 +87,8 @@ class Cell:
     # For windows, there is no suction, just the diffusion pulling concentration out the window
     def add_concentration(self, term):
         self.concentration += term
-        if self.sink:
-            self.concentration = 0
+        # if self.sink:
+        #     self.concentration = 0
 
     def __str__(self):
         if self.agent is not None:

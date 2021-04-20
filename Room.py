@@ -144,7 +144,7 @@ class Room:
         self.width = self.grid[0][0].width
 
         self.grid[0][0].source = True
-        self.grid[0][0].pressure_delta = 1000000000
+        self.grid[0][0].pressure_delta = 0
         self.grid[self.num_rows-1][self.num_cols-1].sink = True
         self.grid[self.num_rows-1][self.num_cols-1].pressure_delta = 9000000
 
@@ -259,10 +259,10 @@ class Room:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
                 else:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
-        # if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
-        #     print('mass conserved.')
-        # else:
-        #     print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
+        if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
+            print('mass conserved.')
+        else:
+            print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
@@ -416,42 +416,54 @@ class Room:
     def advection(self):
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                self.grid[i][j].update_pressure()
                 self.grid[i][j].update_w_mol_prop()
+                if self.grid[i][j].source:
+                    self.grid[i][j].mols += self.grid[i][j].source_mols_delta
+                    if self.grid[i][j].mols < self.grid[i][j].ideal_mols:
+                        change = self.grid[i][j].ideal_mols - self.grid[i][j].mols
+                        self.grid[i][j].mols += change
+                if self.grid[i][j].sink:
+                    change = (self.grid[i][j].mols - self.grid[i][j].ideal_mols) + self.grid[i][j].sink_mols_delta
+                    # print("sink change", change, "mol prop", self.grid[i][j].mol_w_prop)
+                    self.grid[i][j].mols -= change
+                    self.grid[i][j].concentration -= (change * self.grid[i][j].mol_w_prop * self.grid[i][j].molar_mass_w) / self.grid[i][j].volume
+                    print("concentration", self.grid[i][j].concentration, "mols", self.grid[i][j].mols)
+                self.grid[i][j].update_w_mol_prop()
+
+
         copy_grid = copy.deepcopy(self.grid)
 
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                pressures = []
+                mols = []
                 aerosol_props = []
                 for coor in self.get_coordinate_list(i, j):
                     # add pressure to array
                     try:
-                        pressures.append(copy_grid[i][j].pressure - copy_grid[coor[0]][coor[1]].pressure)
-                        aerosol_props.append(copy_grid[coor[0]][coor[1]].mol_w_prop)
+                        mols.append(self.grid[i][j].mols - self.grid[coor[0]][coor[1]].mols)
+                        aerosol_props.append(self.grid[coor[0]][coor[1]].mol_w_prop)
                     except IndexError:
                         pass
                 # calculate delta pressure
-                delta_pressure = sum(pressures)/len(pressures)
-
-                if self.grid[i][j].agent == None:
-                    volume = copy_grid[i][j].width**2*copy_grid[i][j].height
-                else:
-                    volume = copy_grid[i][j].width**2*copy_grid[i][j].height- copy_grid[i][j].agent.volume
+                avg_mols = sum(mols)/len(mols)
 
                 # calculate delta mols
-                delta_mols = delta_pressure*volume/(copy_grid[i][j].gas_const*copy_grid[i][j].temperature)
-
-                copy_grid[i][j].mols -= delta_mols
+                copy_grid[i][j].mols -= avg_mols
                 delta_aerosol_mols = 0
-                if delta_mols > 0:
-                    delta_aerosols_mols = abs(delta_mols*copy_grid[i][j].mol_w_prop)
-                    delta_aerosol_mass = delta_aerosols_mols*copy_grid[i][j].molar_mass_w
-                    copy_grid[i][j].concentration -= (delta_aerosol_mass/volume)
-                elif delta_mols < 0:
-                    delta_aerosols_mols = abs(delta_mols*(sum(aerosol_props)/len(aerosol_props)))
-                    delta_aerosol_mass = delta_aerosols_mols*copy_grid[i][j].molar_mass_w
-                    copy_grid[i][j].concentration += (delta_aerosol_mass/volume)
+                if avg_mols > 0:
+                    delta_aerosols_mols = abs(avg_mols*self.grid[i][j].mol_w_prop)
+                    delta_aerosol_mass = delta_aerosols_mols*self.grid[i][j].molar_mass_w
+                    copy_grid[i][j].concentration -= (delta_aerosol_mass/copy_grid[i][j].volume)
+                    if copy_grid[i][j].concentration < 0:
+                        print("less than 0 at ", i, j)
+                        print("concentration", copy_grid[i][j].concentration)
+                        print("Mols", copy_grid[i][j].mols)
+                elif avg_mols < 0:
+                    delta_aerosols_mols = abs(avg_mols*(sum(aerosol_props)/len(aerosol_props)))
+                    delta_aerosol_mass = delta_aerosols_mols*self.grid[i][j].molar_mass_w
+                    copy_grid[i][j].concentration += (delta_aerosol_mass/copy_grid[i][j].volume)
+
+        self.grid = copy_grid
 
 
     def old_advection(self):
