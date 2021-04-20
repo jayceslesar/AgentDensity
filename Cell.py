@@ -37,48 +37,49 @@ class Cell:
         self.micro_current_factor = 1000
         self.diffusivity = self.micro_current_factor*self.real_diffusivity
         # .75 for ss
-        self.color_upper_limit = 0.000000000000000075
+        self.color_upper_limit = 0.00000000000000000075
         self.advec_vec = None
 
         self.sink = False
         self.source = False
-        self.pressure_delta = 0
+        self.acr = 0
+        # self.pressure_delta = 0
 
-        self.temperature = sim_params["TEMPERATURE"]
-        self.gas_const = sim_params["GAS_CONST"]
-        self.mols = sim_params["MOLS"]*self.width**2*self.height
-        self.molar_mass_a = sim_params["MOLAR_MASS_A"]
-        self.molar_mass_w = sim_params["MOLAR_MASS_W"]
-        self.pressure = self.mols*self.gas_const*self.temperature/self.volume
-        self.mol_w_prop = ((self.concentration*self.volume)/self.molar_mass_w) / self.mols
+        # self.temperature = sim_params["TEMPERATURE"]
+        # self.gas_const = sim_params["GAS_CONST"]
+        # self.mols = sim_params["MOLS"]*self.width**2*self.height
+        # self.molar_mass_a = sim_params["MOLAR_MASS_A"]
+        # self.molar_mass_w = sim_params["MOLAR_MASS_W"]
+        # self.pressure = self.mols*self.gas_const*self.temperature/self.volume
+        # self.mol_w_prop = ((self.concentration*self.volume)/self.molar_mass_w) / self.mols
 
-    def update_pressure(self):
-        volume = 0
-        if self.agent == None:
-            volume = self.width**2*self.height
-        else:
-            volume = self.width**2*self.height - self.agent.volume
+    # def update_pressure(self):
+    #     volume = 0
+    #     if self.agent == None:
+    #         volume = self.width**2*self.height
+    #     else:
+    #         volume = self.width**2*self.height - self.agent.volume
 
-        if self.source:
-            # add pressure
-            self.pressure += self.pressure_delta
-            self.mols += (self.pressure*volume)/(self.gas_const*self.temperature)
-        # check if cell is sink
-        if self.sink:
-            # add negative pressure
-            self.pressure -= self.pressure_delta
-            self.concentration -= self.mols*self.mol_w_prop
-            self.mols -= (self.pressure*volume)/(self.gas_const*self.temperature)
+    #     if self.source:
+    #         # add pressure
+    #         self.pressure += self.pressure_delta
+    #         self.mols += (self.pressure*volume)/(self.gas_const*self.temperature)
+    #     # check if cell is sink
+    #     if self.sink:
+    #         # add negative pressure
+    #         self.pressure -= self.pressure_delta
+    #         self.concentration -= self.mols*self.mol_w_prop
+    #         self.mols -= (self.pressure*volume)/(self.gas_const*self.temperature)
 
 
-        self.pressure = self.mols*self.gas_const*self.temperature/volume
+    #     self.pressure = self.mols*self.gas_const*self.temperature/volume
 
-    def update_w_mol_prop(self):
-        if self.agent == None:
-            volume = self.width**2*self.height
-        else:
-            volume = self.width**2*self.height - self.agent.volume
-        self.mol_w_prop = ((self.concentration*volume)/self.molar_mass_w) / self.mols
+    # def update_w_mol_prop(self):
+    #     if self.agent == None:
+    #         volume = self.width**2*self.height
+    #     else:
+    #         volume = self.width**2*self.height - self.agent.volume
+    #     self.mol_w_prop = ((self.concentration*volume)/self.molar_mass_w) / self.mols
 
     def get_color(self):
         """Represent the color of the cell by the concentration inside."""

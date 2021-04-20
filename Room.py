@@ -91,6 +91,7 @@ class Room:
         self.ideal_mass = 0.0
         self.actual_mass = 0.0
         self.falloff_rate = 1.7504e-4
+        self.total_volume = 0
 
         for i in range(self.num_rows):
             row = []
@@ -117,7 +118,11 @@ class Room:
                     self.n += 1
                 else:
                     row.append(Cell.Cell(i, j, self.sim_params))
+                self.total_volume += row[j].volume
             self.grid.append(row)
+
+        print("total volume", self.total_volume)
+        print(self.num_rows)
 
         # extra two rows for teacher/professor (they are against a wall)
         if self.sim_params['HAVE_TEACHER']:
@@ -144,10 +149,9 @@ class Room:
         self.width = self.grid[0][0].width
 
         self.grid[0][0].source = True
-        self.grid[0][0].pressure_delta = 1000000
+        self.grid[0][0].acr = 0.0005861 * self.total_volume
         self.grid[self.num_rows-1][self.num_cols-1].sink = True
-        self.grid[self.num_rows-1][self.num_cols-1].pressure_delta = 1000000
-
+        self.grid[self.num_rows-1][self.num_cols-1].acr = 0.0003561 * self.total_volume
         if self.moving_agent:
             self.grid[0][0].agent = self.agent_to_move
 
@@ -204,7 +208,6 @@ class Room:
 
     def _step(self):
         # print(self.steps_taken)
-        print([[self.grid[i][j].mols for j in range(self.num_cols)] for i in range(self.num_rows)])
         # print(self.grid[0][0].concentration)
         """Represents one step in the simulation."""
         if self.moving_agent:
@@ -216,7 +219,6 @@ class Room:
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 # check if agent is not in cell
-                self.grid[i][j].temperature +=1
                 if self.grid[i][j].agent is None:
                     continue
 
@@ -259,10 +261,10 @@ class Room:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
                 else:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
-        # if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
-        #     print('mass conserved.')
-        # else:
-        #     print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
+        if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
+            print('mass conserved.')
+        else:
+            print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
@@ -271,7 +273,7 @@ class Room:
         ratio = far/close
         # print(diff)
 
-        self.rows.append([str(self.steps_taken), str(diff), str(close), str(far), str(ratio)])
+        # self.rows.append([str(self.steps_taken), str(diff), str(close), str(far), str(ratio)])
         # print (self.steps_taken)
 
     def take_second(self, element):
@@ -414,98 +416,68 @@ class Room:
         return affected_vector
 
     def advection(self):
-        for i in range(self.num_rows):
-            for j in range(self.num_cols):
-                self.grid[i][j].update_pressure()
-                self.grid[i][j].update_w_mol_prop()
         copy_grid = copy.deepcopy(self.grid)
-
+        source_sink_list = []
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                pressures = []
-                aerosol_props = []
-                for coor in self.get_coordinate_list(i, j):
-                    # add pressure to array
-                    try:
-                        pressures.append(self.grid[i][j].pressure - self.grid[coor[0]][coor[1]].pressure)
-                        aerosol_props.append(self.grid[coor[0]][coor[1]].mol_w_prop)
-                    except IndexError:
-                        pass
-                # calculate delta pressure
-                delta_pressure = sum(pressures)/len(pressures)
-
-                if self.grid[i][j].agent == None:
-                    volume = self.grid[i][j].width**2*self.grid[i][j].height
-                else:
-                    volume = self.grid[i][j].width**2*self.grid[i][j].height- self.grid[i][j].agent.volume
-
-                # calculate delta mols
-                delta_mols = delta_pressure*volume/(self.grid[i][j].gas_const*self.grid[i][j].temperature)
-
-                copy_grid[i][j].mols -= delta_mols
-                delta_aerosol_mols = 0
-                if delta_mols > 0:
-                    delta_aerosols_mols = abs(delta_mols*self.grid[i][j].mol_w_prop)
-                    delta_aerosol_mass = delta_aerosols_mols*self.grid[i][j].molar_mass_w
-                    copy_grid[i][j].concentration -= (delta_aerosol_mass/volume)
-                elif delta_mols < 0:
-                    delta_aerosols_mols = abs(delta_mols*(sum(aerosol_props)/len(aerosol_props)))
-                    delta_aerosol_mass = delta_aerosols_mols*self.grid[i][j].molar_mass_w
-                    copy_grid[i][j].concentration += (delta_aerosol_mass/volume)
-        self.grid = copy_grid
+                if copy_grid[i][j].sink:
+                    source_sink_list.append((i,j, True))
+                elif copy_grid[i][j].source:
+                    source_sink_list.append((i,j, False))
 
 
-    def old_advection(self):
-        copy_grid = copy.deepcopy(self.grid)
-        for i in range(self.num_rows):
-            for j in range(self.num_cols):
-                width_factor = self.grid[i][j].width
-                height_factor = self.grid[i][j].height
-                area = width_factor * height_factor
-                # print(copy_grid[i][j].advec_vec)
-                if copy_grid[i][j].advec_vec is not None:
-                    affected_vector = self.direct_vector(copy_grid[i][j].advec_vec[0], (i, j))
-                    for c in range(len(affected_vector)-1):
-                        distance = math.sqrt((i - affected_vector[c][0])**2 + (j - affected_vector[c][1])**2)*width_factor
-                        change = advection_equation(copy_grid[i][j].advec_vec[1], self.grid[affected_vector[c][0]][affected_vector[c][1]].concentration, area, distance)*self.time_length
-                        copy_grid[affected_vector[c+1][0]][affected_vector[c+1][1]].add_concentration(change)
-                        copy_grid[affected_vector[c][0]][affected_vector[c][1]].add_concentration(-1 * change)
+        # Implement pulling along vector
+        # create vector with x and y direct to create direction, the rate is given by magnitude/distance
+        # Look at angle of x and y vector and distribute to cells accordingly (45 degree example is half goes to diagonal and 1/4 goes to the others)
+        # Calculate (sphere around purifier gives you volume) flow rate volume/second is equal to velocity*area surface (spherical terms)
+            # Start with air changes per hour, calc volume of the room, divide by ten minutes, calculate vector
+        for cell_info in source_sink_list:
+            i = cell_info[0]
+            j = cell_info[1]
+            sink = cell_info[2]
+            area = self.grid[i][j].height*self.grid[i][j].width
+            for x in range(self.num_rows):
+                for y in range(self.num_cols):
+                    if x == i and y == j:
+                        continue
+                    if sink:
+                        x_component = j - y
+                        y_component = i - x
+                    else:
+                        x_component = y - i
+                        y_component = x - i
+                    sum_component = abs(x_component) + abs(y_component)
+                    x_proportion = abs(x_component)/sum_component
+                    y_proportion = abs(y_component)/sum_component
 
-                # Implement pulling along vector
-                # create vector with x and y direct to create direction, the rate is given by magnitude/distance
-                # Look at angle of x and y vector and distribute to cells accordingly (45 degree example is half goes to diagonal and 1/4 goes to the others)
-                # Calculate (sphere around purifier gives you volume) flow rate volume/second is equal to velocity*area surface (spherical terms)
-                    # Start with air changes per hour, calc volume of the room, divide by ten minutes, calculate vector
-                if copy_grid[i][j].sink and copy_grid[i][j].sink_velocity != 0:
-                    for x in range(self.num_rows):
-                        for y in range(self.num_cols):
-                            if x == i and y == j:
-                                continue
-                            # Get x and y components of the vector and sum them
-                            # Note, flipped them, because it just works out that way
-                            x_component = j - y
-                            y_component = i - x
-                            sum_component = abs(x_component) + abs(y_component)
-                            x_proportion = abs(x_component)/sum_component
-                            y_proportion = abs(y_component)/sum_component
+                    surface_area = (abs(x_component) + 1) * (abs(y_component) + 1)
+                    velocity = self.grid[i][j].acr / surface_area
+                    distance = math.sqrt(abs(x - i)**2 + abs(y - j)**2)
+                    change = advection_equation(velocity, self.grid[x][y].concentration, area, distance) * self.time_length
 
-                            distance = math.sqrt(abs(x - i)**2 + abs(y - j)**2)
-                            change = advection_equation(copy_grid[i][j].sink_velocity, self.grid[x][y].concentration, area, distance) * self.time_length
+                    amount_to_left_right = x_proportion * change
+                    amount_to_up_down = y_proportion * change
 
-                            amount_to_left_right = x_proportion * change
-                            amount_to_up_down = y_proportion * change
-                            copy_grid[x][y].add_concentration(-1 * change)
+                    copy_grid[x][y].add_concentration(-1 * change)
 
+                    skip_x = False
+                    skip_y = False
+                    if x_component > 0 and y+1 == self.num_cols:
+                        skip_x = True
+                        y_component += x_component
+                    if y_component > 0 and x + 1 == self.num_rows:
+                        skip_y = True
+                        x_component += y_component
 
-                            if x_component > 0:
-                                copy_grid[x][y + 1].add_concentration(amount_to_left_right)
-                            elif x_component < 0:
-                                copy_grid[x][y - 1].add_concentration(amount_to_left_right)
+                    if x_component > 0 and not skip_x:
+                        copy_grid[x][y + 1].add_concentration(amount_to_left_right)
+                    elif x_component < 0:
+                        copy_grid[x][y - 1].add_concentration(amount_to_left_right)
 
-                            if y_component < 0:
-                                copy_grid[x - 1][y].add_concentration(amount_to_up_down)
-                            elif y_component > 0:
-                                copy_grid[x + 1][y].add_concentration(amount_to_up_down)
+                    if y_component < 0:
+                        copy_grid[x - 1][y].add_concentration(amount_to_up_down)
+                    elif y_component > 0 and not skip_y:
+                        copy_grid[x + 1][y].add_concentration(amount_to_up_down)
 
         self.grid = copy_grid
 
