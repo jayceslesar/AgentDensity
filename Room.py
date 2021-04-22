@@ -149,9 +149,9 @@ class Room:
         self.width = self.grid[0][0].width
 
         self.grid[0][0].source = True
-        self.grid[0][0].acr = 0.0005861 * self.total_volume
+        self.grid[0][0].acr = 0.0001861 * self.total_volume
         self.grid[self.num_rows-1][self.num_cols-1].sink = True
-        self.grid[self.num_rows-1][self.num_cols-1].acr = 0.0003561 * self.total_volume
+        self.grid[self.num_rows-1][self.num_cols-1].acr = 0.0008333 * self.total_volume
         if self.moving_agent:
             self.grid[0][0].agent = self.agent_to_move
 
@@ -450,8 +450,10 @@ class Room:
                     x_proportion = abs(x_component)/sum_component
                     y_proportion = abs(y_component)/sum_component
 
+                    # multiply by width squared
                     surface_area = (abs(x_component) + 1) * (abs(y_component) + 1)
                     velocity = self.grid[i][j].acr / surface_area
+                    # multiply by width
                     distance = math.sqrt(abs(x - i)**2 + abs(y - j)**2)
                     change = advection_equation(velocity, self.grid[x][y].concentration, area, distance) * self.time_length
 
@@ -462,21 +464,48 @@ class Room:
 
                     skip_x = False
                     skip_y = False
+
                     if x_component > 0 and y+1 == self.num_cols:
                         skip_x = True
-                        y_component += x_component
+                    elif x_component < 0 and y - 1 == 0:
+                        skip_x = True
                     if y_component > 0 and x + 1 == self.num_rows:
                         skip_y = True
-                        x_component += y_component
+                    elif y_component < 0 and x - 1 == 0:
+                        skip_y = True
 
                     if x_component > 0 and not skip_x:
+                        if skip_y:
+                            try:
+                                copy_grid[x][y - 1].add_concentration(amount_to_up_down*.5)
+                                amount_to_left_right += amount_to_up_down*.5
+                            except:
+                                amount_to_left_right += amount_to_up_down
                         copy_grid[x][y + 1].add_concentration(amount_to_left_right)
-                    elif x_component < 0:
+                    elif x_component < 0 and not skip_x:
+                        if skip_y:
+                            try:
+                                copy_grid[x][y + 1].add_concentration(amount_to_up_down*.5)
+                                amount_to_left_right += amount_to_up_down*.5
+                            except:
+                                amount_to_left_right += amount_to_up_down
                         copy_grid[x][y - 1].add_concentration(amount_to_left_right)
 
-                    if y_component < 0:
+                    if y_component < 0 and not skip_y:
+                        if skip_x:
+                            try:
+                                copy_grid[x + 1][y].add_concentration(amount_to_left_right*.5)
+                                amount_to_up_down += amount_to_left_right*.5
+                            except:
+                                amount_to_up_down += amount_to_left_right
                         copy_grid[x - 1][y].add_concentration(amount_to_up_down)
                     elif y_component > 0 and not skip_y:
+                        if skip_x:
+                            try:
+                                copy_grid[x - 1][y].add_concentration(amount_to_left_right*.5)
+                                amount_to_up_down += amount_to_left_right*.5
+                            except:
+                                amount_to_up_down += amount_to_left_right
                         copy_grid[x + 1][y].add_concentration(amount_to_up_down)
 
         self.grid = copy_grid
