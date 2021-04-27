@@ -23,9 +23,8 @@ def ficks_law(diffusivity, concentration1, concentration2, area, length):
     return (float(numerator))/(float(length))
 
 
-def advection_equation(velocity, concentration, area, length):
-    numerator = float((concentration) * area * velocity)
-    return (float(numerator))/(float(length))
+def advection_equation(velocity, concentration, area):
+    return float((concentration) * area * velocity)
 
 
 class Room:
@@ -431,6 +430,7 @@ class Room:
         # Look at angle of x and y vector and distribute to cells accordingly (45 degree example is half goes to diagonal and 1/4 goes to the others)
         # Calculate (sphere around purifier gives you volume) flow rate volume/second is equal to velocity*area surface (spherical terms)
             # Start with air changes per hour, calc volume of the room, divide by ten minutes, calculate vector
+        # TODO multiply components by width and divide by what is returned by advec equation by volume of cell
         for cell_info in source_sink_list:
             i = cell_info[0]
             j = cell_info[1]
@@ -447,15 +447,14 @@ class Room:
                         x_component = y - i
                         y_component = x - i
                     sum_component = abs(x_component) + abs(y_component)
-                    x_proportion = abs(x_component)/sum_component
-                    y_proportion = abs(y_component)/sum_component
+                    x_proportion = self.grid[x][y].width * abs(x_component)/sum_component
+                    y_proportion = self.grid[x][y].width * abs(y_component)/sum_component
 
                     # multiply by width squared
                     surface_area = (abs(x_component) + 1) * (abs(y_component) + 1)
                     velocity = self.grid[i][j].acr / surface_area
                     # multiply by width
-                    distance = math.sqrt(abs(x - i)**2 + abs(y - j)**2)
-                    change = advection_equation(velocity, self.grid[x][y].concentration, area, distance) * self.time_length
+                    change = advection_equation(velocity, self.grid[x][y].concentration, area) * self.time_length / self.grid[x][y].volume
 
                     amount_to_left_right = x_proportion * change
                     amount_to_up_down = y_proportion * change
