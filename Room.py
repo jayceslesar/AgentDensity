@@ -17,7 +17,6 @@ import copy
 import math
 from scipy.stats import invgamma
 
-
 def ficks_law(diffusivity, concentration1, concentration2, area, length):
     numerator = float((concentration1 - concentration2) * area * diffusivity)
     return (float(numerator))/(float(length))
@@ -260,10 +259,10 @@ class Room:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor)
                 else:
                     self.actual_mass += self.grid[i][j].concentration*(width_factor**2*height_factor - self.grid[i][j].agent.volume)
-        if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
-            print('mass conserved.')
-        else:
-            print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
+        # if abs(self.ideal_mass - self.actual_mass) / self.ideal_mass <= .01:
+        #     print('mass conserved.')
+        # else:
+        #     print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
         self.steps_taken += 1
 
         close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
@@ -451,9 +450,12 @@ class Room:
                     y_proportion = abs(y_component)/sum_component
 
                     # multiply by width squared
+                    # TODO: check if this should be surface area of cube/sphere or area of square
+                        # it should be surface area, change to surface area of semi sphere
                     surface_area = (abs(x_component) + 1) * (abs(y_component) + 1)
                     velocity = self.grid[i][j].acr / surface_area
                     # multiply by width
+                    #TODO: change update concentration to update mass.
                     change = advection_equation(velocity, self.grid[x][y].concentration, area) * self.time_length / self.grid[x][y].volume
 
                     amount_to_left_right = x_proportion * change

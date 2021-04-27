@@ -1,6 +1,7 @@
 
 
 class Cell:
+    # TODO: Parameterize everything using sim_params.json
     def __init__(self, row: int, column: int, sim_params: dict, Agent=None):
         """Initialize a cell class
 
