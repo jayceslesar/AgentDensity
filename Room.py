@@ -447,8 +447,8 @@ class Room:
                         x_component = y - i
                         y_component = x - i
                     sum_component = abs(x_component) + abs(y_component)
-                    x_proportion = self.grid[x][y].width * abs(x_component)/sum_component
-                    y_proportion = self.grid[x][y].width * abs(y_component)/sum_component
+                    x_proportion = abs(x_component)/sum_component
+                    y_proportion = abs(y_component)/sum_component
 
                     # multiply by width squared
                     surface_area = (abs(x_component) + 1) * (abs(y_component) + 1)
