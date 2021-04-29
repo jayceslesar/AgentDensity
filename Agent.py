@@ -2,9 +2,7 @@ import numpy as np
 
 
 class Agent:
-    # TODO: change params to just the sims_param dict
-    # TODO: move undef constants into sim_params
-    def __init__(self, number: int, row: int, col: int, seed: int, exhale_mask_factor: float, inhale_mask_factor: float, production_rate: float, intake_per_step=None):
+    def __init__(self, number: int, row: int, col: int, seed: int, production_rate: float, sim_params: dict):
         # np.random.seed(seed)
         """
         Agent constructor
@@ -20,28 +18,28 @@ class Agent:
         self.row = row
         self.col = col
         # for how much concentration of virus agent is producing at a given time
-        self.breathe_volume = 0.0005
-        self.breathe_per_second = 0.233
+        self.breathe_volume = sim_params["BREATHE_VOLUME"]
+        self.breathe_per_second = sim_params["BREATHE_PER_SECOND"]
+        # mask effectiveness
+        self.exhale_mask_factor = sim_params["INHALE_MASK_FACTOR"]
+        self.inhale_mask_factor = sim_params["EXHALE_MASK_FACTOR"]
         # NOTE: aerosol volume is for found using formula for a sphere
-        self.production_rate = production_rate * self.breathe_volume * self.breathe_per_second*5.445427e-20 * exhale_mask_factor
-        self.intake_per_step = self.breathe_per_second * self.breathe_volume * inhale_mask_factor
+        self.production_rate = production_rate * self.breathe_volume * self.breathe_per_second*sim_params["AEROSOL_VOLUME"] * self.exhale_mask_factor
+        self.intake_per_step = self.breathe_per_second * self.breathe_volume * self.inhale_mask_factor
 
         # tracking variables for run specific decisions
         self.untouched = True
         self.infectious = False
         self.recovered = False
         self.exposed = False
-        self.volume = 0.062
+        self.volume = sim_params["AGENT_VOLUME"]
 
         # counter variables for run specific desicions
         self.total_exposure = 0  # for stat tracking
         self.steps_exposed = 0
         self.steps_infectious = 0
 
-        # mask effectiveness
-        self.exhale_mask_factor = exhale_mask_factor
-        self.inhale_mask_factor = inhale_mask_factor
-
+        # TODO: Figure out if we want to keep any of this
         # stats for network
         self.num_infected = 0  # for stat tracking
 
