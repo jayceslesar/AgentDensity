@@ -25,7 +25,7 @@ def ficks_law(diffusivity, concentration1, concentration2, area, length):
 def advection_equation(velocity, concentration, area):
     return float((concentration) * area * velocity)
 
-
+# TODO: write new data saving function for stats we are interested in (record auc for each agent, row and column for each agent, iteration, then some info about the simulation itself (mask effect, sink/source position))
 class Room:
     def __init__(self, sim_params: dict):
         np.random.seed(sim_params['SEED'])
@@ -47,7 +47,7 @@ class Room:
 
         if self.sim_params['HAVE_TEACHER']:
             self.expected_n += 1
-        # get center of grid to place initial infectious agent
+        # get center of grid to place initial infectious agent (might not need)
         if not self.moving_agent:
             self.initial_infectious_row = [i for i in range(self.num_rows) if int(i) % 2 != 0]
             # center row
@@ -94,9 +94,9 @@ class Room:
 
                     a = Agent.Agent(self.n, i, j, self.seed, production_rate, self.sim_params)
 
-                    if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
-                        a.infectious = True
-                        self.initial_agent = a
+                    # if i == self.initial_infectious_row and j == self.initial_infectious_col and not self.moving_agent:
+                    #     a.infectious = True
+                    #     self.initial_agent = a
                     row.append(Cell.Cell(i, j, self.sim_params, a))
                     self.n += 1
                 else:
@@ -105,7 +105,6 @@ class Room:
             self.grid.append(row)
 
         # extra two rows for teacher/professor (they are against a wall)
-        # TODO: set it so that the teacher is the infected individual
         if self.sim_params['HAVE_TEACHER']:
             extra_start = self.num_rows
             self.num_rows += 2
@@ -115,6 +114,8 @@ class Room:
                     if j == self.center_col and i != self.num_rows - 1:
                         production_rate = np.random.exponential(scale=400) / 0.001
                         a = Agent.Agent(self.n, i, j, self.seed, production_rate, self.sim_params)
+                        a.infectious = True
+                        self.initial_agent = a
                         row.append(Cell.Cell(i, j, self.sim_params, a))
                     else:
                         row.append(Cell.Cell(i, j, self.sim_params))
@@ -122,12 +123,12 @@ class Room:
 
         self.width = self.grid[0][0].width
 
-        # TODO: parameterize this
         # Set sink and source
-        self.grid[0][0].source = True
-        self.grid[0][0].acr = 0.0001861 * self.total_volume
-        self.grid[self.num_rows-1][self.num_cols-1].sink = True
-        self.grid[self.num_rows-1][self.num_cols-1].acr = 0.0008333 * self.total_volume
+        self.grid[sim_params["SOURCE_ROW"]][sim_params["SOURCE_COL"]].source = True
+        self.grid[sim_params["SOURCE_ROW"]][sim_params["SOURCE_COL"]].acr = sim_params["SOURCE_ACH"]/3600 * self.total_volume
+
+        self.grid[sim_params["SINK_ROW"]][sim_params["SINK_COL"]].sink = True
+        self.grid[sim_params["SINK_ROW"]][sim_params["SINK_COL"]].acr =  sim_params["SINK_ACH"]/3600* self.total_volume
         if self.moving_agent:
             self.grid[0][0].agent = self.agent_to_move
 
@@ -237,10 +238,10 @@ class Room:
         #     print(abs(self.ideal_mass - self.actual_mass) / self.ideal_mass)
         self.steps_taken += 1
 
-        close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
-        far = self.grid[0][0].concentration
-        diff = close - far
-        ratio = far/close
+        # close = self.grid[self.initial_infectious_row + 1][self.initial_infectious_col].concentration
+        # far = self.grid[0][0].concentration
+        # diff = close - far
+        # ratio = far/close
 
     def take_second(self, element):
         """Get the element at index 2 in a make shift struct."""
