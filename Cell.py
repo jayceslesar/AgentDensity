@@ -32,10 +32,10 @@ class Cell:
         else:
             self.volume = self.width**2*self.height - self.agent.volume
 
-        self.real_diffusivity = 2.83e-5
-        self.micro_current_factor = 1000
+        self.real_diffusivity = sim_params["DIFFUSIVITY"]
+        self.micro_current_factor = sim_params["MICRO_CURRENT_FACTOR"]
         self.diffusivity = self.micro_current_factor*self.real_diffusivity
-        self.color_upper_limit = 0.00000000000000000075
+        self.color_upper_limit = sim_params["COLOR_UPPER_LIMIT"]
 
         self.sink = False
         self.source = False
