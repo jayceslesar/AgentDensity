@@ -451,7 +451,7 @@ class Room:
 
                     # multiply by width squared
                     # TODO: check if this should be surface area of cube/sphere or area of square
-                        # it should be surface area, change to surface area of semi sphere
+                        # it should be surface area, change to surface area of elipsoid with cut outs
                     surface_area = (abs(x_component) + 1) * (abs(y_component) + 1)
                     velocity = self.grid[i][j].acr / surface_area
                     # multiply by width
