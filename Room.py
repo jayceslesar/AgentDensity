@@ -328,9 +328,8 @@ class Room:
                     x_proportion = abs(x_component)/sum_component
                     y_proportion = abs(y_component)/sum_component
 
-                    # TODO: Change this to the inverse square law
-                    surface_area = (abs(x_component) + 1) * (abs(y_component) + 1)
-                    velocity = self.grid[i][j].acr / surface_area
+                    # TODO check this with brandon
+                    velocity = self.grid[i][j].acr / (abs(x_component)**2 + abs(y_component)**2)
 
                     change = advection_equation(velocity, self.grid[x][y].concentration, area) * self.time_length
 
