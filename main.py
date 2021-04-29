@@ -34,7 +34,7 @@ def draw(room, step):
                 agent_img = pygame.image.load(file_name)
                 agent_img = pygame.transform.scale(agent_img, (height_per_block-2, height_per_block-2))
                 SCREEN.blit(agent_img, rect)
-            if room.grid[i][j].advec_vec is not None:
+            if room.grid[i][j].source:
                 factor = FAN_CYCLES / 4
                 if step % FAN_CYCLES < factor:
                     fan_img = pygame.image.load(os.path.join('images', 'fan1.png'))

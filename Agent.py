@@ -3,8 +3,8 @@ import numpy as np
 
 class Agent:
     # TODO: change params to just the sims_param dict
-    def __init__(self, number: int, row: int, col: int, seed: int, exhale_mask_factor: float, inhale_mask_factor: float, production_rate: float,
-                 exposure_boundary: float, intake_per_step=None):
+    # TODO: move undef constants into sim_params
+    def __init__(self, number: int, row: int, col: int, seed: int, exhale_mask_factor: float, inhale_mask_factor: float, production_rate: float, intake_per_step=None):
         # np.random.seed(seed)
         """
         Agent constructor
@@ -19,13 +19,12 @@ class Agent:
         self.number = number
         self.row = row
         self.col = col
-
         # for how much concentration of virus agent is producing at a given time
         self.breathe_volume = 0.0005
         self.breathe_per_second = 0.233
+        # NOTE: aerosol volume is for found using formula for a sphere
         self.production_rate = production_rate * self.breathe_volume * self.breathe_per_second*5.445427e-20 * exhale_mask_factor
         self.intake_per_step = self.breathe_per_second * self.breathe_volume * inhale_mask_factor
-        self.exposure_boundary = exposure_boundary
 
         # tracking variables for run specific decisions
         self.untouched = True
