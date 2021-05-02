@@ -12,9 +12,11 @@ Date:
 
 import Agent
 import numpy as np
+import pandas as pd
 import Cell
 import copy
 import math
+import os
 from scipy.stats import invgamma
 
 def ficks_law(diffusivity, concentration1, concentration2, area, length):
@@ -43,6 +45,7 @@ class Room:
         self.moving_agent = self.sim_params['MOVING_AGENT']
         self.infected_production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
         self.production_rates = sorted(self.infected_production_rates)[:len(self.infected_production_rates)//2]
+        self.data_dict = {"iteration": [], "agent_auc": [], "agent_row": [], "agent_col": [], "inhale_mask_factor": [], "infected_exhale_mask_factor": [], "sink_row": [], "sink_col": [],"source_row": [], "source_col": []}
         np.random.shuffle(self.production_rates)
 
         if self.sim_params['HAVE_TEACHER']:
@@ -82,6 +85,7 @@ class Room:
         self.actual_mass = 0.0
         self.falloff_rate = 1.7504e-4
         self.total_volume = 0
+        self.total_mass = 0
 
         for i in range(self.num_rows):
             row = []
@@ -199,6 +203,9 @@ class Room:
                 if self.grid[i][j].agent is None:
                     continue
 
+                if not self.grid[i][j].agent.infectious:
+                    self.write_row(self.grid[i][j].agent)
+
                 # update total exposure, += concentration
                 self.grid[i][j].agent.total_exposure += self.grid[i][j].concentration * self.grid[i][j].agent.intake_per_step * self.time_length
 
@@ -210,6 +217,7 @@ class Room:
                     # update steps infectious
                     self.grid[i][j].agent.steps_infectious += 1
                     self.grid[i][j].add_concentration((self.grid[i][j].agent.production_rate) * self.time_length)
+                    self.total_mass += (self.grid[i][j].agent.production_rate) * self.time_length
 
         # Checking conservation of mass
         self.ideal_mass = 0
@@ -242,6 +250,25 @@ class Room:
         # far = self.grid[0][0].concentration
         # diff = close - far
         # ratio = far/close
+
+    def write_row(self, agent):
+        self.data_dict["iteration"].append(self.steps_taken)
+        self.data_dict["agent_row"].append(agent.row)
+        self.data_dict["agent_col"].append(agent.col)
+        try:
+            self.data_dict["agent_auc"].append(agent.total_exposure/self.total_mass)
+        except ZeroDivisionError:
+            self.data_dict["agent_auc"].append(0)
+        self.data_dict["inhale_mask_factor"].append(agent.inhale_mask_factor)
+        self.data_dict["infected_exhale_mask_factor"].append(self.initial_agent.exhale_mask_factor)
+        self.data_dict["sink_row"].append(self.sim_params["SINK_ROW"])
+        self.data_dict["sink_col"].append(self.sim_params["SINK_COL"])
+        self.data_dict["source_row"].append(self.sim_params["SOURCE_ROW"])
+        self.data_dict["source_col"].append(self.sim_params["SOURCE_COL"])
+
+    def write_data(self, df_name):
+        final_df = pd.DataFrame(self.data_dict)
+        final_df.to_csv(os.path.join("data", df_name+".csv"))
 
     def take_second(self, element):
         """Get the element at index 2 in a make shift struct."""

@@ -9,7 +9,7 @@ import csv
 import json
 import time
 
-
+# TODO: add graphic for sink
 with open('sim_params.json') as f:
     sim_params = json.load(f)
 
@@ -49,6 +49,7 @@ def draw(room, step):
 
 
 def viz(room):
+    data_path = input("What would you like to name the data file? ")
     choice = input('do you want screenshots?\n')
     if choice == 'y':
         stills = []
@@ -78,18 +79,10 @@ def viz(room):
             stills.append(os.path.join(path, "step" + str(room.steps_taken) + ".png"))
 
         steps_taken += 1
-        time.sleep(.1)
+        # time.sleep(.1)
+    room.write_data(data_path)
         # pygame.quit()
 
-    with open(room.filename, 'w') as csvfile:
-        # creating a csv writer object
-        csvwriter = csv.writer(csvfile)
-
-        # writing the fields
-        csvwriter.writerow(room.fields)
-
-        # writing the data rows
-        csvwriter.writerows(room.rows)
     if choice == 'y':
         img, *imgs = [Image.open(f) for f in stills]
         img.save(fp=os.path.join(path, 'sim.gif'), format='GIF', append_images=imgs, save_all=True, duration=20, loop=0)

@@ -23,8 +23,8 @@ class Agent:
         # mask effectiveness
         self.exhale_mask_factor = sim_params["INHALE_MASK_FACTOR"]
         self.inhale_mask_factor = sim_params["EXHALE_MASK_FACTOR"]
-        # NOTE: aerosol volume is for found using formula for a sphere
-        self.production_rate = production_rate * self.breathe_volume * self.breathe_per_second*sim_params["AEROSOL_VOLUME"] * self.exhale_mask_factor
+        # NOTE: aerosol mass is for found using formula for a sphere
+        self.production_rate = production_rate * self.breathe_volume * self.breathe_per_second*sim_params["AEROSOL_MASS"] * self.exhale_mask_factor
         self.intake_per_step = self.breathe_per_second * self.breathe_volume * self.inhale_mask_factor
 
         # tracking variables for run specific decisions
