@@ -26,7 +26,10 @@ def draw(room, step):
             global SCREEN
             pygame.draw.rect(SCREEN, room.grid[i][j].get_color(), rect)
             # print("The color of cell " + str(i) + str(j) + " is " + str(grid[i][j].get_color()))
-
+            if room.grid[i][j].sink:
+                sink_img = pygame.image.load(os.path.join('images', 'sink.png'))
+                fan_img = pygame.transform.scale(sink_img, (height_per_block, height_per_block))
+                SCREEN.blit(fan_img, rect)
             if room.grid[i][j].agent is not None:
                 pygame.draw.rect(SCREEN, room.grid[i][j].agent.get_color(), rect, 4)
                 color_string = room.grid[i][j].agent.get_color_string()
