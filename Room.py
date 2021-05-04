@@ -350,7 +350,7 @@ class Room:
                         x_component = j - y
                         y_component = i - x
                     else:
-                        x_component = y - i
+                        x_component = y - j
                         y_component = x - i
                     sum_component = abs(x_component) + abs(y_component)
                     x_proportion = abs(x_component)/sum_component
