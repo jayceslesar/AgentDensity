@@ -64,7 +64,10 @@ class Room:
             # center column
             self.center_col = self.center_col[int((len(self.center_col) - 1)/2)]
             self.initial_infectious_row, self.initial_infectious_col = 0, 0
-            production_rate = np.random.exponential(scale=400) / 0.001  # to convert to cubic
+            if sim_params["MIC"]:
+                production_rate = 15
+            else:
+                production_rate = 30  # to convert to cubic
             self.agent_to_move = Agent.Agent(self.n, 0, 0, self.seed, production_rate, self.sim_params)
             self.agent_to_move.infectious = True
             self.n += 1
@@ -94,7 +97,10 @@ class Room:
                 if i % 2 == 0:
                     row.append(Cell.Cell(i, j, self.sim_params))
                 elif j % 2 != 0:
-                    production_rate = np.random.exponential(scale=400) / 0.001
+                    if sim_params["MIC"]:
+                        production_rate = 15
+                    else:
+                        production_rate = 30
 
                     a = Agent.Agent(self.n, i, j, self.seed, production_rate, self.sim_params)
 
@@ -116,10 +122,15 @@ class Room:
                 row = []
                 for j in range(self.num_cols):
                     if j == self.center_col and i != self.num_rows - 1:
-                        production_rate = np.random.exponential(scale=400) / 0.001
+                        # production_rate = np.random.exponential(scale=400) / 0.001
+                        if sim_params["MIC"]:
+                            production_rate = 15
+                        else:
+                            production_rate = 30
                         a = Agent.Agent(self.n, i, j, self.seed, production_rate, self.sim_params)
                         a.infectious = True
                         self.initial_agent = a
+                        print(a.production_rate)
                         row.append(Cell.Cell(i, j, self.sim_params, a))
                     else:
                         row.append(Cell.Cell(i, j, self.sim_params))
