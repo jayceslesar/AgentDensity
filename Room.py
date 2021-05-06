@@ -130,6 +130,7 @@ class Room:
                         a = Agent.Agent(self.n, i, j, self.seed, production_rate, self.sim_params)
                         a.infectious = True
                         self.initial_agent = a
+                        print(a.production_rate)
                         row.append(Cell.Cell(i, j, self.sim_params, a))
                     else:
                         row.append(Cell.Cell(i, j, self.sim_params))
