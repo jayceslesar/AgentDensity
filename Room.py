@@ -45,7 +45,7 @@ class Room:
         self.moving_agent = self.sim_params['MOVING_AGENT']
         self.infected_production_rates = list(invgamma.rvs(a=2.4, size=self.expected_n, loc=5, scale=4))
         self.production_rates = sorted(self.infected_production_rates)[:len(self.infected_production_rates)//2]
-        self.data_dict = {"iteration": [], "agent_auc": [], "agent_row": [], "agent_col": [], "inhale_mask_factor": [], "infected_exhale_mask_factor": [], "sink_row": [], "sink_col": [],"source_row": [], "source_col": []}
+        self.data_dict = {"iteration": [], "agent_auc": [], "aerosol_inhaled": [], "agent_row": [], "agent_col": [], "inhale_mask_factor": [], "infected_exhale_mask_factor": [], "sink_row": [], "sink_col": [],"source_row": [], "source_col": []}
         np.random.shuffle(self.production_rates)
 
         if self.sim_params['HAVE_TEACHER']:
@@ -270,6 +270,7 @@ class Room:
             self.data_dict["agent_auc"].append(agent.total_exposure/self.total_mass)
         except ZeroDivisionError:
             self.data_dict["agent_auc"].append(0)
+        self.data_dict["aerosol_inhaled"].append(agent.total_exposure)
         self.data_dict["inhale_mask_factor"].append(agent.inhale_mask_factor)
         self.data_dict["infected_exhale_mask_factor"].append(self.initial_agent.exhale_mask_factor)
         self.data_dict["sink_row"].append(self.sim_params["SINK_ROW"])

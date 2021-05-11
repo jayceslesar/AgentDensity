@@ -88,7 +88,7 @@ def viz(room):
 
     if choice == 'y':
         img, *imgs = [Image.open(f) for f in stills]
-        img.save(fp=os.path.join(path, 'sim.gif'), format='GIF', append_images=imgs, save_all=True, duration=20, loop=0)
+        img.save(fp=os.path.join(path, data_path+".png"), format='PNG', append_images=imgs, save_all=True, duration=20, loop=0)
         for im in stills:
             os.remove(im)
 
